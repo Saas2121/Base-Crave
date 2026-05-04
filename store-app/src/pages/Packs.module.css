@@ -1,0 +1,172 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 20px;
+  color: var(--text);
+  flex: 1;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.addButton {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.content {
+  padding: 20px 20px 96px;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.switchRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.switchBtn {
+  border: 1px solid var(--line);
+  background: #fff8f1;
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: 700;
+}
+
+.switchActive {
+  background: #fff1df;
+  color: var(--primary-strong);
+}
+
+.kpis span {
+  background: #fff7ef;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.empty button {
+  margin-top: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.packsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.packCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--soft-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.packInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.packType {
+  font-size: 32px;
+}
+
+.packInfo h3 {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.packInfo p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.active {
+  background: #ebfaee;
+  color: #15703d;
+}
+
+.sold_out {
+  background: #fff0ef;
+  color: #a23c31;
+}
+
+.expired {
+  background: #ece8e5;
+  color: #5f5550;
+}
+
+.deleteButton {
+  background: #fff0ef;
+  color: #a23c31;
+  border: 1px solid #f5c5bf;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}

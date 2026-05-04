@@ -1,0 +1,152 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.content {
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.packInfo,
+.quantitySelector,
+.total {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+}
+
+.packInfo {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.packInfo h2 {
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.price,
+.totalPrice {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.price {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.remaining,
+.total span:first-child {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.quantitySelector {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quantitySelector p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quantityControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quantityControls button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantityControls button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.quantityControls span {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text);
+  min-width: 40px;
+  text-align: center;
+}
+
+.total {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalPrice {
+  font-size: 24px;
+}
+
+.reserveButton {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reserveButton:hover:not(:disabled) {
+  background: var(--primary-strong);
+}
+
+.reserveButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

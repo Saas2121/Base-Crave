@@ -1,0 +1,93 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.mapContainer {
+  height: 300px;
+  margin: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #ffeedc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mapPlaceholder {
+  text-align: center;
+  color: var(--muted);
+}
+
+.mapPlaceholder p:first-child {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.hint {
+  font-size: 14px;
+  color: #85796d;
+}
+
+.coords {
+  font-size: 12px;
+  color: var(--primary);
+  margin-top: 8px;
+}
+
+.storesList {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.storesList h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.storeCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  box-shadow: var(--soft-shadow);
+}
+
+.storeCard h3 {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.storeCard p {
+  font-size: 12px;
+  color: var(--muted);
+}

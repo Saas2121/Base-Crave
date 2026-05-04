@@ -1,0 +1,124 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.content {
+  padding: 40px 20px 96px;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.instruction {
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.error {
+  background: #fff1f0;
+  color: #a23c31;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.codeInput {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-size: 24px;
+  text-align: center;
+  font-family: monospace;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.codeInput:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.verifyButton {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verifyButton:hover:not(:disabled) {
+  background: var(--primary-strong);
+}
+
+.verifyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.content h1 {
+  font-size: 28px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.content p {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.button {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--primary-strong);
+}

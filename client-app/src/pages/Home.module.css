@@ -1,0 +1,319 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.header {
+  background: linear-gradient(145deg, #df6b1d 0%, #f5963f 100%);
+  padding: 24px 20px 28px;
+  color: #fff;
+  border-radius: 0 0 26px 26px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.logoutButton {
+  background: rgba(255, 255, 255, 0.22);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.welcome {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  opacity: 0.92;
+}
+
+.categoryRow {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 16px 20px;
+}
+
+.categoryChip {
+  border: 1px solid var(--line);
+  background: #fff7ef;
+  border-radius: 999px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.categoryChipActive {
+  background: #fff1df;
+  color: var(--primary-strong);
+}
+
+.storesSection {
+  padding: 20px 20px 96px;
+}
+
+.sectionHead {
+  margin-bottom: 10px;
+}
+
+.sectionHead h2 {
+  font-size: 20px;
+}
+
+.sectionHead p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.storesSection h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.storesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.storeCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: var(--soft-shadow);
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.favButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.smallStar {
+  position: absolute;
+  top: 14px;
+  right: 40px;
+  font-size: 14px;
+}
+
+.storeCard:hover {
+  transform: translateY(-2px);
+}
+
+.storeCard h3 {
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 4px;
+  padding-right: 34px;
+}
+
+.storeCard p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.address {
+  font-size: 12px !important;
+  color: #85796d !important;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.priceTag {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 800;
+  color: var(--primary-strong);
+}
+
+.open {
+  background: #ebfaee;
+  color: #15703d;
+}
+
+.closed {
+  background: #fff0ef;
+  color: #a23c31;
+}
+
+.message {
+  color: var(--muted);
+  text-align: center;
+  padding: 20px;
+}
+
+.errorBox {
+  background: #fff1f0;
+  border: 1px solid #f5c5bf;
+  color: #a23c31;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.retryButton {
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.expandButton {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  color: var(--primary-strong);
+  margin-bottom: 18px;
+}
+
+.spotsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.spotCard {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.spotPhoto {
+  width: 86px;
+  height: 72px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #ffd3ad, #ffc58c);
+  display: grid;
+  place-items: center;
+  color: #7a3a0d;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.spotCard span {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 18px;
+}
+
+.carouselCard {
+  min-width: 220px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--soft-shadow);
+  cursor: pointer;
+}
+
+.carouselCard h4 {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.carouselCard p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.carouselCard span {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 800;
+  color: var(--primary-strong);
+}
+
+.surpriseCard {
+  border-radius: 16px;
+}
+
+.surpriseImage {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffd3ad, #ffc58c);
+  display: grid;
+  place-items: center;
+  color: #7a3a0d;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.storeMiniIcon {
+  font-size: 14px;
+}
+
+.metaRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.metaRow span {
+  background: #fff7ef;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  text-align: center;
+  padding: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}

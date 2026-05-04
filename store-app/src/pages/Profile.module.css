@@ -1,0 +1,127 @@
+.container {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.content {
+  padding: 20px 20px 96px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.userInfo,
+.storeInfo {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+}
+
+.userInfo {
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+.userInfo h2 {
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.userInfo p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.storeInfo {
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.storeInfo h3 {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.storeInfo p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.open {
+  background: #ebfaee;
+  color: #15703d;
+}
+
+.closed {
+  background: #fff0ef;
+  color: #a23c31;
+}
+
+.toggleButton {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+.toggleButton:hover {
+  background: var(--primary-strong);
+}
+
+.logoutButton {
+  width: 100%;
+  background: #c94033;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}

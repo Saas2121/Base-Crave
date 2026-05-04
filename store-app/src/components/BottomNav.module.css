@@ -1,0 +1,26 @@
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 8px 10px 14px;
+  z-index: 10;
+}
+
+.item {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  padding: 10px 6px;
+  border-radius: 10px;
+}
+
+.active {
+  background: #fff1df;
+  color: var(--primary-strong);
+}

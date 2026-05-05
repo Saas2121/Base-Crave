@@ -57,9 +57,11 @@ export default function Home() {
     return 'Meals'
   }
 
-  const packs = stores.flatMap((store) =>
-    (store.packs || []).map((pack) => ({ ...pack, store }))
-  )
+  const packs = stores
+    .filter((store) => store.is_open)
+    .flatMap((store) =>
+      (store.packs || []).map((pack) => ({ ...pack, store }))
+    )
 
   const filteredPacks = packs.filter((pack) => {
     const source = `${pack.title} ${pack.description || ''} ${pack.store?.name || ''}`

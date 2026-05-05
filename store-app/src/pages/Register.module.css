@@ -1,114 +1,318 @@
+.register {
+  width: 100%;
+  height: 1211px;
+  position: relative;
+  background-color: #101010;
+  overflow: hidden;
+  text-align: left;
+  font-size: 14.03px;
+  color: #99a1af;
+  font-family: 'General Sans';
+}
+.registerChild {
+  position: absolute;
+  top: -294.69px;
+  left: 0.5px;
+  background: linear-gradient(180deg, #292929 36.06%, #101010);
+  width: 442px;
+  height: 653px;
+  flex-shrink: 0;
+}
 .container {
-  min-height: 100vh;
+  position: absolute;
+  top: 350.8px;
+  left: calc(50% - 199.95px);
+  width: 400.6px;
+  height: 68.1px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 30.07px;
+  color: #fff;
+}
+.heading1 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 400.6px;
+  height: 36.1px;
+}
+.createRestaurant {
+  position: absolute;
+  top: -2.23px;
+  left: 67.07px;
+  line-height: 36.08px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.paragraph {
+  position: absolute;
+  top: 33.06px;
+  left: 0px;
+  width: 400.6px;
+  height: 24px;
+  display: flex;
+  align-items: flex-start;
+  padding: 3px 0px;
+  box-sizing: border-box;
+  font-size: 16.04px;
+  color: #99a1af;
+}
+.startSellingSurplus {
+  flex: 1;
+  position: relative;
+  line-height: 24.05px;
+  flex-shrink: 0;
+}
+.container2 {
+  position: absolute;
+  top: 442.97px;
+  left: 39.09px;
+  width: 400.6px;
+  height: 86.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.label {
+  align-self: stretch;
+  height: 20px;
+  display: flex;
+  align-items: flex-start;
+}
+.restaurantName {
+  flex: 1;
+  position: relative;
+  line-height: 20.05px;
+}
+.container3 {
+  width: 358.8px;
+  height: 58.1px;
+  position: relative;
+  font-size: 16.04px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.textInput {
+  position: absolute;
+  top: 0.35px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 358.8px;
+  height: 50.1px;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: transparent;
-  padding: 24px;
+  padding: 16px 16px 16px 48.1px;
 }
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 32px;
-  max-width: 430px;
-  width: 100%;
-  box-shadow: var(--soft-shadow);
+.yourRestaurantName {
+  position: relative;
+  flex-shrink: 0;
 }
-
-.title {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
+.icon {
+  position: absolute;
+  top: 19.14px;
+  left: 16.03px;
+  width: 20px;
+  height: 20px;
 }
-
-.subtitle {
-  color: var(--muted);
-  margin-bottom: 24px;
-}
-
-.error {
-  background: #fff1f0;
-  color: #a23c31;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-}
-
-.form {
+.container4 {
+  position: absolute;
+  top: 545.39px;
+  left: 39.09px;
+  width: 400.6px;
+  height: 86.4px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
+  flex-shrink: 0;
 }
-
-.field label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
+.container5 {
+  align-self: stretch;
+  height: 58.3px;
+  position: relative;
+  font-size: 16.04px;
+  color: rgba(255, 255, 255, 0.5);
 }
-
-.field input {
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s;
+.emailInput {
+  position: absolute;
+  top: 0.16px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 358.8px;
+  height: 50.1px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 16px 48.1px;
 }
-
-.field input:focus {
-  outline: none;
-  border-color: var(--primary);
+.container6 {
+  position: absolute;
+  top: 647.81px;
+  left: 39.09px;
+  width: 400.6px;
+  height: 86.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
 }
-
-.submitButton {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+.passwordInput {
+  position: absolute;
+  top: -0.03px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 358.8px;
+  height: 50.1px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 16px 48.1px;
+}
+.icon3 {
+  position: absolute;
+  top: calc(50% - 13.91px);
+  left: 16.03px;
+  width: 20px;
+  height: 20px;
+}
+.container8 {
+  position: absolute;
+  top: 876px;
+  left: 39px;
+  width: 400.6px;
+  height: 86.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.vectorIcon {
+  position: absolute;
+  top: 18.95px;
+  left: 17px;
+  width: 17px;
+  height: 20px;
+}
+.container10 {
+  position: absolute;
+  top: 750px;
+  left: 39.09px;
+  width: 400.6px;
+  height: 110.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.container11 {
+  width: 358.8px;
+  height: 59.1px;
+  position: relative;
+  font-size: 16.04px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.textInput2 {
+  position: absolute;
+  top: 0.02px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 358.8px;
+  height: 50.1px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 16px 48.1px;
+}
+.icon4 {
+  position: absolute;
+  top: 14.95px;
+  left: 15.91px;
+  width: 20px;
+  height: 20px;
+}
+.paragraph2 {
+  align-self: stretch;
+  height: 16px;
+  position: relative;
+  font-size: 12.03px;
+  color: #6a7282;
+}
+.wellUseThis {
+  position: absolute;
+  top: -9.2px;
+  left: 0px;
+  line-height: 16.04px;
+  flex-shrink: 0;
+}
+.button {
+  position: absolute;
+  top: 1010px;
+  left: 40.09px;
+  border-radius: 16.04px;
+  background-color: #ff5722;
+  width: 358.8px;
+  height: 56.1px;
   cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 8px;
-}
-
-.submitButton:hover:not(:disabled) {
-  background: var(--primary-strong);
-}
-
-.submitButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.switch {
+  flex-shrink: 0;
   text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 14px;
+  font-size: 16.04px;
+  color: #fff;
 }
-
-.switch a {
-  color: var(--primary-strong);
-  text-decoration: none;
+.createAccount {
+  position: absolute;
+  top: 16.04px;
+  left: calc(50% - 60.13px);
+  line-height: 24.05px;
   font-weight: 600;
 }
-
-.backLink {
-  display: block;
+.container12 {
+  position: absolute;
+  top: 1066.13px;
+  left: -2px;
+  width: 442px;
+  height: 40.1px;
+  cursor: pointer;
+  flex-shrink: 0;
   text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 14px;
+  font-size: 16.04px;
+}
+.alreadyHaveAnContainer {
+  position: absolute;
+  top: 13.03px;
+  left: calc(50% - 116.76px);
+  line-height: 24.05px;
+}
+.signIn {
+  color: #f95519;
+}
+.registerItem {
+  position: absolute;
+  height: 21.7%;
+  width: 56.64%;
+  top: 7.12%;
+  right: 21.72%;
+  bottom: 71.18%;
+  left: 21.64%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
 }

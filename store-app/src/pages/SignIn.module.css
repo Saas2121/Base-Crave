@@ -1,114 +1,243 @@
+.signIn {
+  width: 100%;
+  height: 956px;
+  position: relative;
+  background-color: #101010;
+  overflow: hidden;
+  text-align: center;
+  font-size: 30.07px;
+  color: #99a1af;
+  font-family: 'General Sans';
+}
+.signInChild {
+  position: absolute;
+  top: -295px;
+  left: 0.5px;
+  background: linear-gradient(180deg, #292929 36.06%, #101010);
+  width: 442px;
+  height: 653px;
+  flex-shrink: 0;
+}
 .container {
-  min-height: 100vh;
+  position: absolute;
+  top: 157.27px;
+  left: 33.08px;
+  width: 373.8px;
+  height: 643.5px;
+  flex-shrink: 0;
+}
+.container2 {
+  position: absolute;
+  top: 202.39px;
+  left: calc(50% - 199.57px);
+  width: 400.6px;
+  height: 68.1px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+  color: #e3e3e3;
+}
+.heading1 {
+  align-self: stretch;
+  height: 36.1px;
+  position: relative;
+}
+.welcomeBack {
+  position: absolute;
+  top: 6.09px;
+  left: 94.91px;
+  line-height: 36.08px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.paragraph {
+  align-self: stretch;
+  height: 24px;
+  display: flex;
+  align-items: flex-start;
+  font-size: 16.04px;
+  color: #99a1af;
+}
+.signInTo {
+  flex: 1;
+  position: relative;
+  line-height: 24.05px;
+}
+.container3 {
+  position: absolute;
+  top: 295px;
+  left: 0px;
+  width: 400.6px;
+  height: 341.1px;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: 14.03px;
+}
+.container4 {
+  position: absolute;
+  top: 6.12px;
+  left: 6.01px;
+  width: 400.6px;
+  height: 86.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.label {
+  align-self: stretch;
+  height: 20px;
+  display: flex;
+  align-items: flex-start;
+}
+.businessEmail {
+  flex: 1;
+  position: relative;
+  line-height: 20.05px;
+}
+.container5 {
+  width: 359.8px;
+  height: 58.1px;
+  position: relative;
+  font-size: 16.04px;
+  color: rgba(255, 255, 255, 0.3);
+}
+.emailInput {
+  position: absolute;
+  top: 0.13px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 359.8px;
+  height: 50.1px;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: transparent;
-  padding: 24px;
+  padding: 16px 16px 16px 48.1px;
 }
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 32px;
-  max-width: 430px;
-  width: 100%;
-  box-shadow: var(--soft-shadow);
+.youremailcom {
+  position: relative;
+  flex-shrink: 0;
 }
-
-.title {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
+.icon {
+  position: absolute;
+  top: 15.16px;
+  left: 16.03px;
+  width: 20px;
+  height: 20px;
 }
-
-.subtitle {
-  color: var(--muted);
-  margin-bottom: 24px;
-}
-
-.error {
-  background: #fff1f0;
-  color: #a23c31;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-}
-
-.form {
+.container6 {
+  position: absolute;
+  top: 97.52px;
+  left: 6.01px;
+  width: 400.6px;
+  height: 86.4px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
+  flex-shrink: 0;
 }
-
-.field label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
+.passwordInput {
+  position: absolute;
+  top: -0.06px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #1a1a1a;
+  border: 1.1px solid #2a2a2a;
+  box-sizing: border-box;
+  width: 359.8px;
+  height: 50.1px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 16px 48.1px;
 }
-
-.field input {
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s;
+.icon2 {
+  position: absolute;
+  top: 14.97px;
+  left: 16.03px;
+  width: 20px;
+  height: 20px;
 }
-
-.field input:focus {
-  outline: none;
-  border-color: var(--primary);
+.button {
+  position: absolute;
+  top: 183.53px;
+  left: 245.56px;
+  width: 120.3px;
+  height: 20px;
+  display: flex;
+  align-items: flex-start;
+  padding: 0px 0px 10px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12.03px;
 }
-
-.submitButton {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+.forgotPassword {
+  width: 120.3px;
+  position: relative;
+  line-height: 20.05px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.button2 {
+  position: absolute;
+  top: 244.67px;
+  left: 0px;
+  border-radius: 16.04px;
+  background-color: #f95519;
+  width: 365.8px;
+  height: 56.1px;
   cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 8px;
-}
-
-.submitButton:hover:not(:disabled) {
-  background: var(--primary-strong);
-}
-
-.submitButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.switch {
+  flex-shrink: 0;
   text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 14px;
+  font-size: 16.04px;
+  color: #fff;
 }
-
-.switch a {
-  color: var(--primary-strong);
-  text-decoration: none;
+.signIn2 {
+  position: absolute;
+  top: 13.02px;
+  left: calc(50% - 25.54px);
+  line-height: 24.05px;
   font-weight: 600;
 }
-
-.backLink {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 14px;
+.container8 {
+  position: absolute;
+  top: 301.03px;
+  left: calc(50% - 200.38px);
+  width: 400.6px;
+  height: 40.1px;
+  flex-shrink: 0;
+}
+.dontHaveAContainer {
+  position: absolute;
+  top: 597.7px;
+  left: calc(50% - 160.98px);
+  font-size: 16.04px;
+  line-height: 24.05px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.createOne {
+  color: #f95519;
+}
+.containerChild {
+  position: absolute;
+  height: 40.84%;
+  width: 66.67%;
+  top: -8.43%;
+  right: 18.32%;
+  bottom: 67.59%;
+  left: 15.02%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
 }

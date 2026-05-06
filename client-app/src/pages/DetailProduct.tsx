@@ -48,6 +48,18 @@ export default function DetailProduct() {
 
       <div className={styles.content}>
         <div className={styles.packCard}>
+          {pack.image_url && (
+            <div className={styles.packImageContainer}>
+              <img
+                src={pack.image_url}
+                alt={pack.title || 'Pack'}
+                className={styles.packImage}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
           <div className={styles.packType}>
             {pack.pack_type === 'surprise' ? '🎁 Surprise Pack' : '📦 Fixed Pack'}
           </div>

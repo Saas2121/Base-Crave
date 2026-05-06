@@ -44,6 +44,21 @@
   margin-bottom: 16px;
 }
 
+.packImageContainer {
+  width: 100%;
+  margin: -24px -24px 16px -24px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  max-height: 300px;
+}
+
+.packImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
 .packType {
   display: inline-block;
   background: rgba(249, 85, 25, 0.15);

@@ -39,7 +39,19 @@ export default function Profile() {
 
       <div className={styles.content}>
         <div className={styles.userInfo}>
-          <div className={styles.avatar}>👤</div>
+          {user?.profile_image ? (
+            <img
+              src={user.profile_image}
+              alt="Profile"
+              className={styles.avatar}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                const next = (e.target as HTMLImageElement).nextElementSibling;
+                if (next) (next as HTMLElement).style.display = 'block';
+              }}
+            />
+          ) : null}
+          <div className={styles.avatar} style={{ display: user?.profile_image ? 'none' : 'block' }}>👤</div>
           <h2>{user?.name}</h2>
           <p>{user?.email}</p>
           <span className={styles.role}>{user?.role}</span>

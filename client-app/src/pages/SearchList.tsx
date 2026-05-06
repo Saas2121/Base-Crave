@@ -64,6 +64,18 @@ export default function SearchList() {
                 className={styles.storeCard}
                 onClick={() => store.packs?.[0] && navigate(`/product/${store.packs[0].id}`)}
               >
+                {store.packs?.[0]?.image_url && (
+                  <div className={styles.storeImageContainer}>
+                    <img
+                      src={store.packs[0].image_url}
+                      alt={store.name}
+                      className={styles.storeImage}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
                 <div className={styles.storeInfo}>
                   <h3>{store.name}</h3>
                   <p>{store.description}</p>

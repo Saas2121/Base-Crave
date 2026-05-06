@@ -65,7 +65,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, name, email, password_hash, role, created_at')
+      .select('id, name, email, password_hash, role, profile_image, created_at')
       .eq('email', email)
       .single();
 
@@ -91,6 +91,7 @@ router.post('/login', async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        profile_image: user.profile_image,
         created_at: user.created_at
       },
       token
@@ -109,7 +110,7 @@ router.get('/me', (req: AuthRequest, res: Response) => {
 
       const { data: user, error } = await supabase
         .from('users')
-        .select('id, name, email, role, created_at')
+        .select('id, name, email, role, profile_image, created_at')
         .eq('id', req.user.id)
         .single();
 

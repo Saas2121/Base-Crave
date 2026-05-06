@@ -186,6 +186,44 @@ npm run dev
 
 ### API Endpoints
 
+**Get Current User (with profile image):**
+```http
+GET /api/auth/me
+Authorization: Bearer <token>
+
+Response:
+{
+  "id": "...",
+  "name": "...",
+  "email": "...",
+  "role": "consumer" | "store_admin",
+  "profile_image": "http://localhost:3000/uploads/123456789-image.jpg" | null,
+  "created_at": "..."
+}
+```
+
+**Login (returns profile image):**
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+Body:
+  { "email": "...", "password": "..." }
+
+Response:
+{
+  "user": {
+    "id": "...",
+    "name": "...",
+    "email": "...",
+    "role": "consumer" | "store_admin",
+    "profile_image": "http://localhost:3000/uploads/123456789-image.jpg" | null,
+    "created_at": "..."
+  },
+  "token": "..."
+}
+```
+
 **Upload Profile Image:**
 ```http
 POST /api/auth/upload-profile-image
@@ -220,15 +258,29 @@ Response:
 
 ### Image Storage
 - Images are stored locally in `backend/uploads/` directory
-- Images are served statically via `/uploads/` endpoint
+- Images are served statically via `/uploads/` endpoint on the backend
+- Both frontend apps proxy `/uploads/` requests to the backend via Vite proxy configuration
 - Max file size: 5MB
 - Allowed types: JPEG, JPG, PNG, GIF, WebP
 
 ### Frontend Usage
-- Profile page: Click on avatar to upload profile image
-- Pack creation: Select image when creating Fixed or Surprise packs
+- Profile page (store-app): Click on avatar to upload profile image
+- Pack creation (store-app): Select image when creating Fixed or Surprise packs
 - Images are previewed immediately before upload
 - After upload, the backend returns the public URL which is stored in the database
+- Client-app displays pack images in SearchList and DetailProduct pages
+
+## Development Notes
+
+### Image URL Format
+- Images are stored with unique filenames: `{timestamp}-{random}.{ext}`
+- Full URL format: `http://localhost:3000/uploads/{filename}`
+- Frontend accesses images via relative URL `/uploads/{filename}` (proxied to backend)
+
+### Cross-App Image Sync
+- Store app uploads images → saved to backend/uploads/ → URL stored in DB
+- Client app fetches data → gets image_url from DB → displays via proxy
+- Both apps must be running for images to display in development
 
 ## Troubleshooting
 

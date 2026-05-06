@@ -136,6 +136,21 @@
   color: var(--muted) !important;
 }
 
+.storeImageContainer {
+  width: 100%;
+  margin: -16px -16px 12px -16px;
+  border-radius: 14px 14px 0 0;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+.storeImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
 .storeMeta {
   display: flex;
   flex-direction: column;

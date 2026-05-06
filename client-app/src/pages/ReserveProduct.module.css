@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: transparent;
+  background: #101010;
 }
 
 .header {
@@ -15,6 +15,8 @@
 .header h1 {
   font-size: 20px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .backButton {
@@ -23,6 +25,7 @@
   font-size: 20px;
   cursor: pointer;
   color: var(--primary);
+  padding: 4px;
 }
 
 .content {
@@ -41,7 +44,7 @@
 
 .packInfo {
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 16px;
 }
 
@@ -49,16 +52,18 @@
   font-size: 20px;
   color: var(--text);
   margin-bottom: 8px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .price,
 .totalPrice {
-  font-weight: bold;
+  font-weight: 800;
   color: var(--primary);
 }
 
 .price {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 4px;
 }
 
@@ -70,7 +75,7 @@
 
 .quantitySelector {
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
@@ -81,6 +86,7 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
 }
 
 .quantityControls {
@@ -90,17 +96,23 @@
 }
 
 .quantityControls button {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid var(--primary);
-  background: white;
+  background: transparent;
   color: var(--primary);
   font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
+}
+
+.quantityControls button:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
 }
 
 .quantityControls button:disabled {
@@ -118,7 +130,7 @@
 
 .total {
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
@@ -126,7 +138,7 @@
 }
 
 .totalPrice {
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .reserveButton {
@@ -135,18 +147,21 @@
   color: white;
   border: none;
   padding: 16px;
-  border-radius: 12px;
-  font-size: 18px;
+  border-radius: 14px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  font-family: 'General Sans', sans-serif;
 }
 
 .reserveButton:hover:not(:disabled) {
   background: var(--primary-strong);
+  transform: translateY(-1px);
 }
 
 .reserveButton:disabled {
-  background: #ccc;
+  background: var(--line);
+  color: var(--muted);
   cursor: not-allowed;
 }

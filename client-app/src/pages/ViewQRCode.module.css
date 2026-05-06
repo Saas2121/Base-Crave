@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: transparent;
+  background: #101010;
 }
 
 .header {
@@ -15,6 +15,8 @@
 .header h1 {
   font-size: 20px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .backButton {
@@ -23,6 +25,7 @@
   font-size: 16px;
   cursor: pointer;
   color: var(--primary);
+  padding: 4px;
 }
 
 .content {
@@ -45,20 +48,23 @@
 }
 
 .qrCode {
-  font-size: 48px;
-  font-weight: bold;
-  font-family: monospace;
+  font-size: 36px;
+  font-weight: 800;
+  font-family: 'General Sans', monospace;
   color: var(--primary);
-  background: #fff7ef;
+  background: var(--surface-elevated);
   padding: 24px;
   border-radius: 12px;
   letter-spacing: 4px;
+  border: 1px solid var(--line);
 }
 
 .qrCard h2 {
   font-size: 20px;
   color: var(--text);
   margin-bottom: 8px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .qrCard p {
@@ -74,14 +80,15 @@
 }
 
 .instructions {
-  background: #fff1df;
+  background: rgba(249, 85, 25, 0.1);
   padding: 16px;
   border-radius: 12px;
   margin-bottom: 24px;
+  border: 1px solid rgba(249, 85, 25, 0.2);
 }
 
 .instructions p {
-  color: #a65a17 !important;
+  color: var(--primary) !important;
   margin-bottom: 8px !important;
 }
 
@@ -95,12 +102,15 @@
   color: white;
   border: none;
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  font-family: 'General Sans', sans-serif;
+  transition: all 0.2s;
 }
 
 .doneButton:hover {
   background: var(--primary-strong);
+  transform: translateY(-1px);
 }

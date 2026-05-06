@@ -1,6 +1,7 @@
 .container {
   min-height: 100vh;
-  background: transparent;
+  background: #101010;
+  padding-bottom: 80px;
 }
 
 .header {
@@ -15,6 +16,7 @@
 .header h1 {
   font-size: 20px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
 }
 
 .backButton {
@@ -23,6 +25,8 @@
   font-size: 16px;
   cursor: pointer;
   color: var(--primary);
+  font-family: 'General Sans', sans-serif;
+  padding: 8px;
 }
 
 .content {
@@ -42,58 +46,66 @@
 
 .packType {
   display: inline-block;
-  background: #fff1df;
-  color: #a65a17;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
+  background: rgba(249, 85, 25, 0.15);
+  color: var(--primary);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 12px;
+  font-family: 'General Sans', sans-serif;
 }
 
 .packCard h2 {
   font-size: 24px;
   color: var(--text);
   margin-bottom: 8px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .description {
   color: var(--muted);
   font-size: 14px;
   margin-bottom: 16px;
+  line-height: 1.5;
 }
 
 .priceSection {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
 .price {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 36px;
+  font-weight: 800;
   color: var(--primary);
+  font-family: 'General Sans', sans-serif;
 }
 
 .originalPrice {
   font-size: 18px;
-  color: #999;
+  color: var(--muted);
   text-decoration: line-through;
 }
 
 .pickupInfo {
-  background: #fff7ef;
+  background: var(--surface-elevated);
   border: 1px solid var(--line);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 12px;
   margin-bottom: 16px;
 }
 
 .pickupInfo p {
   font-size: 14px;
   color: var(--muted);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .storeInfo {
@@ -109,6 +121,8 @@
   font-size: 18px;
   color: var(--text);
   margin-bottom: 4px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .storeInfo p {
@@ -120,6 +134,7 @@
 .status {
   font-size: 14px;
   margin-top: 8px;
+  color: var(--primary);
 }
 
 .reserveButton {
@@ -128,18 +143,22 @@
   color: white;
   border: none;
   padding: 16px;
-  border-radius: 12px;
-  font-size: 18px;
+  border-radius: 14px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  font-family: 'General Sans', sans-serif;
+  margin-top: 8px;
 }
 
 .reserveButton:hover:not(:disabled) {
   background: var(--primary-strong);
+  transform: translateY(-1px);
 }
 
 .reserveButton:disabled {
-  background: #ccc;
+  background: var(--line);
+  color: var(--muted);
   cursor: not-allowed;
 }

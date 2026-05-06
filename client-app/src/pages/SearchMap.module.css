@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: transparent;
+  background: #101010;
   display: flex;
   flex-direction: column;
 }
@@ -17,6 +17,8 @@
 .header h1 {
   font-size: 20px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .backButton {
@@ -25,6 +27,7 @@
   font-size: 16px;
   cursor: pointer;
   color: var(--primary);
+  padding: 4px;
 }
 
 .mapContainer {
@@ -32,7 +35,7 @@
   margin: 16px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background: #ffeedc;
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,7 +53,7 @@
 
 .hint {
   font-size: 14px;
-  color: #85796d;
+  color: var(--muted);
 }
 
 .coords {
@@ -69,25 +72,34 @@
   font-size: 18px;
   margin-bottom: 12px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .storeCard {
   background: var(--surface);
   border: 1px solid var(--line);
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin-bottom: 10px;
   cursor: pointer;
   box-shadow: var(--soft-shadow);
+  transition: border-color 0.2s;
+}
+
+.storeCard:hover {
+  border-color: var(--primary);
 }
 
 .storeCard h3 {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text);
   margin-bottom: 4px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .storeCard p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }

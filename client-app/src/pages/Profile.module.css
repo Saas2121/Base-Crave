@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: transparent;
+  background: #101010;
 }
 
 .header {
@@ -15,6 +15,8 @@
 .header h1 {
   font-size: 20px;
   color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .backButton {
@@ -23,6 +25,7 @@
   font-size: 16px;
   cursor: pointer;
   color: var(--primary);
+  padding: 4px;
 }
 
 .content {
@@ -46,14 +49,17 @@
 }
 
 .avatar {
-  font-size: 64px;
+  font-size: 56px;
   margin-bottom: 12px;
+  display: block;
 }
 
 .userInfo h2 {
   font-size: 20px;
   color: var(--text);
   margin-bottom: 4px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .userInfo p {
@@ -64,13 +70,14 @@
 
 .role {
   display: inline-block;
-  background: #fff1df;
-  color: #a65a17;
-  padding: 4px 12px;
-  border-radius: 12px;
+  background: rgba(249, 85, 25, 0.15);
+  color: var(--primary);
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
+  font-family: 'General Sans', sans-serif;
 }
 
 .reservationsSection {
@@ -83,12 +90,15 @@
   font-size: 18px;
   color: var(--text);
   margin-bottom: 16px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .empty {
   text-align: center;
   color: var(--muted);
   padding: 20px;
+  font-size: 14px;
 }
 
 .reservationsList {
@@ -98,18 +108,25 @@
 }
 
 .reservationCard {
-  padding: 12px;
+  padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: var(--surface-elevated);
+}
+
+.resInfo {
+  flex: 1;
 }
 
 .resInfo h4 {
   font-size: 14px;
   color: var(--text);
   margin-bottom: 4px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
 }
 
 .resInfo p {
@@ -119,42 +136,63 @@
 }
 
 .pickupCode {
-  font-family: monospace;
+  font-family: 'General Sans', monospace;
   font-weight: 600;
   color: var(--primary) !important;
 }
 
 .status {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border-radius: 20px;
   font-size: 11px;
   font-weight: 600;
   text-transform: capitalize;
 }
 
 .reserved {
-  background: #fff5df;
-  color: #9d6917;
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.ready {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.in_process {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
 }
 
 .picked_up {
-  background: #ebfaee;
-  color: #15703d;
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
 }
 
 .cancelled {
-  background: #fff0ef;
-  color: #a23c31;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.expired {
+  background: rgba(156, 163, 175, 0.15);
+  color: #9ca3af;
 }
 
 .logoutButton {
   width: 100%;
-  background: #c94033;
-  color: white;
-  border: none;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
   padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  font-family: 'General Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  background: rgba(239, 68, 68, 0.25);
 }

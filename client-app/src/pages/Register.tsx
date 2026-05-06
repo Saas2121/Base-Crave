@@ -10,12 +10,12 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState<UserRole>(UserRole.CONSUMER)
+  const [location, setLocation] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await register(name, email, password, role)
+      await register(name, email, password, UserRole.CONSUMER)
       navigate('/')
     } catch (err) {
     }
@@ -23,78 +23,90 @@ export default function Register() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>Register</h1>
-        <p className={styles.subtitle}>Create your CRAVE account</p>
+      <div className={styles.gradientBg} />
+      <div className={styles.content}>
+        <img src="/images/group-1.svg" alt="" className={styles.assetGroup} />
+
+        <div className={styles.header}>
+          <h1 className={styles.title}>Create Account</h1>
+          <p className={styles.subtitle}>Join and discover great food deals</p>
+        </div>
 
         {error && <div className={styles.error}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label htmlFor="name">Name</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Account Type</label>
-            <div className={styles.roleSelector}>
-              <button
-                type="button"
-                className={`${styles.roleButton} ${role === UserRole.CONSUMER ? styles.active : ''}`}
-                onClick={() => setRole(UserRole.CONSUMER)}
-              >
-                Consumer
-              </button>
-              <button
-                type="button"
-                className={`${styles.roleButton} ${role === UserRole.STORE_ADMIN ? styles.active : ''}`}
-                onClick={() => setRole(UserRole.STORE_ADMIN)}
-              >
-                Store Admin
-              </button>
+            <label htmlFor="name" className={styles.label}>Name</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon.svg" alt="" className={styles.icon} />
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className={styles.input}
+                required
+              />
             </div>
           </div>
 
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Register'}
-          </button>
-        </form>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>Email</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon3.svg" alt="" className={styles.icon} />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className={styles.input}
+                required
+              />
+            </div>
+          </div>
 
-        <p className={styles.switch}>
-          Already have an account? <Link to="/signin">Sign In</Link>
-        </p>
-        <Link to="/start" className={styles.backLink}>← Back</Link>
+          <div className={styles.field}>
+            <label htmlFor="password" className={styles.label}>Password</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon2.svg" alt="" className={styles.icon} />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a password"
+                className={styles.input}
+                required
+              />
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="location" className={styles.label}>Location</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon.svg" alt="" className={styles.icon} />
+              <input
+                id="location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Your city or area"
+                className={styles.input}
+              />
+            </div>
+            <span className={styles.hint}>We'll use this to show you nearby restaurants</span>
+          </div>
+
+          <button type="submit" className={styles.submitButton} disabled={isLoading}>
+            {isLoading ? 'Creating account...' : 'Create Account'}
+          </button>
+
+          <p className={styles.switch}>
+            Already have an account? <Link to="/signin" className={styles.signInLink}>Sign in</Link>
+          </p>
+        </form>
       </div>
     </div>
   )

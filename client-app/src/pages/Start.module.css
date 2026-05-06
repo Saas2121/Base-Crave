@@ -1,74 +1,155 @@
-.container {
+.page {
+  width: 100%;
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: transparent;
-  padding: 24px;
+  background: #101010;
+  overflow: hidden;
 }
 
-.content {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  padding: 40px 28px;
-  max-width: 430px;
-  width: 100%;
-  box-shadow: var(--soft-shadow);
+.viewport {
+  width: 413px;
+  height: 956px;
+  position: relative;
+  background: #101010;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-.logoContainer {
-  text-align: center;
-  margin-bottom: 40px;
+.gradientBg {
+  width: 442px;
+  height: 632px;
+  position: absolute;
+  left: -1px;
+  top: -27px;
+  background: linear-gradient(217deg, #292929 0%, #101010 100%);
 }
 
-.logo {
-  font-size: 46px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
-  letter-spacing: 0.08em;
+.assetGroup {
+  position: absolute;
+  left: 13px;
+  top: 462px;
+  width: 413px;
+  height: 108px;
+  overflow: hidden;
 }
 
-.subtitle {
-  color: var(--muted);
-  font-size: 16px;
+.ellipseWrap1 {
+  position: absolute;
+  left: 374.24px;
+  top: 363.33px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.emoji1 {
+  position: absolute;
+  left: 381.69px;
+  top: 366.67px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
+  color: #EBE8E1;
+  font-size: 17.58px;
+  font-weight: 700;
 }
 
-.primaryButton {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+.ellipseWrap2 {
+  position: absolute;
+  left: 46px;
+  top: 570px;
 }
 
-.primaryButton:hover {
-  background: var(--primary-strong);
+.emoji2 {
+  position: absolute;
+  left: 56.41px;
+  top: 580.41px;
+  color: #EBE8E1;
+  font-size: 31.71px;
+  font-weight: 700;
 }
 
-.secondaryButton {
-  background: #fff4e8;
-  color: var(--text);
-  border: 1px solid #f2cfb3;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+.ellipseWrap3 {
+  position: absolute;
+  left: 110px;
+  top: 597px;
 }
 
-.secondaryButton:hover {
-  background: #ffe8d2;
+.emoji3 {
+  position: absolute;
+  left: 118.27px;
+  top: 605.27px;
+  color: #EBE8E1;
+  font-size: 25.20px;
+  font-weight: 400;
+}
+
+.ellipseWrap4 {
+  position: absolute;
+  left: 361.78px;
+  top: 429.04px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
+}
+
+.emoji4 {
+  position: absolute;
+  left: 370.46px;
+  top: 432.94px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
+  color: #EBE8E1;
+  font-size: 20.51px;
+  font-weight: 400;
+}
+
+.ellipseWrap5 {
+  position: absolute;
+  left: 288px;
+  top: 367.23px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
+}
+
+.emoji5 {
+  position: absolute;
+  left: 301.42px;
+  top: 373.26px;
+  transform: rotate(-21deg);
+  transform-origin: top left;
+  color: #EBE8E1;
+  font-size: 31.71px;
+  font-weight: 400;
+}
+
+.bottomBar1 {
+  width: 510px;
+  height: 335px;
+  position: absolute;
+  left: -35px;
+  top: 757px;
+  background: #121212;
+  box-shadow: 0px 4px 35.5px rgba(0, 0, 0, 0.02);
+  border-radius: 9999px;
+}
+
+.bottomBar2 {
+  width: 510px;
+  height: 335px;
+  position: absolute;
+  left: -35px;
+  top: 808px;
+  background: #171717;
+  box-shadow: 0px 4px 35.5px rgba(0, 0, 0, 0.02);
+  border-radius: 9999px;
+}
+
+.bottomBar3 {
+  width: 510px;
+  height: 335px;
+  position: absolute;
+  left: -35px;
+  top: 862px;
+  background: #1A1A1A;
+  box-shadow: 0px 4px 35.5px rgba(0, 0, 0, 0.02);
+  border-radius: 9999px;
 }

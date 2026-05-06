@@ -1,112 +1,175 @@
 .container {
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  padding: 24px;
+  position: relative;
+  background: #101010;
+  overflow: hidden;
 }
 
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 32px;
-  max-width: 430px;
-  width: 100%;
-  box-shadow: var(--soft-shadow);
+.gradientBg {
+  width: 442px;
+  height: 653px;
+  position: absolute;
+  left: 0.5px;
+  top: -295px;
+  background: linear-gradient(180deg, #292929 36%, #101010 100%);
+}
+
+.content {
+  position: absolute;
+  top: 157.27px;
+  left: 33.08px;
+  width: 373.8px;
+  height: 643.5px;
+}
+
+.assetGroup {
+  position: absolute;
+  height: 40.84%;
+  width: 66.67%;
+  top: -8.43%;
+  right: 18.32%;
+  bottom: 67.59%;
+  left: 15.02%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.header {
+  position: absolute;
+  top: 190px;
+  left: calc(50% - 200.3px);
+  width: 400.6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .title {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
+  line-height: 36px;
+  margin: 0;
+  width: 100%;
 }
 
 .subtitle {
-  color: var(--muted);
-  margin-bottom: 24px;
+  text-align: center;
+  color: #99A1AF;
+  font-size: 16px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0;
+  width: 100%;
 }
 
 .error {
-  background: #fff1f0;
-  color: #a23c31;
+  position: absolute;
+  top: 250px;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 85, 85, 0.1);
+  color: #ff5555;
   padding: 12px;
   border-radius: 8px;
-  margin-bottom: 16px;
   font-size: 14px;
 }
 
 .form {
+  position: absolute;
+  top: 270px;
+  left: calc(50% - 188px);
+  width: 376px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
-.field label {
+.label {
+  color: #99A1AF;
   font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
+  font-family: 'General Sans', sans-serif;
+  font-weight: 400;
+  line-height: 20px;
 }
 
-.field input {
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+.inputWrapper {
+  width: 358px;
+  height: 58px;
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+}
+
+.input {
+  width: 100%;
+  height: 50px;
+  padding: 16px 16px 16px 48px;
+  border-radius: 16px;
+  background: #1A1A1A;
+  outline: 1px solid #2A2A2A;
+  color: rgba(255, 255, 255, 0.3);
   font-size: 16px;
-  transition: border-color 0.2s;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 400;
+  outline-offset: -1px;
 }
 
-.field input:focus {
-  outline: none;
-  border-color: var(--primary);
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
-.roleSelector {
-  display: flex;
-  gap: 8px;
+.input:focus {
+  outline-color: #F95519;
 }
 
-.roleButton {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff7ef;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.roleButton.active {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: white;
+.hint {
+  color: #6A7282;
+  font-size: 12px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 400;
+  line-height: 16px;
 }
 
 .submitButton {
-  background: var(--primary);
-  color: white;
+  width: 100%;
+  height: 56px;
+  background: #FF5722;
+  border-radius: 16px;
   border: none;
-  padding: 14px;
-  border-radius: 8px;
+  color: white;
   font-size: 16px;
+  font-family: 'General Sans', sans-serif;
   font-weight: 600;
+  line-height: 24px;
   cursor: pointer;
   transition: background 0.2s;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .submitButton:hover:not(:disabled) {
-  background: var(--primary-strong);
+  background: #e64a19;
 }
 
 .submitButton:disabled {
@@ -116,22 +179,19 @@
 
 .switch {
   text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 14px;
+  color: #99A1AF;
+  font-size: 16px;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 16px 0 0;
 }
 
-.switch a {
-  color: var(--primary-strong);
+.signInLink {
+  color: #F95519;
   text-decoration: none;
-  font-weight: 600;
 }
 
-.backLink {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 14px;
+.signInLink:hover {
+  text-decoration: underline;
 }

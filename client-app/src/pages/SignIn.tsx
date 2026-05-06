@@ -20,36 +20,51 @@ export default function SignIn() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>Sign In</h1>
-        <p className={styles.subtitle}>Welcome back to CRAVE</p>
+      <div className={styles.gradientBg} />
+      <div className={styles.content}>
+        <img src="/images/group-1.svg" alt="" className={styles.assetGroup} />
+
+        <div className={styles.header}>
+          <h1 className={styles.title}>Welcome Back</h1>
+          <p className={styles.subtitle}>Sign in to discover great deals</p>
+        </div>
 
         {error && <div className={styles.error}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
+            <label htmlFor="email" className={styles.label}>Email</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon3.svg" alt="" className={styles.icon} />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
+          <div className={styles.field2}>
+            <label htmlFor="password" className={styles.label}>Password</label>
+            <div className={styles.inputWrapper}>
+              <img src="/images/icon2.svg" alt="" className={styles.icon} />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
+
+          <Link to="/forgot-password" className={styles.forgotPassword}>Forgot password?</Link>
 
           <button type="submit" className={styles.submitButton} disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
@@ -57,9 +72,8 @@ export default function SignIn() {
         </form>
 
         <p className={styles.switch}>
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register" className={styles.createAccount}>Create account</Link>
         </p>
-        <Link to="/start" className={styles.backLink}>← Back</Link>
       </div>
     </div>
   )

@@ -43,6 +43,13 @@ export const authAPI = {
   login: (data: LoginData) => api.post<AuthResponse>('/auth/login', data),
   register: (data: RegisterData) => api.post<AuthResponse>('/auth/register', data),
   me: () => api.get('/auth/me'),
+  uploadProfileImage: (file: File) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    return api.post('/auth/upload-profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
 }
 
 export interface Store {
@@ -70,6 +77,7 @@ export interface Pack {
   pickup_end: string
   total_quantity: number
   remaining_quantity: number
+  image_url?: string
   status: string
   created_at: string
   stores?: Store
@@ -98,6 +106,13 @@ export const packsAPI = {
   create: (data: Partial<Pack>) => api.post<Pack>('/packs', data),
   update: (id: string, data: Partial<Pack>) => api.put<Pack>(`/packs/${id}`, data),
   delete: (id: string) => api.delete(`/packs/${id}`),
+  uploadImage: (id: string, file: File) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    return api.post(`/packs/${id}/upload-image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
 }
 
 export const reservationsAPI = {

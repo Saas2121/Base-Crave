@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { packsAPI, reservationsAPI } from '../api/client'
 import { PackType } from '../types'
@@ -17,13 +17,15 @@ export default function DashboardFixedProduct() {
   const [pickupEnd, setPickupEnd] = useState('20:00')
   const [showTimePicker, setShowTimePicker] = useState(false)
   const [timePickerTarget, setTimePickerTarget] = useState<'start' | 'end' | null>(null)
-  const [imageName, setImageName] = useState('')
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
   const [activePacks, setActivePacks] = useState(0)
   const [soldToday, setSoldToday] = useState(0)
   const [revenue, setRevenue] = useState(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadStats = useCallback(async () => {
     try {
@@ -73,6 +75,14 @@ export default function DashboardFixedProduct() {
     return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSuccess('')
@@ -91,7 +101,7 @@ export default function DashboardFixedProduct() {
       end.setHours(endH, endM, 0, 0)
       end.setDate(end.getDate() + 1)
 
-      await packsAPI.create({
+      const { data: pack } = await packsAPI.create({
         title,
         description,
         pack_type: PackType.FIXED,
@@ -101,13 +111,23 @@ export default function DashboardFixedProduct() {
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
       })
+
+      if (selectedImage && pack?.id) {
+        try {
+          await packsAPI.uploadImage(pack.id, selectedImage)
+        } catch (imgErr) {
+          console.error('Error uploading image:', imgErr)
+        }
+      }
+
       setSuccess('Se creo con exito')
       setTitle('')
       setDescription('')
       setPrice('')
       setOriginalPrice('')
       setQuantity('1')
-      setImageName('')
+      setSelectedImage(null)
+      setImagePreview(null)
       setPickupStart('13:00')
       setPickupEnd('20:00')
       await loadStats()
@@ -166,11 +186,15 @@ export default function DashboardFixedProduct() {
           <div className={styles.label}>
             <div className={styles.packImage}>Pack Image</div>
           </div>
-          <label className={styles.container12}>
-            <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
-            <input type="file" accept="image/*" onChange={(e) => setImageName(e.target.files?.[0]?.name || '')} style={{ display: 'none' }} />
+          <label className={styles.container12} onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+            {imagePreview ? (
+              <img className={styles.unionIcon} src={imagePreview} alt="Preview" style={{ objectFit: 'cover' }} />
+            ) : (
+              <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
+            )}
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
           </label>
-          {imageName && <p style={{ position: 'absolute', top: '717px', left: '39px', color: '#fff', fontSize: '12px', zIndex: 5 }}>{imageName}</p>}
+          {selectedImage && <p style={{ position: 'absolute', top: '717px', left: '39px', color: '#fff', fontSize: '12px', zIndex: 5 }}>{selectedImage.name}</p>}
         </div>
         <div className={styles.container13}>
           <div className={styles.label2}>

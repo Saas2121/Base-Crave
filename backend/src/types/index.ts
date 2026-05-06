@@ -28,6 +28,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  profile_image?: string;
   created_at: string;
 }
 
@@ -55,6 +56,7 @@ export interface Pack {
   pickup_end: string;
   total_quantity: number;
   remaining_quantity: number;
+  image_url?: string;
   status: PackStatus;
   created_at: string;
 }

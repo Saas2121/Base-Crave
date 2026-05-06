@@ -1,23 +1,24 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { storesAPI, packsAPI, reservationsAPI } from '../api/client'
+import { storesAPI, packsAPI, reservationsAPI, authAPI } from '../api/client'
 import { Store } from '../types'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, setUser, logout } = useAuthStore()
   const [store, setStore] = useState<Store | null>(null)
   const [totalPacks, setTotalPacks] = useState(0)
   const [saved, setSaved] = useState(0)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [user?.profile_image])
 
   const loadData = async () => {
     try {
@@ -55,11 +56,25 @@ export default function Profile() {
     fileInputRef.current?.click()
   }
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const url = URL.createObjectURL(file)
-      setAvatarUrl(url)
+      const previewUrl = URL.createObjectURL(file)
+      setAvatarUrl(previewUrl)
+      
+      setUploading(true)
+      try {
+        const { data } = await authAPI.uploadProfileImage(file)
+        if (data.user) {
+          setUser(data.user)
+          setAvatarUrl(data.user.profile_image)
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error)
+        alert('Failed to upload image. Please try again.')
+      } finally {
+        setUploading(false)
+      }
     }
   }
 
@@ -79,9 +94,15 @@ export default function Profile() {
       <div className={styles.heading1} />
       <div className={styles.container}>
         <div className={styles.container2}>
-          <div className={styles.container3} onClick={handleAvatarClick}>
+          <div className={styles.container3} onClick={!uploading ? handleAvatarClick : undefined}>
             <div className={styles.image78Parent}>
-              {avatarUrl ? (
+              {uploading ? (
+                <div className={styles.avatarPlaceholder}>
+                  <div>Uploading...</div>
+                </div>
+              ) : user?.profile_image ? (
+                <img className={styles.image79Icon} src={user.profile_image} alt="Store avatar" />
+              ) : avatarUrl ? (
                 <img className={styles.image79Icon} src={avatarUrl} alt="Store avatar" />
               ) : (
                 <div className={styles.avatarPlaceholder}>

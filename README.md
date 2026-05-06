@@ -38,6 +38,7 @@ CREATE TABLE users (
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('consumer', 'store_admin')),
+  profile_image TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -67,6 +68,7 @@ CREATE TABLE packs (
   pickup_end TIMESTAMP NOT NULL,
   total_quantity INTEGER NOT NULL,
   remaining_quantity INTEGER NOT NULL,
+  image_url TEXT,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'sold_out', 'expired')),
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -174,6 +176,59 @@ npm run dev
 - **Frontend:** React 19, TypeScript, Vite, Zustand
 - **Database:** PostgreSQL (Supabase)
 - **Authentication:** JWT tokens
+- **File Upload:** Multer (backend)
+
+## Image Upload
+
+### Database Fields
+- `users.profile_image` (TEXT) - Stores the URL of the user's profile image
+- `packs.image_url` (TEXT) - Stores the URL of the pack's image
+
+### API Endpoints
+
+**Upload Profile Image:**
+```http
+POST /api/auth/upload-profile-image
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+
+Body:
+  image: <file>
+
+Response:
+{
+  "user": { "id": "...", "name": "...", "email": "...", "profile_image": "http://localhost:3000/uploads/123456789-image.jpg" },
+  "imageUrl": "http://localhost:3000/uploads/123456789-image.jpg"
+}
+```
+
+**Upload Pack Image:**
+```http
+POST /api/packs/:id/upload-image
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+
+Body:
+  image: <file>
+
+Response:
+{
+  "pack": { "id": "...", "title": "...", "image_url": "http://localhost:3000/uploads/123456789-image.jpg" },
+  "imageUrl": "http://localhost:3000/uploads/123456789-image.jpg"
+}
+```
+
+### Image Storage
+- Images are stored locally in `backend/uploads/` directory
+- Images are served statically via `/uploads/` endpoint
+- Max file size: 5MB
+- Allowed types: JPEG, JPG, PNG, GIF, WebP
+
+### Frontend Usage
+- Profile page: Click on avatar to upload profile image
+- Pack creation: Select image when creating Fixed or Surprise packs
+- Images are previewed immediately before upload
+- After upload, the backend returns the public URL which is stored in the database
 
 ## Troubleshooting
 

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { supabase } from '../config/supabase';
 import { UserRole, AuthRequest } from '../types';
+import { upload } from '../middleware/upload';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -107,7 +108,7 @@ router.get('/me', (req: AuthRequest, res: Response) => {
 
       const { data: user, error } = await supabase
         .from('users')
-        .select('id, name, email, role, created_at')
+        .select('id, name, email, role, profile_image, created_at')
         .eq('id', req.user.id)
         .single();
 
@@ -120,6 +121,31 @@ router.get('/me', (req: AuthRequest, res: Response) => {
       res.status(500).json({ error: error.message });
     }
   })();
+});
+
+router.post('/upload-profile-image', upload.single('image'), authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+    const { data: user, error } = await supabase
+      .from('users')
+      .update({ profile_image: imageUrl })
+      .eq('id', req.user!.id)
+      .select('id, name, email, role, profile_image, created_at')
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json({ user, imageUrl });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export default router;

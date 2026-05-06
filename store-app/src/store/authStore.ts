@@ -13,6 +13,7 @@ interface AuthState {
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>
   logout: () => void
   checkAuth: () => Promise<void>
+  setUser: (user: (User & { role: UserRole }) | null) => void
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -68,6 +69,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       set({ user: null, token: null, isAuthenticated: false, isLoading: false })
+    }
+  },
+
+  setUser: (user) => {
+    set({ user, isAuthenticated: !!user })
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user))
     }
   },
 }))

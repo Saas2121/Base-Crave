@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { supabase } from '../config/supabase';
 import { UserRole, AuthRequest } from '../types';
+import { authenticate } from '../middleware/auth';
 import { upload } from '../middleware/upload';
 
 const router = Router();

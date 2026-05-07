@@ -266,10 +266,22 @@ Response includes:
 {
   "id": "...",
   "name": "...",
+  "address": "...",
+  "latitude": 3.4516,
+  "longitude": -76.532,
   "users": { "id": "...", "name": "...", "profile_image": "..." },
   "packs": [{ "id": "...", "image_url": "...", ... }]
 }
 ```
+
+### Geolocation Features
+- **Stores table** includes `latitude`, `longitude`, and `address` fields
+- **MapPicker component** (store-app) uses Leaflet with OpenStreetMap for interactive location selection
+- **Reverse geocoding** via Nominatim API converts coordinates to readable addresses (neighborhood, district, city)
+- **Registration flow**: Click "Location" field → opens interactive map → select location → auto-fills address
+- **Profile page**: Displays converted address next to location icon
+- **Persistence**: Coordinates and readable address saved to database on store creation/update
+- **Update store location**: `PUT /api/stores/:id` (requires store_admin)
 
 ### Image Storage
 - Images are stored locally in `backend/uploads/` directory

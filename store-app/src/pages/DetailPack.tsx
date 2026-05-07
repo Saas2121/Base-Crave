@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { packsAPI } from '../api/client'
 import { Pack } from '../types'
-import styles from './DetailPack.module.css'
+import styles from './GreetingUser.module.css'
 
 const DetailPack = () => {
   const { id } = useParams<{ id: string }>()
@@ -115,14 +115,14 @@ const DetailPack = () => {
                 <div className={styles.container8} style={{ width: `${availabilityPercentage}%` }} />
               </div>
             </div>
-            <div className={styles.button4} onClick={handleDelete}>
-              <div className={styles.text3}>
-                <div className={styles.deletePack}>Delete Pack</div>
-              </div>
-            </div>
             <div className={styles.button3} onClick={handleSave}>
               <div className={styles.text2}>
                 <div className={styles.save}>{saving ? 'Saving...' : 'Save'}</div>
+              </div>
+            </div>
+            <div className={styles.button4} onClick={handleDelete}>
+              <div className={styles.text3}>
+                <div className={styles.deletePack}>Delete Pack</div>
               </div>
             </div>
           </div>

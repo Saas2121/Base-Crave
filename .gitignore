@@ -1,2 +1,7 @@
 
 uploads/
+node_modules/
+client-app/dist/
+store-app/dist/
+.DS_Store
+*.tsbuildinfo

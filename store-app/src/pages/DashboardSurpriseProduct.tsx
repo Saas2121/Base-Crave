@@ -303,8 +303,11 @@ export default function DashboardSurpriseProduct() {
         <div className={styles.label5}>
           <div className={styles.packType}>Pickup Time</div>
         </div>
+        <div className={styles.label5}>
+          <div className={styles.packType}>Pickup Time</div>
+        </div>
         <div className={styles.containerContainer}>
-          <div className={styles.container25}>
+          <div className={styles.containerTimeWrapper}>
             <div className={styles.timePicker} onClick={() => openTimePicker('start')} style={{ cursor: 'pointer' }}>
               <div className={styles.pm}>{formatTimeDisplay(pickupStart)}</div>
               <img className={styles.timePickerChild} src="/images/clock.svg" alt="" />
@@ -321,9 +324,15 @@ export default function DashboardSurpriseProduct() {
           <button type="submit" disabled={creating} style={{ position: 'absolute', top: '16.04px', left: 'calc(50% - 46.13px)', lineHeight: '24.05px', fontWeight: 600, background: 'none', border: 'none', color: '#fff', cursor: 'inherit', padding: 0, fontSize: '16.04px' }}>{creating ? 'Creating...' : 'Create Pack'}</button>
         </div>
         </form>
-        <div style={{ height: '50px' }} />
+        {showTimePicker && (
+          <TimePickerModal
+            value={timePickerTarget === 'start' ? pickupStart : pickupEnd}
+            onChange={handleTimeChange}
+            onClose={() => setShowTimePicker(false)}
+          />
+        )}
+        <div style={{ height: '30px' }} />
         <BottomNav active="dashboard" />
-      </div>
     </div>
   )
 }

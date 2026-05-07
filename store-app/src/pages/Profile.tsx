@@ -212,7 +212,7 @@ export default function Profile() {
         />
       )}
 
-      <div style={{ height: '50px' }} />
+      <div style={{ height: '30px' }} />
       <BottomNav active="profile" />
     </div>
   )

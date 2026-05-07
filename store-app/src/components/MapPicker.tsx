@@ -74,8 +74,31 @@ export default function MapPicker({ initialLat = 3.4516, initialLng = -76.532, o
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
       )
       const data = await response.json()
-      const addr = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`
-      setAddress(addr)
+      
+      let shortAddr = ''
+      if (data.address) {
+        if (data.address.neighbourhood) {
+          shortAddr = data.address.neighbourhood
+        } else if (data.address.suburb) {
+          shortAddr = data.address.suburb
+        } else if (data.address.city_district) {
+          shortAddr = data.address.city_district
+        } else if (data.address.village) {
+          shortAddr = data.address.village
+        } else if (data.address.town) {
+          shortAddr = data.address.town
+        } else if (data.address.city) {
+          shortAddr = data.address.city
+        } else if (data.address.road) {
+          shortAddr = data.address.road
+        }
+      }
+      
+      if (!shortAddr) {
+        shortAddr = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`
+      }
+      
+      setAddress(shortAddr)
     } catch {
       setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`)
     } finally {

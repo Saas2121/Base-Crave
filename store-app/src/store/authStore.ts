@@ -14,6 +14,7 @@ interface AuthState {
   logout: () => void
   checkAuth: () => Promise<void>
   setUser: (user: (User & { role: UserRole }) | null) => void
+  clearError: () => void
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -77,5 +78,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (user) {
       localStorage.setItem('user', JSON.stringify(user))
     }
+  },
+
+  clearError: () => {
+    set({ error: null })
   },
 }))

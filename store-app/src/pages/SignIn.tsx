@@ -5,7 +5,7 @@ import styles from './SignIn.module.css'
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const { login, isLoading } = useAuthStore()
+  const { login, isLoading, error } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -72,6 +72,7 @@ export default function SignIn() {
           <button type="submit" className={styles.button2} disabled={isLoading}>
             <div className={styles.signIn2}>{isLoading ? 'Signing in...' : 'Sign In'}</div>
           </button>
+          {error && <div style={{ color: '#e94549', padding: '10px', textAlign: 'center' }}>{error}</div>}
           <div className={styles.container8} />
         </form>
         <Link to="/register" className={styles.dontHaveAContainer}>

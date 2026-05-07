@@ -16,7 +16,6 @@ export default function MapPicker({ initialLat = 3.4516, initialLng = -76.532, o
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Dynamically load Leaflet CSS and JS
     if (!(window as any).L) {
       const link = document.createElement('link')
       link.rel = 'stylesheet'
@@ -25,7 +24,7 @@ export default function MapPicker({ initialLat = 3.4516, initialLng = -76.532, o
 
       const script = document.createElement('script')
       script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-      script.onload = initMap
+      script.onload = () => initMap()
       document.head.appendChild(script)
     } else {
       initMap()
@@ -34,6 +33,12 @@ export default function MapPicker({ initialLat = 3.4516, initialLng = -76.532, o
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+        markerRef.current = null
+      }
+      const container = mapRef.current
+      if (container) {
+        container.innerHTML = ''
       }
     }
   }, [])

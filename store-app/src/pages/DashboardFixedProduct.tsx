@@ -191,14 +191,19 @@ export default function DashboardFixedProduct() {
           <div className={styles.label}>
             <div className={styles.packImage}>Pack Image</div>
           </div>
-          <label className={styles.container12} onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+          <div className={styles.container12} onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
             {imagePreview ? (
-              <img className={styles.unionIcon} src={imagePreview} alt="Preview" style={{ objectFit: 'cover' }} />
+              <img className={styles.unionIcon} src={imagePreview} alt="Preview" />
             ) : (
-              <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
+              <div className={styles.placeholderContent}>
+                <img src="/images/image-placeholder.svg" alt="" style={{ width: '48px', height: '48px', opacity: 0.5 }} />
+                <p style={{ color: '#99a1af', fontSize: '14px', marginTop: '12px', fontFamily: 'General Sans' }}>
+                  Click to upload pack image
+                </p>
+              </div>
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
-          </label>
+          </div>
         </div>
         <div className={styles.container13}>
           <div className={styles.label2}>

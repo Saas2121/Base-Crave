@@ -298,6 +298,7 @@ export default function DashboardFixedProduct() {
           onClose={() => setShowTimePicker(false)}
         />
       )}
+      <div style={{ height: '50px' }} />
       <BottomNav active="dashboard" />
     </div>
   )

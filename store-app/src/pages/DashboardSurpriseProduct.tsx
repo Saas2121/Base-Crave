@@ -321,7 +321,7 @@ export default function DashboardSurpriseProduct() {
           <button type="submit" disabled={creating} style={{ position: 'absolute', top: '16.04px', left: 'calc(50% - 46.13px)', lineHeight: '24.05px', fontWeight: 600, background: 'none', border: 'none', color: '#fff', cursor: 'inherit', padding: 0, fontSize: '16.04px' }}>{creating ? 'Creating...' : 'Create Pack'}</button>
         </div>
         </form>
-        <div style={{ height: '80px' }} />
+        <div style={{ height: '50px' }} />
         <BottomNav active="dashboard" />
       </div>
     </div>

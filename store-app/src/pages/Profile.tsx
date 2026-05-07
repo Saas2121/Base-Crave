@@ -201,7 +201,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <div style={{ height: '40px' }} />
       <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
        
       {showMap && (
@@ -213,7 +212,7 @@ export default function Profile() {
         />
       )}
 
-      <div style={{ height: '60px' }} />
+      <div style={{ height: '50px' }} />
       <BottomNav active="profile" />
     </div>
   )

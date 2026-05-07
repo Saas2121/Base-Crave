@@ -6,18 +6,6 @@ import styles from './DashboardSurpriseProduct.module.css'
 import BottomNav from '../components/BottomNav'
 import TimePickerModal from '../components/TimePickerModal'
 
-function dataURLtoFile(dataurl: string, filename: string): File {
-  const arr = dataurl.split(',')
-  const mime = arr[0].match(/:(.*?);/)![1]
-  const bstr = atob(arr[1])
-  let n = bstr.length
-  const u8arr = new Uint8Array(n)
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n)
-  }
-  return new File([u8arr], filename, { type: mime })
-}
-
 export default function DashboardSurpriseProduct() {
   const navigate = useNavigate()
   const [price, setPrice] = useState('')
@@ -26,7 +14,8 @@ export default function DashboardSurpriseProduct() {
   const [pickupEnd, setPickupEnd] = useState('20:00')
   const [showTimePicker, setShowTimePicker] = useState(false)
   const [timePickerTarget, setTimePickerTarget] = useState<'start' | 'end' | null>(null)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
@@ -86,11 +75,8 @@ export default function DashboardSurpriseProduct() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+      setSelectedImage(file)
+      setImagePreview(URL.createObjectURL(file))
     }
   }
 
@@ -122,8 +108,7 @@ export default function DashboardSurpriseProduct() {
 
       if (selectedImage && pack?.id) {
         try {
-          const file = dataURLtoFile(selectedImage, 'pack-image.png')
-          const { data: updatedPack } = await packsAPI.uploadImage(pack.id, file)
+          const { data: updatedPack } = await packsAPI.uploadImage(pack.id, selectedImage)
           console.log('Pack image uploaded:', updatedPack)
         } catch (imgErr) {
           console.error('Error uploading image:', imgErr)
@@ -134,6 +119,7 @@ export default function DashboardSurpriseProduct() {
       setPrice('')
       setQuantity('1')
       setSelectedImage(null)
+      setImagePreview(null)
       setPickupStart('13:00')
       setPickupEnd('20:00')
       await loadStats()
@@ -203,33 +189,17 @@ export default function DashboardSurpriseProduct() {
               onClick={() => fileInputRef.current?.click()}
               style={{ cursor: 'pointer' }}
             >
-              {selectedImage ? (
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  <img 
-                    src={selectedImage} 
-                    alt="Preview"
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover',
-                      borderRadius: '17.23px'
-                    }} 
-                  />
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'rgba(0,0,0,0.7)',
-                    color: '#fff',
-                    padding: '6px 16px',
-                    borderRadius: '20px',
-                    fontSize: '13px',
-                    fontFamily: 'General Sans'
-                  }}>
-                    Click to change image
-                  </div>
-                </div>
+              {imagePreview ? (
+                <img 
+                  src={imagePreview} 
+                  alt="Preview"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    borderRadius: '17.23px'
+                  }} 
+                />
               ) : (
                 <div className={styles.placeholderContent}>
                   <img src="/images/image-placeholder.svg" alt="" style={{ width: '48px', height: '48px', opacity: 0.5 }} />
@@ -303,11 +273,8 @@ export default function DashboardSurpriseProduct() {
         <div className={styles.label5}>
           <div className={styles.packType}>Pickup Time</div>
         </div>
-        <div className={styles.label5}>
-          <div className={styles.packType}>Pickup Time</div>
-        </div>
         <div className={styles.containerContainer}>
-          <div className={styles.containerTimeWrapper}>
+          <div className={styles.container25}>
             <div className={styles.timePicker} onClick={() => openTimePicker('start')} style={{ cursor: 'pointer' }}>
               <div className={styles.pm}>{formatTimeDisplay(pickupStart)}</div>
               <img className={styles.timePickerChild} src="/images/clock.svg" alt="" />

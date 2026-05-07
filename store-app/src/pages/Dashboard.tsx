@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { packsAPI, reservationsAPI } from '../api/client'
 import { PackType } from '../types'
 import styles from './Dashboard.module.css'
@@ -18,13 +18,15 @@ export default function Dashboard() {
   const [pickupEnd, setPickupEnd] = useState('20:00')
   const [showTimePicker, setShowTimePicker] = useState(false)
   const [timePickerTarget, setTimePickerTarget] = useState<'start' | 'end' | null>(null)
-  const [imageName, setImageName] = useState('')
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
   const [activePacks, setActivePacks] = useState(0)
   const [soldToday, setSoldToday] = useState(0)
   const [revenue, setRevenue] = useState(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadStats = useCallback(async () => {
     try {
@@ -74,6 +76,14 @@ export default function Dashboard() {
     return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSuccess('')
@@ -92,7 +102,7 @@ export default function Dashboard() {
       end.setHours(endH, endM, 0, 0)
       end.setDate(end.getDate() + 1)
 
-      await packsAPI.create({
+      const { data: pack } = await packsAPI.create({
         title: packType === 'surprise' ? 'Surprise pack' : title,
         description: packType === 'surprise' ? null : description,
         pack_type: packType === 'surprise' ? PackType.SURPRISE : PackType.FIXED,
@@ -102,13 +112,24 @@ export default function Dashboard() {
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
       })
+
+      if (selectedImage && pack?.id) {
+        try {
+          const { data: updatedPack } = await packsAPI.uploadImage(pack.id, selectedImage)
+          console.log('Pack image uploaded:', updatedPack)
+        } catch (imgErr) {
+          console.error('Error uploading image:', imgErr)
+        }
+      }
+
       setSuccess('Se creo con exito')
       setTitle('')
       setDescription('')
       setPrice('')
       setOriginalPrice('')
       setQuantity('1')
-      setImageName('')
+      setSelectedImage(null)
+      setImagePreview(null)
       setPickupStart('13:00')
       setPickupEnd('20:00')
       await loadStats()
@@ -167,11 +188,14 @@ export default function Dashboard() {
           <div className={styles.label}>
             <div className={styles.packImage}>Pack Image</div>
           </div>
-          <label className={styles.container12}>
-            <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
-            <input type="file" accept="image/*" onChange={(e) => setImageName(e.target.files?.[0]?.name || '')} style={{ display: 'none' }} />
+          <label className={styles.container12} onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+            {imagePreview ? (
+              <img className={styles.unionIcon} src={imagePreview} alt="Preview" style={{ objectFit: 'cover' }} />
+            ) : (
+              <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
+            )}
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
           </label>
-          {imageName && <p style={{ position: 'absolute', top: '565px', left: '39px', color: '#fff', fontSize: '12px', zIndex: 5 }}>{imageName}</p>}
         </div>
         <div className={styles.container13}>
           <div className={styles.label2}>
@@ -266,6 +290,7 @@ export default function Dashboard() {
           onClose={() => setShowTimePicker(false)}
         />
       )}
+      <div style={{ height: '30px' }} />
       <BottomNav active="dashboard" />
     </div>
   )

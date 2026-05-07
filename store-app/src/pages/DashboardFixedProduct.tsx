@@ -199,7 +199,6 @@ export default function DashboardFixedProduct() {
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
           </label>
-          {selectedImage && <p style={{ position: 'absolute', top: '717px', left: '39px', color: '#fff', fontSize: '12px', zIndex: 5 }}>{selectedImage.name}</p>}
         </div>
         <div className={styles.container13}>
           <div className={styles.label2}>

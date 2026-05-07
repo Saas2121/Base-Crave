@@ -114,7 +114,8 @@ export default function DashboardFixedProduct() {
 
       if (selectedImage && pack?.id) {
         try {
-          await packsAPI.uploadImage(pack.id, selectedImage)
+          const { data: updatedPack } = await packsAPI.uploadImage(pack.id, selectedImage)
+          console.log('Pack image uploaded:', updatedPack)
         } catch (imgErr) {
           console.error('Error uploading image:', imgErr)
         }
@@ -131,6 +132,10 @@ export default function DashboardFixedProduct() {
       setPickupStart('13:00')
       setPickupEnd('20:00')
       await loadStats()
+      
+      setTimeout(() => {
+        navigate('/packs')
+      }, 1500)
     } catch (err: any) {
       setError(err.response?.data?.error || 'No se pudo crear el pack')
     } finally {

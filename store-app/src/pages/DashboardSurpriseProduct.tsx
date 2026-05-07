@@ -6,17 +6,27 @@ import styles from './DashboardSurpriseProduct.module.css'
 import BottomNav from '../components/BottomNav'
 import TimePickerModal from '../components/TimePickerModal'
 
+function dataURLtoFile(dataurl: string, filename: string): File {
+  const arr = dataurl.split(',')
+  const mime = arr[0].match(/:(.*?);/)![1]
+  const bstr = atob(arr[1])
+  let n = bstr.length
+  const u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new File([u8arr], filename, { type: mime })
+}
+
 export default function DashboardSurpriseProduct() {
   const navigate = useNavigate()
   const [price, setPrice] = useState('')
-  const [originalPrice, setOriginalPrice] = useState('')
   const [quantity, setQuantity] = useState('1')
   const [pickupStart, setPickupStart] = useState('13:00')
   const [pickupEnd, setPickupEnd] = useState('20:00')
   const [showTimePicker, setShowTimePicker] = useState(false)
   const [timePickerTarget, setTimePickerTarget] = useState<'start' | 'end' | null>(null)
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
@@ -76,8 +86,11 @@ export default function DashboardSurpriseProduct() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setSelectedImage(file)
-      setImagePreview(URL.createObjectURL(file))
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setSelectedImage(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -100,11 +113,8 @@ export default function DashboardSurpriseProduct() {
       end.setDate(end.getDate() + 1)
 
       const { data: pack } = await packsAPI.create({
-        title: 'Surprise pack',
-        description: null,
         pack_type: PackType.SURPRISE,
         price: Number(price),
-        original_price: originalPrice ? Number(originalPrice) : null,
         total_quantity: Number(quantity),
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
@@ -112,7 +122,9 @@ export default function DashboardSurpriseProduct() {
 
       if (selectedImage && pack?.id) {
         try {
-          await packsAPI.uploadImage(pack.id, selectedImage)
+          const file = dataURLtoFile(selectedImage, 'pack-image.png')
+          const { data: updatedPack } = await packsAPI.uploadImage(pack.id, file)
+          console.log('Pack image uploaded:', updatedPack)
         } catch (imgErr) {
           console.error('Error uploading image:', imgErr)
         }
@@ -120,20 +132,22 @@ export default function DashboardSurpriseProduct() {
 
       setSuccess('Se creo con exito')
       setPrice('')
-      setOriginalPrice('')
       setQuantity('1')
       setSelectedImage(null)
-      setImagePreview(null)
       setPickupStart('13:00')
       setPickupEnd('20:00')
       await loadStats()
+      
+      setTimeout(() => {
+        navigate('/packs')
+      }, 1500)
     } catch (err: any) {
       setError(err.response?.data?.error || 'No se pudo crear el pack')
     } finally {
       setCreating(false)
     }
   }
-
+  
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardChild} />
@@ -180,20 +194,59 @@ export default function DashboardSurpriseProduct() {
       <div className={styles.createNewPack}>📦 Create New Pack</div>
       <div className={styles.dashboardInner} />
       <form onSubmit={handleSubmit}>
-        <div className={styles.container11}>
-          <div className={styles.label}>
-            <div className={styles.packImage}>Pack Image</div>
+          <div className={styles.container11}>
+            <div className={styles.label}>
+              <div className={styles.packImage}>Pack Image</div>
+            </div>
+            <div 
+              className={styles.container12} 
+              onClick={() => fileInputRef.current?.click()}
+              style={{ cursor: 'pointer' }}
+            >
+              {selectedImage ? (
+                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                  <img 
+                    src={selectedImage} 
+                    alt="Preview"
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover',
+                      borderRadius: '17.23px'
+                    }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(0,0,0,0.7)',
+                    color: '#fff',
+                    padding: '6px 16px',
+                    borderRadius: '20px',
+                    fontSize: '13px',
+                    fontFamily: 'General Sans'
+                  }}>
+                    Click to change image
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.placeholderContent}>
+                  <img src="/images/image-placeholder.svg" alt="" style={{ width: '48px', height: '48px', opacity: 0.5 }} />
+                  <p style={{ color: '#99a1af', fontSize: '14px', marginTop: '12px', fontFamily: 'General Sans' }}>
+                    Click to upload pack image
+                  </p>
+                </div>
+              )}
+              <input 
+                ref={fileInputRef} 
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageChange} 
+                style={{ display: 'none' }} 
+              />
+            </div>
           </div>
-          <label className={styles.container12} onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
-            {imagePreview ? (
-              <img className={styles.unionIcon} src={imagePreview} alt="Preview" style={{ objectFit: 'cover' }} />
-            ) : (
-              <img className={styles.unionIcon} src="/images/image-placeholder.svg" alt="" />
-            )}
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
-          </label>
-          {selectedImage && <p style={{ position: 'absolute', top: '740px', left: '39px', color: '#fff', fontSize: '12px', zIndex: 5 }}>{selectedImage.name}</p>}
-        </div>
         <div className={styles.container13}>
           <div className={styles.label2}>
             <div className={styles.packType}>Pack Type</div>
@@ -267,15 +320,10 @@ export default function DashboardSurpriseProduct() {
         <div className={styles.button5} style={{ cursor: creating ? 'not-allowed' : 'pointer', opacity: creating ? 0.6 : 1 }}>
           <button type="submit" disabled={creating} style={{ position: 'absolute', top: '16.04px', left: 'calc(50% - 46.13px)', lineHeight: '24.05px', fontWeight: 600, background: 'none', border: 'none', color: '#fff', cursor: 'inherit', padding: 0, fontSize: '16.04px' }}>{creating ? 'Creating...' : 'Create Pack'}</button>
         </div>
-      </form>
-      {showTimePicker && (
-        <TimePickerModal
-          value={timePickerTarget === 'start' ? pickupStart : pickupEnd}
-          onChange={handleTimeChange}
-          onClose={() => setShowTimePicker(false)}
-        />
-      )}
-      <BottomNav active="dashboard" />
+        </form>
+        <div style={{ height: '80px' }} />
+        <BottomNav active="dashboard" />
+      </div>
     </div>
   )
 }

@@ -12,6 +12,8 @@ import OrderCompleted from './pages/OrderCompleted'
 import ScanQRCode from './pages/ScanQRCode'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
+import OrdersInProgress from './pages/OrdersInProgress'
+import OrdersReady from './pages/OrdersReady'
 
 interface PrivateRouteProps {
   children: React.ReactNode
@@ -80,6 +82,22 @@ function App() {
         element={
           <PrivateRoute>
             <Orders />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/orders/in-progress"
+        element={
+          <PrivateRoute>
+            <OrdersInProgress />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/orders/ready"
+        element={
+          <PrivateRoute>
+            <OrdersReady />
           </PrivateRoute>
         }
       />

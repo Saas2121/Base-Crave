@@ -256,6 +256,21 @@ Response:
 }
 ```
 
+**Get Stores (includes owner profile_image and packs):**
+```http
+GET /api/stores
+GET /api/stores/:id
+GET /api/stores/my/store (requires store_admin auth)
+
+Response includes:
+{
+  "id": "...",
+  "name": "...",
+  "users": { "id": "...", "name": "...", "profile_image": "..." },
+  "packs": [{ "id": "...", "image_url": "...", ... }]
+}
+```
+
 ### Image Storage
 - Images are stored locally in `backend/uploads/` directory
 - Images are served statically via `/uploads/` endpoint on the backend
@@ -264,11 +279,19 @@ Response:
 - Allowed types: JPEG, JPG, PNG, GIF, WebP
 
 ### Frontend Usage
-- Profile page (store-app): Click on avatar to upload profile image
-- Pack creation (store-app): Select image when creating Fixed or Surprise packs
+- **Store App Profile**: Click on avatar to upload profile image (stored in `users.profile_image`)
+- **Store App Pack Creation**: Select image when creating Fixed or Surprise packs (stored in `packs.image_url`)
+- **Client App**: Displays pack images in SearchList, DetailProduct, and Home pages
+- **Client App**: Displays store profile images from `stores.users.profile_image` in SearchList and DetailProduct
 - Images are previewed immediately before upload
 - After upload, the backend returns the public URL which is stored in the database
-- Client-app displays pack images in SearchList and DetailProduct pages
+
+### Image Sync Between Views
+- **Store App** uploads images → saved to `backend/uploads/` → URL stored in DB
+- **Client App** fetches data → gets `image_url` from packs and `users.profile_image` from stores → displays via proxy
+- **Stores endpoints** now include `users: { id, name, email, profile_image }` and `packs: [...]`
+- Both apps must be running for images to display in development
+- After refreshing, images persist because they are stored in the database
 
 ## Development Notes
 
@@ -277,10 +300,11 @@ Response:
 - Full URL format: `http://localhost:3000/uploads/{filename}`
 - Frontend accesses images via relative URL `/uploads/{filename}` (proxied to backend)
 
-### Cross-App Image Sync
-- Store app uploads images → saved to backend/uploads/ → URL stored in DB
-- Client app fetches data → gets image_url from DB → displays via proxy
-- Both apps must be running for images to display in development
+### Key Changes Made
+- Backend stores endpoints now return owner profile_image via Supabase join
+- Client app Store type updated to include `users?: User` and `packs?: Pack[]`
+- All image renders include `onError` handler to gracefully hide broken images
+- Store app pack creation now redirects to /packs after successful creation
 
 ## Troubleshooting
 

@@ -82,8 +82,22 @@ export default function DetailProduct() {
 
         {store && (
           <div className={styles.storeInfo}>
-            <h3>{store.name}</h3>
-            <p>{store.address}</p>
+            <div className={styles.storeHeader}>
+              {store.users?.profile_image && (
+                <img
+                  src={store.users.profile_image}
+                  alt={store.name}
+                  className={styles.storeAvatar}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
+              <div>
+                <h3>{store.name}</h3>
+                <p>{store.address}</p>
+              </div>
+            </div>
             <p className={styles.status}>
               {store.is_open ? '✅ Open' : '❌ Closed'}
             </p>

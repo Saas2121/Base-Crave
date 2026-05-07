@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { storesAPI, Store } from '../api/client'
+import { storesAPI, Store, Pack } from '../api/client'
 import styles from './Home.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -59,9 +59,9 @@ export default function Home() {
   }
 
   const packs = stores
-    .filter((store) => store.is_open)
-    .flatMap((store) =>
-      (store.packs || []).map((pack) => ({ ...pack, store }))
+    .filter((store: Store) => store.is_open)
+    .flatMap((store: Store) =>
+      (store.packs || []).map((pack: Pack) => ({ ...pack, store }))
     )
 
   const filteredPacks = selectedCategory

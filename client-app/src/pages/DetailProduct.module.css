@@ -132,6 +132,21 @@
   margin-bottom: 16px;
 }
 
+.storeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.storeAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .storeInfo h3 {
   font-size: 18px;
   color: var(--text);

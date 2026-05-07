@@ -5,6 +5,7 @@ import { storesAPI, packsAPI, reservationsAPI, authAPI } from '../api/client'
 import { Store } from '../types'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
+import MapPicker from '../components/MapPicker'
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ export default function Profile() {
   const [totalPacks, setTotalPacks] = useState(0)
   const [saved, setSaved] = useState(0)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [showMap, setShowMap] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -36,6 +38,22 @@ export default function Profile() {
     } catch {
       // silently fail
     }
+  }
+
+  const handleLocationClick = () => {
+    setShowMap(true)
+  }
+
+  const handleLocationSelect = async (lat: number, lng: number, address: string) => {
+    try {
+      if (store?.id) {
+        const { data } = await storesAPI.update(store.id, { latitude: lat, longitude: lng, address })
+        setStore(data)
+      }
+    } catch {
+      // silently fail
+    }
+    setShowMap(false)
   }
 
   const handleLogout = useCallback(() => {
@@ -113,7 +131,7 @@ export default function Profile() {
           </div>
           <div className={styles.container4}>
             <div className={styles.heading2}>
-              <div className={styles.kfc}>{store?.name || 'Store Name'}</div>
+              <div className={styles.kfc}>{user?.name || 'Store Name'}</div>
             </div>
             <div className={styles.container5}>
               <svg className={styles.icon} viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -121,10 +139,10 @@ export default function Profile() {
                 <div className={styles.kfcgmailcom}>{user?.email || 'email@example.com'}</div>
               </div>
             </div>
-            <div className={styles.container6}>
+              <div className={styles.container6} onClick={handleLocationClick}>
               <svg className={styles.icon} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               <div className={styles.text2}>
-                <div className={styles.kfcgmailcom}>{store?.address || 'Cali, Colombia'}</div>
+                <div className={styles.kfcgmailcom}>{store?.address || 'Click to set location'}</div>
               </div>
             </div>
           </div>
@@ -183,7 +201,19 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <div style={{ height: '40px' }} />
       <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
+       
+      {showMap && (
+        <MapPicker
+          initialLat={store?.latitude || 3.4516}
+          initialLng={store?.longitude || -76.532}
+          onLocationSelect={handleLocationSelect}
+          onClose={() => setShowMap(false)}
+        />
+      )}
+
+      <div style={{ height: '60px' }} />
       <BottomNav active="profile" />
     </div>
   )

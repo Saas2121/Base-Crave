@@ -11,7 +11,7 @@ router.get('/', async (req: Request, res: Response) => {
 
     let query = supabase
       .from('stores')
-      .select('*, packs(*)')
+      .select('*, packs(*), users:owner_id(id, name, email, profile_image)')
       .order('created_at', { ascending: false });
 
     if (open_only === 'true') {
@@ -36,7 +36,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
     const { data: store, error } = await supabase
       .from('stores')
-      .select('*, packs(*)')
+      .select('*, packs(*), users:owner_id(id, name, email, profile_image)')
       .eq('id', id)
       .single();
 
@@ -111,11 +111,34 @@ router.put('/my/toggle', authenticate, requireRole([UserRole.STORE_ADMIN]), asyn
   }
 });
 
+router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, description, address, latitude, longitude } = req.body;
+
+    const { data: store, error } = await supabase
+      .from('stores')
+      .update({ name, description, address, latitude, longitude })
+      .eq('id', id)
+      .eq('owner_id', req.user!.id)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json(store);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/my/store', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
   try {
     const { data: store, error } = await supabase
       .from('stores')
-      .select('*, packs(*)')
+      .select('*, packs(*), users:owner_id(id, name, email, profile_image)')
       .eq('owner_id', req.user!.id)
       .single();
 

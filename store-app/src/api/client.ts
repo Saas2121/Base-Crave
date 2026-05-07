@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { UserRole } from '../types'
+import { UserRole, Reservation } from '../types'
 
 const api = axios.create({
   baseURL: '/api',
@@ -83,22 +83,11 @@ export interface Pack {
   stores?: Store
 }
 
-export interface Reservation {
-  id: string
-  user_id: string
-  pack_id: string
-  quantity: number
-  status: string
-  pickup_code: string
-  created_at: string
-  packs?: Pack
-  users?: { id: string; name: string; email: string }
-}
-
 export const storesAPI = {
   getMyStore: () => api.get<Store>('/stores/my/store'),
   toggleOpen: () => api.put<Store>('/stores/my/toggle'),
   create: (data: Partial<Store>) => api.post<Store>('/stores', data),
+  update: (id: string, data: Partial<Store>) => api.put<Store>(`/stores/${id}`, data),
 }
 
 export const packsAPI = {

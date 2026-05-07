@@ -46,6 +46,15 @@ export const authAPI = {
   me: () => api.get('/auth/me'),
 }
 
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: UserRole
+  profile_image?: string
+  created_at: string
+}
+
 export interface Store {
   id: string
   name: string
@@ -57,6 +66,7 @@ export interface Store {
   owner_id: string
   created_at: string
   packs?: Pack[]
+  users?: User
 }
 
 export interface Pack {

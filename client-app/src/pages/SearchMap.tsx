@@ -66,7 +66,7 @@ export default function SearchMap() {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          stores.map((store) => (
+          stores.map((store: Store) => (
             <div
               key={store.id}
               className={styles.storeCard}

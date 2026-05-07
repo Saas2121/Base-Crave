@@ -5,10 +5,11 @@ import { Reservation } from '../types'
 import BottomNav from '../components/BottomNav'
 import styles from './Orders.module.css'
 
-export default function Orders() {
+export default function OrdersReady() {
   const navigate = useNavigate()
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
+  
 
   useEffect(() => {
     loadReservations()
@@ -27,20 +28,11 @@ export default function Orders() {
     }
   }
 
-  const pending = reservations.filter(r => r.status === 'reserved')
+  const ready = reservations.filter(r => r.status === 'ready')
 
-  const handleAccept = useCallback(async (id: string) => {
+  const handleVerify = useCallback(async (id: string, pickup_code: string) => {
     try {
-      await reservationsAPI.updateStatus(id, 'in_process')
-      loadReservations()
-    } catch {
-      // silently fail
-    }
-  }, [])
-
-  const handleDecline = useCallback(async (id: string) => {
-    try {
-      await reservationsAPI.reject(id)
+      await reservationsAPI.verify(id, pickup_code)
       loadReservations()
     } catch {
       // silently fail
@@ -87,18 +79,14 @@ export default function Orders() {
           </div>
         </div>
         <div className={styles.cardActions}>
-          <button className={styles.acceptBtn} onClick={() => handleAccept(res.id)}>
+          <button className={styles.scanBtn} onClick={() => handleVerify(res.id, res.pickup_code)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
             </svg>
-            Accept
-          </button>
-          <button className={styles.declineBtn} onClick={() => handleDecline(res.id)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-            Decline
+            Scan QR Code
           </button>
         </div>
       </div>
@@ -113,13 +101,13 @@ export default function Orders() {
 
       <div className={styles.filterRow}>
         <div className={styles.containerFilter}>
-          <div className={`${styles.filterBtn} ${styles.filterBtnActive}`}>
+          <div className={styles.filterBtn} onClick={() => navigate('/orders')}>
             <span>Pending</span>
           </div>
           <div className={styles.filterBtn} onClick={() => navigate('/orders/in-progress')}>
             <span>In Progress</span>
           </div>
-          <div className={styles.filterBtn} onClick={() => navigate('/orders/ready')}>
+          <div className={`${styles.filterBtn} ${styles.filterBtnActive}`}>
             <span>Ready</span>
           </div>
         </div>
@@ -127,13 +115,13 @@ export default function Orders() {
 
       {loading ? (
         <div className={styles.loading}>Loading...</div>
-      ) : pending.length === 0 ? (
+      ) : ready.length === 0 ? (
         <div className={styles.empty}>
-          <p>No pending orders</p>
+          <p>No orders ready for pickup</p>
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          {pending.map(res => renderOrderCard(res))}
+          {ready.map(res => renderOrderCard(res))}
         </div>
       )}
 

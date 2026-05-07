@@ -1,14 +1,13 @@
 .dashboard {
   width: 100%;
-  min-height: 100vh;
+  min-height: 1800px;
   position: relative;
   background-color: #101010;
-  overflow-x: hidden;
+  overflow-y: auto;
   text-align: left;
   font-size: 13px;
   color: #99a1af;
   font-family: 'General Sans';
-  padding-bottom: 100px;
 }
 
 .dashboardChild {

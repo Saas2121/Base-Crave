@@ -114,7 +114,22 @@
 }
 
 .storeInfo {
-  flex: 1;
+  flex:1;
+}
+
+.storeHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.storeAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .storeInfo h3 {

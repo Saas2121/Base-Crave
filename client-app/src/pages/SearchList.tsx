@@ -77,8 +77,22 @@ export default function SearchList() {
                   </div>
                 )}
                 <div className={styles.storeInfo}>
-                  <h3>{store.name}</h3>
-                  <p>{store.description}</p>
+                  <div className={styles.storeHeader}>
+                    {store.users?.profile_image && (
+                      <img
+                        src={store.users.profile_image}
+                        alt={store.name}
+                        className={styles.storeAvatar}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    )}
+                    <div>
+                      <h3>{store.name}</h3>
+                      <p>{store.description}</p>
+                    </div>
+                  </div>
                   <p className={styles.address}>{store.address}</p>
                 </div>
                 <div className={styles.storeMeta}>

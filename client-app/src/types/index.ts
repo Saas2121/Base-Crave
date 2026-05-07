@@ -22,6 +22,8 @@ export interface Store {
   is_open: boolean
   owner_id: string
   created_at: string
+  packs?: Pack[]
+  users?: User
 }
 
 export interface Pack {

@@ -98,7 +98,7 @@ export default function DashboardSurpriseProduct() {
       end.setHours(endH, endM, 0, 0)
       end.setDate(end.getDate() + 1)
 
-      const { data: pack } = await packsAPI.create({
+      const pack = await packsAPI.create({
         pack_type: PackType.SURPRISE,
         price: Number(price),
         total_quantity: Number(quantity),

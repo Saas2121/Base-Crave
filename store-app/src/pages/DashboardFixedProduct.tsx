@@ -101,7 +101,7 @@ export default function DashboardFixedProduct() {
       end.setHours(endH, endM, 0, 0)
       end.setDate(end.getDate() + 1)
 
-      const { data: pack } = await packsAPI.create({
+      const pack = await packsAPI.create({
         title,
         description,
         pack_type: PackType.FIXED,

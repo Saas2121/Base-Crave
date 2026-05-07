@@ -102,7 +102,7 @@ export default function Dashboard() {
       end.setHours(endH, endM, 0, 0)
       end.setDate(end.getDate() + 1)
 
-      const { data: pack } = await packsAPI.create({
+      const pack = await packsAPI.create({
         title: packType === 'surprise' ? 'Surprise pack' : title,
         description: packType === 'surprise' ? null : description,
         pack_type: packType === 'surprise' ? PackType.SURPRISE : PackType.FIXED,

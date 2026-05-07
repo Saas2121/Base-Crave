@@ -92,8 +92,9 @@ export const storesAPI = {
 
 export const packsAPI = {
   getByStore: () => api.get<Store>('/stores/my/store').then(res => res.data.packs || []),
-  create: (data: Partial<Pack>) => api.post<Pack>('/packs', data),
-  update: (id: string, data: Partial<Pack>) => api.put<Pack>(`/packs/${id}`, data),
+  getOne: (id: string) => api.get<Pack>(`/packs/${id}`).then(res => res.data),
+  create: (data: Partial<Pack>) => api.post<Pack>('/packs', data).then(res => res.data),
+  update: (id: string, data: Partial<Pack>) => api.put<Pack>(`/packs/${id}`, data).then(res => res.data),
   delete: (id: string) => api.delete(`/packs/${id}`),
   uploadImage: (id: string, file: File) => {
     const formData = new FormData()

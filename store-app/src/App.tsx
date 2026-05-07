@@ -6,6 +6,8 @@ import SignIn from './pages/SignIn'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Packs from './pages/Packs'
+import PackDetailEdit from './pages/PackDetailEdit'
+import DetailPack from './pages/DetailPack'
 import DashboardFixedProduct from './pages/DashboardFixedProduct'
 import DashboardSurpriseProduct from './pages/DashboardSurpriseProduct'
 import OrderCompleted from './pages/OrderCompleted'
@@ -58,6 +60,22 @@ function App() {
         element={
           <PrivateRoute>
             <Packs />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/packs/:id/edit"
+        element={
+          <PrivateRoute>
+            <PackDetailEdit />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/packs/:id"
+        element={
+          <PrivateRoute>
+            <DetailPack />
           </PrivateRoute>
         }
       />

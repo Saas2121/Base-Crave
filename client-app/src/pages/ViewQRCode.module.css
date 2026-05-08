@@ -1,116 +1,190 @@
-.container {
+.appContainer {
   min-height: 100vh;
-  background: #101010;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  position: relative;
+  background: var(--bg);
+  padding-bottom: 100px;
+}
+
+.loadingText {
+  color: #6b7280;
+  text-align: center;
+  padding: 40px;
 }
 
 .header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  padding: 16px 20px;
+  padding: 40px 24px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  width: 36px; /* Balance close button */
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.closeButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.header h1 {
-  font-size: 20px;
-  color: var(--text);
-  font-family: 'General Sans', sans-serif;
-  font-weight: 600;
-}
-
-.backButton {
-  background: none;
-  border: none;
-  font-size: 16px;
+  justify-content: center;
   cursor: pointer;
-  color: var(--primary);
-  padding: 4px;
+  padding: 0;
 }
 
 .content {
-  padding: 20px;
-  max-width: 500px;
-  margin: 0 auto;
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .qrCard {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 20px;
   padding: 32px 24px;
-  border-radius: 16px;
-  box-shadow: var(--soft-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.qrPlaceholder {
-  margin-bottom: 24px;
+.instructionText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 32px 0;
 }
 
-.qrCode {
-  font-size: 36px;
-  font-weight: 800;
-  font-family: 'General Sans', monospace;
-  color: var(--primary);
-  background: var(--surface-elevated);
-  padding: 24px;
+.qrWrapper {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 32px;
   border-radius: 12px;
-  letter-spacing: 4px;
-  border: 1px solid var(--line);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.qrCard h2 {
-  font-size: 20px;
-  color: var(--text);
-  margin-bottom: 8px;
-  font-family: 'General Sans', sans-serif;
-  font-weight: 600;
+.qrImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.qrCard p {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 4px;
+.codeText {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+.statusText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4b5563;
+  margin: 0;
+}
+
+.statusValue {
+  font-weight: 700;
+  color: #111827;
+}
+
+.infoCard {
+  background: #161616;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoRowMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .storeName {
-  font-weight: 600 !important;
-  color: var(--text) !important;
-  margin-bottom: 16px !important;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.instructions {
-  background: rgba(249, 85, 25, 0.1);
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(249, 85, 25, 0.2);
-}
-
-.instructions p {
-  color: var(--primary) !important;
-  margin-bottom: 8px !important;
-}
-
-.instructions p:last-child {
-  margin-bottom: 0 !important;
-}
-
-.doneButton {
-  width: 100%;
-  background: var(--primary);
-  color: white;
+.mapButton {
+  background: none;
   border: none;
-  padding: 16px;
-  border-radius: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoRowSub {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.packType {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.pickupTime {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.bottomBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 34px;
+}
+
+.cancelButton {
+  background: none;
+  border: none;
+  color: #ef4444; /* Red color */
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'General Sans', sans-serif;
-  transition: all 0.2s;
+  padding: 16px;
+  font-family: inherit;
+  transition: opacity 0.2s;
 }
 
-.doneButton:hover {
-  background: var(--primary-strong);
-  transform: translateY(-1px);
+.cancelButton:hover {
+  opacity: 0.8;
 }

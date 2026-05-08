@@ -1,87 +1,222 @@
-.container {
+.appContainer {
   min-height: 100vh;
-  background: #101010;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  position: relative;
+  background: var(--bg);
 }
 
 .header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header h1 {
-  font-size: 20px;
-  color: var(--text);
-  font-family: 'General Sans', sans-serif;
-  font-weight: 600;
-}
-
-.backButton {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: var(--primary);
-  padding: 4px;
-}
-
-.content {
-  padding: 20px 20px 96px;
-}
-
-.empty {
-  text-align: center;
-  color: var(--muted);
-  margin-top: 60px;
-  font-size: 15px;
-}
-
-.favoritesList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.favoriteCard {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 16px;
-  border-radius: 14px;
-  box-shadow: var(--soft-shadow);
+  padding: 40px 24px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.favInfo {
+.header h1 {
+  font-size: 32px;
+  color: #ffffff;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.filterBtn {
+  width: 44px;
+  height: 44px;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 12px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  flex: 1;
+  flex-shrink: 0;
 }
 
-.favInfo h3 {
-  font-size: 16px;
-  color: var(--text);
-  margin-bottom: 4px;
-  font-family: 'General Sans', sans-serif;
+.content {
+  padding: 0 24px 120px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  text-align: center;
+}
+
+.empty {
+  color: #ffffff;
+  font-size: 18px;
   font-weight: 600;
+  margin: 0 0 8px 0;
 }
 
-.favInfo p {
+.emptySub {
+  color: #6b7280;
   font-size: 14px;
-  color: var(--muted);
+  margin: 0;
 }
 
-.removeButton {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 8px 14px;
-  border-radius: 10px;
+.storesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.storeCard {
+  background: #161616;
+  border-radius: 20px;
+  overflow: hidden;
   cursor: pointer;
-  font-size: 13px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageContainer {
+  height: 140px;
+  width: 100%;
+  position: relative;
+}
+
+.storeImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 11px;
   font-weight: 600;
-  font-family: 'General Sans', sans-serif;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.avatarWrapper {
+  position: absolute;
+  bottom: -20px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #161616;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.storeAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.storeAvatarFallback {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.cardContent {
+  padding: 28px 16px 16px;
+  background: linear-gradient(180deg, #222222 0%, #161616 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardHeader h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.heartBtn {
+  background: none;
+  border: none;
+  color: #a33c16;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  z-index: 3;
+}
+
+.pricing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.currentPrice {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.originalPrice {
+  color: #4b5563;
+  font-size: 12px;
+  text-decoration: line-through;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.divider {
+  width: 1px;
+  height: 10px;
+  background: #374151;
+}
+
+.metaItemRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
 }

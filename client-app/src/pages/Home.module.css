@@ -1,595 +1,421 @@
-.container {
+.appContainer {
   min-height: 100vh;
-  background: transparent;
-  overflow-x: hidden;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  position: relative;
+  background: var(--bg);
 }
 
 .header {
-  background: linear-gradient(180deg, #292929 36.06%, #101010);
-  padding: 70px 20px 28px;
-  color: #fff;
-  border-radius: 0 0 26px 26px;
-}
-
-.welcomeWrapper {
-  margin-top: 20px;
-  margin-left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.welcomeContainer {
+  padding: 40px 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 24px;
 }
 
-.headerTop {
+.welcomeRow {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-
-.logo {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--primary);
-}
-
-.welcome {
-  margin: 0;
-  font-size: 34px;
-  font-weight: 800;
+  gap: 16px;
 }
 
 .welcomeLogo {
-  width: auto;
-  height: auto;
-  max-width: 60px;
-  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.welcomeText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.greeting {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .subtitle {
-  font-size: 14px;
-  color: #99A1AF;
-  margin: 2px 0 0 0;
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
 }
 
 .searchBar {
   display: flex;
   align-items: center;
-  background: #1A1A1A;
-  border: 1px solid #2A2A2A;
+  gap: 12px;
+  background: #1a1a1a;
+  padding: 14px 16px;
   border-radius: 16px;
-  padding: 16px 16px;
-  margin: 40px 16px -10px;
+  cursor: pointer;
+  border: 1px solid #2a2a2a;
 }
 
 .searchIcon {
-  width: 18px;
-  height: 18px;
-  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
 }
 
-.searchInput {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #fff;
-  font-size: 14px;
-  width: 100%;
-}
-
-.searchInput::placeholder {
-  color: #99A1AF;
+.searchPlaceholder {
+  color: #6b7280;
+  font-size: 15px;
 }
 
 .categoryRow {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px 16px;
-  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 0 24px 8px;
+  scrollbar-width: none;
+}
+
+.categoryRow::-webkit-scrollbar {
+  display: none;
 }
 
 .categoryChip {
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+  gap: 8px;
   background: none;
   border: none;
   padding: 0;
-  flex-shrink: 0;
-}
-
-.categoryChipActive .categoryCircle {
-  background: var(--primary);
-  border-color: var(--primary);
+  cursor: pointer;
 }
 
 .categoryCircle {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: #272727;
-  border: 1px solid #363839;
+  background: #1a1a1a;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  font-size: 28px;
+  border: 1px solid #2a2a2a;
   transition: all 0.2s;
 }
 
-.categoryEmoji {
-  font-size: 22px;
-  line-height: 1;
+.categoryChipActive .categoryCircle {
+  border-color: var(--primary);
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .categoryLabel {
-  font-size: 10px;
-  color: var(--muted);
+  color: #9ca3af;
+  font-size: 12px;
   font-weight: 500;
-  white-space: nowrap;
 }
 
-.categoryChipActive .categoryLabel {
-  color: #fff;
+.body {
+  padding: 16px 24px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
-.storesSection {
-  padding: 20px 16px 96px;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .sectionHead {
-  margin-bottom: 0;
-  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .sectionHead h2 {
-  font-size: 20px;
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: -8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .sectionHead p {
-  color: var(--muted);
   font-size: 13px;
-  margin-top: -4px;
-  margin-bottom: 12px;
-}
-
-.newTodaySection {
-  background: linear-gradient(180deg, rgba(41, 41, 41, 0.25) 0%, rgba(16, 16, 16, 0) 100%);
-  padding: 20px 0 10px;
+  color: #9ca3af;
   margin: 0;
 }
 
-.storesSection h2 {
-  font-size: 22px;
-  margin-bottom: 16px;
-  color: var(--text);
-}
-
-.storesList {
+/* Store Card Styles matching exactly */
+.cardList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin: 0 16px 10px;
+  gap: 20px;
 }
 
 .storeCard {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-  position: relative;
+  background: #161616;
+  border-radius: 20px;
   overflow: hidden;
-}
-
-.storeCard:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-}
-
-.cardImage {
-  width: 100%;
-  height: 90px;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: pointer;
   position: relative;
-  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.cardImagePlaceholder {
-  font-size: 32px;
-  opacity: 0.8;
+.imageContainer {
+  height: 140px;
+  width: 100%;
+  position: relative;
 }
 
-.cardCategory {
+.storeImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(0deg, rgba(22,22,22,1) 0%, rgba(22,22,22,0) 100%);
+}
+
+.tag {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #fafafa;
-  color: #1a1a1a;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 10px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 11px;
   font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  z-index: 2;
 }
 
-.cardStoreAvatar {
-  position: relative;
-  width: 40px;
-  height: 40px;
+.avatarWrapper {
+  position: absolute;
+  bottom: -20px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--surface);
-  border: 2px solid var(--line);
+  border: 2px solid #161616;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.storeAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.storeAvatarFallback {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
-  color: var(--text);
-  margin-top: -14px;
-  margin-left: 16px;
-  margin-bottom: -4px;
-  z-index: 1;
+  font-size: 14px;
 }
 
 .cardContent {
-  padding: 6px 16px 10px;
-}
-
-.cardTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 0;
+  padding: 28px 16px 16px;
+  background: #161616;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
-
-.cardPriceRow {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
-  margin-bottom: 10px;
 }
 
-.cardPrice {
-  font-size: 15px;
-  font-weight: 400;
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardHeader h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.heartBtn {
+  background: none;
+  border: none;
+  color: #4b5563;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  z-index: 3;
+}
+
+.heartBtnActive {
   color: var(--primary);
 }
 
-.cardOriginalPrice {
-  font-size: 15px;
-  font-weight: 400;
-  color: #393b3e;
+.pricing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.currentPrice {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.originalPrice {
+  color: #4b5563;
+  font-size: 12px;
   text-decoration: line-through;
 }
 
-.cardMeta {
+.metaRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 500;
 }
 
-.cardMetaLeft {
+.metaItem {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.cardMetaItem {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 12px;
-  color: #99a1af;
-}
-
-.cardMetaIcon {
-  width: 14px;
-  height: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cardMetaDivider {
+.divider {
   width: 1px;
-  height: 14px;
-  background: #555555;
-  margin: 0 8px;
+  height: 10px;
+  background: #374151;
 }
 
-.favButton {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 4px;
+.metaItemRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+/* Spots Grid */
+.spotsGrid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.spotsGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.spotCard {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  overflow: hidden;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.favIcon {
-  width: 20px;
-  height: 20px;
-  stroke: #f95519;
-  stroke-width: 1.5;
-  fill: transparent;
-  transition: all 0.2s;
-}
-
-.favButton.active .favIcon {
-  fill: #f95519;
-}
-
-.smallStar {
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
+  border: 1px solid #2a2a2a;
 }
 
-.starIcon {
-  width: 18px;
-  height: 18px;
-  stroke: #f95519;
-  stroke-width: 1.5;
-  fill: transparent;
-  transition: all 0.2s;
-}
-
-.smallStar.active .starIcon {
-  fill: #f95519;
-}
-
-.smallStar.active {
-  background: transparent;
-}
-
-.storeCard:hover {
-  transform: translateY(-2px);
-}
-
-.storeCard h3 {
-  font-size: 17px;
-  color: var(--text);
-  margin-bottom: 4px;
-  padding-right: 34px;
-}
-
-.storeCard p {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.address {
-  font-size: 12px !important;
-  color: #85796d !important;
-}
-
-.status {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.priceTag {
-  display: inline-block;
-  margin-top: 8px;
-  font-weight: 800;
-  color: var(--primary);
-  font-size: 18px;
-}
-
-.open {
-  background: #ebfaee;
-  color: #15703d;
-}
-
-.closed {
-  background: #fff0ef;
-  color: #a23c31;
-}
-
-.message {
-  color: #99A1AF;
-  text-align: center;
-  padding: 20px;
-  font-size: 14px;
-}
-
-.emptyMessage {
-  color: #99A1AF;
-  text-align: center;
-  padding: 16px;
-  font-size: 14px;
+.spotAvatar {
   width: 100%;
-  display: block;
-  margin: 0 auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotFallback {
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dotsRow {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #374151;
+  transition: all 0.2s;
+}
+
+.dotActive {
+  background: var(--primary);
+}
+
+.emptyMsg, .message {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 0;
 }
 
 .errorBox {
   background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
+  padding: 16px;
   border-radius: 12px;
-  padding: 14px;
-  display: grid;
-  gap: 10px;
+  text-align: center;
 }
 
-.retryButton {
-  border: none;
-  border-radius: 10px;
-  background: var(--primary);
-  color: #fff;
-  padding: 10px 14px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'General Sans', sans-serif;
-}
-
-.expandButton {
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 40px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.expandButton:hover {
-  background: var(--surface-elevated);
-}
-
-.expandIcon {
-  width: 24px;
-  height: 24px;
-  color: #ffffff;
-}
-
-.spotsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin: 16px 16px 70px;
-}
-
-.spotCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  align-items: center;
-  cursor: pointer;
-  padding: 0;
-  border-radius: 12px;
-}
-
-.spotPhoto {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  border: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.spotCard span {
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 700;
-}
-
-.carousel {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 12px;
-  margin: 0 -16px 18px;
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-.carouselCard {
-  min-width: 180px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-}
-
-.carouselCard:hover {
-  border-color: var(--primary);
-}
-
-.carouselCard h4 {
-  font-size: 16px;
-  color: var(--text);
-}
-
-.carouselCard p {
-  margin-top: 6px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.carouselCard span {
-  display: inline-block;
-  margin-top: 8px;
-  font-weight: 800;
-  color: var(--primary-strong);
-}
-
-.surpriseCard {
-  border-radius: 16px;
-}
-
-.surpriseImage {
-  width: 100%;
-  height: 100px;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  border: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.storeMiniIcon {
+.errorBox p {
+  color: #ef4444;
+  margin: 0 0 12px 0;
   font-size: 14px;
 }
 
-.metaRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.metaRow span {
-  background: var(--surface-elevated);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  text-align: center;
-  padding: 6px 4px;
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
+.retryButton {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }

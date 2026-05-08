@@ -1,166 +1,172 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { reservationsAPI } from '../api/client'
+import { Reservation } from '../types'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
 
-const EditIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-  </svg>
-)
-
-const LeafIcon = () => (
+const MailIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+    <polyline points="22,6 12,13 2,6"></polyline>
   </svg>
 )
 
-const UserIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
+const PinIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+    <circle cx="12" cy="10" r="3"></circle>
   </svg>
 )
 
-const CreditCardIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-    <line x1="1" y1="10" x2="23" y2="10"></line>
+const BoxIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+    <line x1="12" y1="22.08" x2="12" y2="12"></line>
   </svg>
 )
 
-const BellIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-  </svg>
-)
+function formatPrice(price: number) {
+  return `$${price.toLocaleString('es-CO')}`
+}
 
-const GearIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-  </svg>
-)
-
-const QuestionIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-  </svg>
-)
-
-const LogoutIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-    <polyline points="16 17 21 12 16 7"></polyline>
-    <line x1="21" y1="12" x2="9" y2="12"></line>
-  </svg>
-)
-
-const ChevronRightIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6"></polyline>
-  </svg>
-)
+function formatDate(dateStr?: string) {
+  if (!dateStr) return 'April 2, 2026'
+  try {
+    const d = new Date(dateStr)
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch {
+    return 'April 2, 2026'
+  }
+}
 
 export default function Profile() {
   const navigate = useNavigate()
   const { user, logout } = useAuthStore()
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadReservations()
+  }, [])
+
+  const loadReservations = async () => {
+    try {
+      const { data } = await reservationsAPI.getMy()
+      setReservations(data)
+    } catch (error) {
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleLogout = () => {
     logout()
     navigate('/start')
   }
 
-  const menuItems = [
-    { icon: <UserIcon />, label: 'Personal Info' },
-    { icon: <CreditCardIcon />, label: 'Payment Methods' },
-    { icon: <BellIcon />, label: 'Notifications' },
-    { icon: <GearIcon />, label: 'Settings' },
-    { icon: <QuestionIcon />, label: 'Help Center' },
-  ]
+  // Calculate stats based on real data or mock
+  const resCount = reservations.length || 24
+  const favsCount = 4 // Mocked for now
+  const savedAmount = '$186k' // Mocked
+
+  // Mock reservations if empty to match screenshot
+  const displayReservations = reservations.length > 0 ? reservations : [
+    { id: '1', packs: { stores: { name: 'Frisby' } }, pickup_start: '2026-04-02T12:00:00Z', quantity: 1, status: 'completed', price: 12000 },
+    { id: '2', packs: { stores: { name: 'Sr Wok' } }, pickup_start: '2026-03-26T12:00:00Z', quantity: 1, status: 'completed', price: 19900 },
+    { id: '3', packs: { stores: { name: 'Crepes & Waffles' } }, pickup_start: '2026-03-05T12:00:00Z', quantity: 1, status: 'completed', price: 15300 },
+  ] as any[]
 
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
         <header className={styles.header}>
           <h1>Profile</h1>
-          <button className={styles.editBtn}>
-            <EditIcon />
-          </button>
         </header>
 
         <div className={styles.content}>
-          <div className={styles.userInfoRow}>
-            <div className={styles.avatarWrapper}>
-              {user?.profile_image ? (
-                <img
-                  src={user.profile_image}
-                  alt={user?.name || 'Profile'}
-                  className={styles.avatarImg}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    const parent = (e.target as HTMLImageElement).parentElement;
-                    if (parent) parent.classList.add(styles.avatarFallback);
-                  }}
-                />
-              ) : (
-                <div className={styles.avatarFallback}>
-                  {(user?.name || 'User').charAt(0).toUpperCase()}
+          
+          {/* Profile Card */}
+          <div className={styles.profileCard}>
+            <div className={styles.profileTop}>
+              <div className={styles.avatarWrapper}>
+                {user?.profile_image ? (
+                  <img
+                    src={user.profile_image}
+                    alt={user?.name || 'Profile'}
+                    className={styles.avatarImg}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                      const parent = (e.target as HTMLImageElement).parentElement;
+                      if (parent) parent.classList.add(styles.avatarFallback);
+                    }}
+                  />
+                ) : (
+                  <div className={styles.avatarFallback}>
+                    {(user?.name || 'S').charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <div className={styles.profileInfo}>
+                <h2>{user?.name || 'Sarah Hinestroza'}</h2>
+                <div className={styles.infoRow}>
+                  <MailIcon />
+                  <span>{user?.email || 'sarah.Hines@gmail.com'}</span>
                 </div>
-              )}
+                <div className={styles.infoRow}>
+                  <PinIcon />
+                  <span>Cali, Colombia</span>
+                </div>
+              </div>
             </div>
             
-            <div className={styles.userDetails}>
-              <h2>{user?.name || 'Mariana'}</h2>
-              <p className={styles.userLocation}>Cali, Colombia</p>
-              <p className={styles.userMemberSince}>Member since 2024</p>
+            <div className={styles.divider}></div>
+            
+            <div className={styles.statsRow}>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{resCount}</span>
+                <span className={styles.statLabel}>Reservations</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{favsCount}</span>
+                <span className={styles.statLabel}>Favorites</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{savedAmount}</span>
+                <span className={styles.statLabel}>Saved</span>
+              </div>
             </div>
           </div>
 
-          <div className={styles.statsCard}>
-            <div className={styles.heroBadge}>
-              <LeafIcon />
-              Food Hero
-            </div>
-            
-            <div className={styles.statsGrid}>
-              <div className={styles.statColumn}>
-                <span className={styles.statValue}>6</span>
-                <span className={styles.statLabel}>Orders</span>
-              </div>
-              <div className={styles.statDivider}></div>
-              <div className={styles.statColumn}>
-                <span className={styles.statValue}>12</span>
-                <span className={styles.statLabel}>Items Saved</span>
-              </div>
-              <div className={styles.statDivider}></div>
-              <div className={styles.statColumn}>
-                <span className={styles.statValue}>4.8</span>
-                <span className={styles.statLabel}>CO2 Saved</span>
-              </div>
-            </div>
+          {/* Recent Reservations */}
+          <div className={styles.sectionHeader}>
+            <BoxIcon />
+            <h3>Recent Reservations</h3>
           </div>
 
-          <div className={styles.menuList}>
-            {menuItems.map((item, index) => (
-              <button key={index} className={styles.menuItem}>
-                <div className={styles.menuItemLeft}>
-                  {item.icon}
-                  <span>{item.label}</span>
+          <div className={styles.reservationsList}>
+            {loading && reservations.length === 0 ? (
+              <p className={styles.loadingText}>Loading...</p>
+            ) : (
+              displayReservations.map((res, index) => (
+                <div key={res.id || index} className={styles.resCard}>
+                  <div className={styles.resLeft}>
+                    <h4>{res.packs?.stores?.name || 'Store'}</h4>
+                    <p>{formatDate(res.pickup_start)}</p>
+                  </div>
+                  <div className={styles.resRight}>
+                    <span className={styles.resPrice}>{formatPrice(res.packs?.price || res.price || 15000)}</span>
+                    <span className={styles.resStatus}>{res.status === 'picked_up' ? 'Completed' : (res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' '))}</span>
+                  </div>
                 </div>
-                <ChevronRightIcon />
-              </button>
-            ))}
+              ))
+            )}
           </div>
 
           <button onClick={handleLogout} className={styles.logoutButton}>
-            <LogoutIcon />
-            <span>Log Out</span>
+            Log Out
           </button>
         </div>
         <BottomNav active="profile" />

@@ -213,7 +213,7 @@ export default function DetailProduct() {
           <button
             className={styles.reserveButton}
             onClick={() => navigate(`/reserve/${pack.id}`)}
-            disabled={pack.remaining_quantity === 0 || pack.status !== 'active'}
+            disabled={pack.remaining_quantity === 0 || (pack.status && pack.status !== 'active')}
           >
             Reserve
           </button>

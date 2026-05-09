@@ -10,14 +10,6 @@ function isPackAvailable(pack: any): boolean {
     return false;
   }
 
-  const now = new Date();
-  const pickupStart = new Date(pack.pickup_start);
-  const pickupEnd = new Date(pack.pickup_end);
-
-  if (now < pickupStart || now > pickupEnd) {
-    return false;
-  }
-
   return true;
 }
 
@@ -192,7 +184,7 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const availablePacks = packs.filter(isPackAvailable);
+    const availablePacks = packs.filter(pack => pack.remaining_quantity > 0);
     res.json(availablePacks);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

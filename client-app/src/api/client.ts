@@ -119,6 +119,7 @@ export const reservationsAPI = {
   create: (data: { pack_id: string; quantity: number }) => api.post('/reservations', data),
   getMy: () => api.get<Reservation[]>('/reservations/my'),
   getStore: () => api.get<Reservation[]>('/reservations/store'),
+  getById: (id: string) => api.get<Reservation>(`/reservations/${id}`),
   verify: (id: string, pickup_code: string) => api.post(`/reservations/${id}/verify`, { pickup_code }),
   cancel: (id: string) => api.post(`/reservations/${id}/cancel`),
 }

@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom'
-import { Reservation } from '../api/client'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { reservationsAPI, Reservation } from '../api/client'
 import styles from './ReservationDetail.module.css'
 
 const ChevronLeftIcon = () => (
@@ -44,10 +45,6 @@ const NavigationIcon = () => (
     <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
   </svg>
 )
-
-interface ReservationDetailProps {
-  reservation: Reservation
-}
 
 function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
@@ -105,8 +102,50 @@ function getStatusColor(status: string) {
   }
 }
 
-export default function ReservationDetail({ reservation }: ReservationDetailProps) {
+export default function ReservationDetail() {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [reservation, setReservation] = useState<Reservation | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (id) {
+      loadReservation()
+    }
+  }, [id])
+
+  const loadReservation = async () => {
+    try {
+      setLoading(true)
+      const { data } = await reservationsAPI.getById(id!)
+      setReservation(data)
+    } catch (error) {
+      console.error('Failed to load reservation:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
+      </div>
+    )
+  }
+
+  if (!reservation) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <button className={styles.backButton} onClick={() => navigate(-1)}>
+            <ChevronLeftIcon />
+          </button>
+        </div>
+        <div className={styles.error}>Reservation not found</div>
+      </div>
+    )
+  }
 
   const store = reservation.stores
   const pack = reservation.packs

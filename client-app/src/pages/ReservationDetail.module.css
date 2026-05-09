@@ -218,3 +218,13 @@
 .qrButton:hover {
   background: #e04a15;
 }
+
+.loading,
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  font-size: 16px;
+  color: #9ca3af;
+}

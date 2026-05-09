@@ -182,7 +182,7 @@ export default function Dashboard() {
       </div>
       </div>
       <div className={styles.createNewPack}>📦 Create New Pack</div>
-      <div className={styles.dashboardInner} />
+      <div className={styles.dashboardInner} style={{ height: packType === 'fixed' ? '1250px' : undefined }} />
       <form onSubmit={handleSubmit}>
         <div className={styles.container11}>
           <div className={styles.label}>
@@ -295,7 +295,7 @@ export default function Dashboard() {
           onClose={() => setShowTimePicker(false)}
         />
       )}
-      <div style={{ height: '30px' }} />
+      <div style={{ height: '60px' }} />
       <BottomNav active="dashboard" />
     </div>
   )

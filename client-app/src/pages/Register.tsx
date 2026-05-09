@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { UserRole } from '../types'
 import styles from './Register.module.css'
+import MapPicker from '../components/MapPicker'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -10,7 +11,17 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [location, setLocation] = useState('')
+  const [showMap, setShowMap] = useState(false)
+  const [latitude, setLatitude] = useState(3.4516)
+  const [longitude, setLongitude] = useState(-76.532)
+  const [address, setAddress] = useState('')
+
+  const handleLocationSelect = (lat: number, lng: number, addr: string) => {
+    setLatitude(lat)
+    setLongitude(lng)
+    setAddress(addr)
+    setShowMap(false)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -85,19 +96,28 @@ export default function Register() {
 
           <div className={styles.field}>
             <label htmlFor="location" className={styles.label}>Location</label>
-            <div className={styles.inputWrapper}>
+            <div className={styles.inputWrapper} onClick={() => setShowMap(true)}>
               <img src="/images/icon.svg" alt="" className={styles.icon} />
               <input
                 id="location"
                 type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Your city or area"
+                value={address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}
+                readOnly
+                placeholder="Click to select location"
                 className={styles.input}
               />
             </div>
             <span className={styles.hint}>We'll use this to show you nearby restaurants</span>
           </div>
+
+          {showMap && (
+            <MapPicker
+              initialLat={latitude}
+              initialLng={longitude}
+              onLocationSelect={handleLocationSelect}
+              onClose={() => setShowMap(false)}
+            />
+          )}
 
           <button type="submit" className={styles.submitButton} disabled={isLoading}>
             {isLoading ? 'Creating account...' : 'Create Account'}

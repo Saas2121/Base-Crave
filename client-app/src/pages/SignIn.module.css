@@ -128,7 +128,7 @@
   border-radius: 16.04px;
   background: #1A1A1A;
   border: 1.1px solid #2A2A2A;
-  color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
   font-size: 16.04px;
   font-family: 'General Sans', sans-serif;
   font-weight: 400;
@@ -145,16 +145,7 @@
 }
 
 .forgotPassword {
-  display: block;
-  text-align: right;
-  color: #99A1AF;
-  font-size: 12.03px;
-  font-family: 'General Sans', sans-serif;
-  font-weight: 400;
-  line-height: 20.05px;
-  text-decoration: none;
-  margin-top: -4px;
-  margin-bottom: 16px;
+  display: none;
 }
 
 .submitButton {

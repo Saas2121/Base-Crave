@@ -64,8 +64,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          <Link to="/forgot-password" className={styles.forgotPassword}>Forgot password?</Link>
-
           <button type="submit" className={styles.submitButton} disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>

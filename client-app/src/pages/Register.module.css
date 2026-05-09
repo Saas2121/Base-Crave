@@ -128,12 +128,12 @@
   padding: 16px 16px 16px 48px;
   border-radius: 16px;
   background: #1A1A1A;
-  outline: 1px solid #2A2A2A;
-  color: rgba(255, 255, 255, 0.3);
+  border: 1px solid #2A2A2A;
+  color: #ffffff;
   font-size: 16px;
   font-family: 'General Sans', sans-serif;
   font-weight: 400;
-  outline-offset: -1px;
+  outline: none;
 }
 
 .input::placeholder {
@@ -141,7 +141,7 @@
 }
 
 .input:focus {
-  outline-color: #F95519;
+  border-color: #F95519;
 }
 
 .hint {

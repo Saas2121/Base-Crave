@@ -72,15 +72,15 @@ export default function Profile() {
     navigate('/start')
   }
 
-  // Calculate stats based on real data
-  const resCount = activeReservations.length || reservations.length || 0
-  const favsCount = 0
-  const savedAmount = '$0'
-
   // Filter only active reservations
   const activeReservations = reservations.filter((res: Reservation) => 
     ['reserved', 'in_process', 'ready'].includes(res.status)
   )
+
+  // Calculate stats based on real data
+  const resCount = activeReservations.length
+  const favsCount = 0
+  const savedAmount = '$0'
 
   const displayReservations = activeReservations.length > 0 ? activeReservations : []
 

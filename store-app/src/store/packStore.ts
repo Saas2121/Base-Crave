@@ -65,7 +65,13 @@ export const usePackStore = create<PackState>((set) => ({
 
   uploadImage: async (id: string, file: File) => {
     try {
-      await packsAPI.uploadImage(id, file)
+      const { data } = await packsAPI.uploadImage(id, file)
+      const newImageUrl = data?.pack?.image_url || data?.imageUrl
+      if (newImageUrl) {
+        set((state) => ({
+          packs: state.packs.map(p => p.id === id ? { ...p, image_url: newImageUrl } : p),
+        }))
+      }
     } catch (err: any) {
       const message = err?.response?.data?.error || err?.message || 'Failed to upload image'
       set({ error: message })

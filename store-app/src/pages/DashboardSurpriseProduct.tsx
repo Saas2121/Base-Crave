@@ -110,6 +110,9 @@ export default function DashboardSurpriseProduct() {
         try {
           const { data: updatedPack } = await packsAPI.uploadImage(pack.id, selectedImage)
           console.log('Pack image uploaded:', updatedPack)
+          if (updatedPack?.pack?.image_url) {
+            console.log('Image URL saved:', updatedPack.pack.image_url)
+          }
         } catch (imgErr) {
           console.error('Error uploading image:', imgErr)
         }

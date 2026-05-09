@@ -198,7 +198,7 @@ router.post('/:id/upload-image', upload.single('image'), authenticate, requireRo
       return res.status(404).json({ error: 'Pack not found' });
     }
 
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const imageUrl = `/uploads/${req.file.filename}`;
 
     const { data: updatedPack, error } = await supabase
       .from('packs')

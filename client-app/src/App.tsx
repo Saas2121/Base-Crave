@@ -13,6 +13,7 @@ import ReserveProductDetailFornProfile from './pages/ReserveProductDetailFornPro
 import Favorites from './pages/Favorites'
 import Profile from './pages/Profile'
 import ViewQRCode from './pages/ViewQRCode'
+import ReservationDetail from './pages/ReservationDetail'
 
 interface PrivateRouteProps {
   children: React.ReactNode
@@ -118,6 +119,14 @@ function App() {
         element={
           <PrivateRoute>
             <ViewQRCode />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/reservation/:id"
+        element={
+          <PrivateRoute>
+            <ReservationDetail />
           </PrivateRoute>
         }
       />

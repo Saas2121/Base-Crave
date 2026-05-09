@@ -74,13 +74,12 @@
 .toggleGroup {
   display: flex;
   background: #1a1a1a;
-  border-radius: 12px;
+  border-radius: 100px;
   padding: 4px;
-  flex: 1;
+  gap: 4px;
 }
 
 .toggleBtn {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,15 +89,22 @@
   color: #6b7280;
   font-size: 14px;
   font-weight: 500;
-  padding: 10px 0;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 100px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.toggleBtn:hover {
+  color: #ffffff;
 }
 
 .activeToggle {
   background: var(--primary);
   color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .filterBtn {

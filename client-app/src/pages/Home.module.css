@@ -157,6 +157,10 @@
   margin: 0;
 }
 
+.section > *:last-child:not(.expandBtn) {
+  margin-bottom: 8px;
+}
+
 /* Store Card Styles matching exactly */
 .cardList {
   display: flex;
@@ -370,6 +374,29 @@
   gap: 12px;
 }
 
+.carouselInner {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+}
+
+.carouselInner::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselCard {
+  min-width: calc(100% - 32px);
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+
+.carouselCardActive {
+  opacity: 1;
+}
+
 .dotsRow {
   display: flex;
   justify-content: center;
@@ -418,4 +445,24 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  color: #9ca3af;
+  margin: 0 auto;
+  transition: all 0.2s;
+}
+
+.expandBtn:hover {
+  background: #2a2a2a;
+  color: #ffffff;
 }

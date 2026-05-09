@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { reservationsAPI } from '../api/client'
-import { Reservation } from '../types'
+import { reservationsAPI, Reservation } from '../api/client'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -151,7 +150,7 @@ export default function Profile() {
               <p className={styles.loadingText}>Loading...</p>
             ) : (
               displayReservations.map((res, index) => (
-                <div key={res.id || index} className={styles.resCard}>
+                <div key={res.id || index} className={styles.resCard} onClick={() => navigate(`/reservation/${res.id}`)}>
                   <div className={styles.resLeft}>
                     <h4>{res.packs?.stores?.name || 'Store'}</h4>
                     <p>{formatDate(res.pickup_start)}</p>

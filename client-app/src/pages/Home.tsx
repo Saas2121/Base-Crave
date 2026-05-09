@@ -79,6 +79,25 @@ function getTagForStore(storeName: string) {
   return 'Fast Food'
 }
 
+function getCategoryForStore(storeName: string) {
+  const lower = storeName.toLowerCase()
+  if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
+  if (lower.includes('bakery') || lower.includes('postre') || lower.includes('if')) return 'Desserts'
+  if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
+  if (lower.includes('coffee') || lower.includes('café')) return 'Coffee'
+  return 'Fast Food'
+}
+
+function getSpotLogo(name: string) {
+  const l = name.toLowerCase()
+  if (l.includes('kfc')) return 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1024px-KFC_logo.svg.png'
+  if (l.includes('frisby')) return 'https://pbs.twimg.com/profile_images/1445778848464670724/j-G2J-5W_400x400.jpg'
+  if (l.includes('wok')) return 'https://pbs.twimg.com/profile_images/1070384462199721986/Qy13Jz52_400x400.jpg'
+  if (l.includes('crepes')) return 'https://pbs.twimg.com/profile_images/1083431616854134784/XGg5G53W_400x400.jpg'
+  if (l.includes('mcdonald')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/1200px-McDonald%27s_Golden_Arches.svg.png'
+  return null
+}
+
 export default function Home() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
@@ -87,6 +106,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+  const [expandedSections, setExpandedSections] = useState<{[key: string]: number}>({
+    trending: 3,
+    available: 3
+  })
+  const [carouselIndex, setCarouselIndex] = useState(0)
 
   useEffect(() => {
     loadStores()
@@ -114,54 +138,33 @@ export default function Home() {
     localStorage.setItem('favorite_pack_ids', JSON.stringify(next))
   }
 
-  // Real or mock data blending to match exact screenshot design if needed
   const packs = stores
     .filter((store: Store) => store.is_open)
     .flatMap((store: Store) =>
       (store.packs || []).map((pack: Pack) => ({ ...pack, store }))
     )
 
-  // Use a fallback store logo image for Top Spots to match mock design if missing
-  const getSpotLogo = (name: string) => {
-    const l = name.toLowerCase()
-    if (l.includes('kfc')) return 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/1024px-KFC_logo.svg.png'
-    if (l.includes('frisby')) return 'https://pbs.twimg.com/profile_images/1445778848464670724/j-G2J-5W_400x400.jpg'
-    if (l.includes('wok')) return 'https://pbs.twimg.com/profile_images/1070384462199721986/Qy13Jz52_400x400.jpg'
-    if (l.includes('crepes')) return 'https://pbs.twimg.com/profile_images/1083431616854134784/XGg5G53W_400x400.jpg'
-    if (l.includes('mcdonald')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/1200px-McDonald%27s_Golden_Arches.svg.png'
-    return null
+  const filteredPacks = selectedCategory
+    ? packs.filter((pack) => getCategoryForStore(pack.store?.name || '') === selectedCategory)
+    : packs
+
+  const topSpots = stores.length > 0 ? stores.slice(0, 5) : [] as Store[]
+  const trendingList = filteredPacks.slice(0, 3)
+  const newTodayList = filteredPacks.filter(p => p.pack_type === 'fixed')
+  const availableList = filteredPacks.slice(0, 3)
+  const hasMoreTrending = filteredPacks.length > 3
+  const hasMoreAvailable = filteredPacks.length > 3
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => {
+      const current = prev[section] || 3
+      const next = current + 3
+      return {
+        ...prev,
+        [section]: next >= filteredPacks.length ? filteredPacks.length : next
+      }
+    })
   }
-
-  const topSpots = stores.length > 0 ? stores.slice(0, 5) : [
-    { id: '1', name: 'KFC' },
-    { id: '2', name: 'Frisby' },
-    { id: '3', name: 'Sr Wok' },
-    { id: '4', name: 'Crepes & Waffles' },
-    { id: '5', name: 'McDonalds' }
-  ] as Store[]
-
-  // Mock packs specifically based on the screens if real data is empty
-  const defaultTrending = [
-    { id: 'mock-1', price: 17900, original_price: 48900, remaining_quantity: 6, pickup_start: '2026-05-08T14:00:00Z', pickup_end: '2026-05-08T19:00:00Z', image_url: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=600&auto=format&fit=crop', title: 'Frisby Pack', store: { name: 'Frisby', users: { profile_image: getSpotLogo('Frisby') } } },
-    { id: 'mock-2', price: 8200, original_price: 26900, remaining_quantity: 12, pickup_start: '2026-05-08T17:00:00Z', pickup_end: '2026-05-08T20:00:00Z', image_url: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=600&auto=format&fit=crop', title: 'Ava Gyro Shack', store: { name: 'Ava Gyro Shack', users: { profile_image: '' } } },
-  ]
-
-  const defaultNewToday = [
-    { id: 'mock-bk', price: 8500, original_price: 48900, remaining_quantity: 6, pickup_start: '2026-05-08T14:00:00Z', pickup_end: '2026-05-08T19:00:00Z', image_url: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop', title: 'King Pack by Burger King', store: { name: 'Burger King', users: { profile_image: '' } } }
-  ]
-
-  const defaultAvailable = [
-    { id: 'mock-s1', price: 17000, original_price: 48900, remaining_quantity: 4, pickup_start: '2026-05-08T14:00:00Z', pickup_end: '2026-05-08T19:00:00Z', image_url: 'https://images.unsplash.com/photo-1544025162-81111421b0aa?q=80&w=600&auto=format&fit=crop', title: 'La Sevillana Pack', store: { name: 'La Sevillana', users: { profile_image: '' } } },
-    { id: 'mock-s2', price: 6000, original_price: 18700, remaining_quantity: 4, pickup_start: '2026-05-08T12:00:00Z', pickup_end: '2026-05-08T18:00:00Z', image_url: 'https://images.unsplash.com/photo-1588665977935-cfdd6191c9e8?q=80&w=600&auto=format&fit=crop', title: 'Subway Pack', store: { name: 'Subway', users: { profile_image: '' } } },
-    { id: 'mock-s3', price: 22200, original_price: 56900, remaining_quantity: 10, pickup_start: '2026-05-08T14:00:00Z', pickup_end: '2026-05-08T19:00:00Z', image_url: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?q=80&w=600&auto=format&fit=crop', title: 'Martin Birrieria', store: { name: 'Martin Birrieria', users: { profile_image: '' } } },
-  ]
-
-  const trendingList = packs.length > 0 ? packs.slice(0, 3) : defaultTrending
-  const newTodayList = packs.length > 0 ? packs.filter(p => p.pack_type === 'fixed').slice(0, 1) : defaultNewToday
-  const availableList = packs.length > 0 ? packs.slice(3, 6) : defaultAvailable
-
-  // Add the BK fallback if data is used but newTodayList is empty
-  if (newTodayList.length === 0) newTodayList.push(defaultNewToday[0] as any)
 
   const renderStoreCard = (pack: any) => {
     const store = pack.store
@@ -231,6 +234,13 @@ export default function Home() {
     )
   }
 
+  const renderEmptyState = () => (
+    <div className={styles.emptyState}>
+      <p className={styles.emptyTitle}>No packs available</p>
+      <p className={styles.emptySubtitle}>Try selecting a different category</p>
+    </div>
+  )
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
@@ -271,64 +281,117 @@ export default function Home() {
               <p>{error}</p>
               <button className={styles.retryButton} onClick={loadStores}>Reintentar</button>
             </div>
+          ) : filteredPacks.length === 0 && selectedCategory ? (
+            renderEmptyState()
           ) : (
             <>
-              <section className={styles.section}>
-                <div className={styles.sectionHead}>
-                  <h2>🔥 Trending Near You</h2>
-                  <p>Popular food packs close to you</p>
-                </div>
-                <div className={styles.cardList}>
-                  {trendingList.map(pack => renderStoreCard(pack))}
-                </div>
-              </section>
-
-              <section className={styles.section}>
-                <div className={styles.sectionHead}>
-                  <h2>📍 Top Spots</h2>
-                  <p>Try popular restaurants everyone loves</p>
-                </div>
-                <div className={styles.spotsGrid}>
-                  {topSpots.map((spot) => {
-                    const logo = getSpotLogo(spot.name)
-                    return (
-                      <div key={spot.id} className={styles.spotCard} onClick={() => navigate('/search/list')}>
-                        {logo || spot.users?.profile_image ? (
-                          <img src={logo || spot.users?.profile_image} alt={spot.name} className={styles.spotAvatar} />
-                        ) : (
-                          <span className={styles.spotFallback}>{spot.name.charAt(0).toUpperCase()}</span>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </section>
-
-              <section className={styles.section}>
-                <div className={styles.sectionHead}>
-                  <h2>✨ New Today</h2>
-                  <p>Restaurants that posted packs today</p>
-                </div>
-                <div className={styles.carousel}>
-                  {newTodayList.map(pack => renderStoreCard(pack))}
-                  <div className={styles.dotsRow}>
-                    <div className={`${styles.dot} ${styles.dotActive}`}></div>
-                    <div className={styles.dot}></div>
-                    <div className={styles.dot}></div>
-                    <div className={styles.dot}></div>
+              {trendingList.length > 0 && (
+                <section className={styles.section}>
+                  <div className={styles.sectionHead}>
+                    <h2>🔥 Trending Near You</h2>
+                    <p>Popular food packs close to you</p>
                   </div>
-                </div>
-              </section>
+                  <div className={styles.cardList}>
+                    {filteredPacks.slice(0, expandedSections.trending).map(pack => renderStoreCard(pack))}
+                  </div>
+                  {hasMoreTrending && expandedSections.trending < filteredPacks.length && (
+                    <button className={styles.expandBtn} onClick={() => toggleSection('trending')}>
+                      <svg 
+                        width="20" 
+                        height="20" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        style={{ transform: 'rotate(0deg)', transition: 'transform 0.3s' }}
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+                  )}
+                </section>
+              )}
 
-              <section className={styles.section}>
-                <div className={styles.sectionHead}>
-                  <h2>⏰ Available Now</h2>
-                  <p>Packs you can pick up right now</p>
-                </div>
-                <div className={styles.cardList}>
-                  {availableList.map(pack => renderStoreCard(pack))}
-                </div>
-              </section>
+              {topSpots.length > 0 && (
+                <section className={styles.section}>
+                  <div className={styles.sectionHead}>
+                    <h2>📍 Top Spots</h2>
+                    <p>Try popular restaurants everyone loves</p>
+                  </div>
+                  <div className={styles.spotsGrid}>
+                    {topSpots.map((spot) => {
+                      const logo = getSpotLogo(spot.name)
+                      return (
+                        <div key={spot.id} className={styles.spotCard} onClick={() => navigate('/search/list')}>
+                          {logo || spot.users?.profile_image ? (
+                            <img src={logo || spot.users?.profile_image} alt={spot.name} className={styles.spotAvatar} />
+                          ) : (
+                            <span className={styles.spotFallback}>{spot.name.charAt(0).toUpperCase()}</span>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {newTodayList.length > 0 && (
+                <section className={styles.section}>
+                  <div className={styles.sectionHead}>
+                    <h2>New Today</h2>
+                    <p>Restaurants that posted packs today</p>
+                  </div>
+                  <div className={styles.carousel}>
+                    <div className={styles.carouselInner}>
+                      {newTodayList.map((pack, idx) => (
+                        <div 
+                          key={pack.id} 
+                          className={`${styles.carouselCard} ${idx === carouselIndex ? styles.carouselCardActive : ''}`}
+                          onClick={() => navigate(`/product/${pack.id}`)}
+                        >
+                          {renderStoreCard(pack)}
+                        </div>
+                      ))}
+                    </div>
+                    <div className={styles.dotsRow}>
+                      {newTodayList.map((_, idx) => (
+                        <div 
+                          key={idx} 
+                          className={`${styles.dot} ${idx === carouselIndex ? styles.dotActive : ''}`}
+                          onClick={() => setCarouselIndex(idx)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {availableList.length > 0 && (
+                <section className={styles.section}>
+                  <div className={styles.sectionHead}>
+                    <h2>⏰ Available Now</h2>
+                    <p>Packs you can pick up right now</p>
+                  </div>
+                  <div className={styles.cardList}>
+                    {filteredPacks.slice(0, expandedSections.available).map(pack => renderStoreCard(pack))}
+                  </div>
+                  {hasMoreAvailable && expandedSections.available < filteredPacks.length && (
+                    <button className={styles.expandBtn} onClick={() => toggleSection('available')}>
+                      <svg 
+                        width="20" 
+                        height="20" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        style={{ transform: 'rotate(0deg)', transition: 'transform 0.3s' }}
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+                  )}
+                </section>
+              )}
             </>
           )}
         </div>

@@ -84,12 +84,17 @@ export default function DetailProduct() {
   const [pack, setPack] = useState<Pack | null>(null)
   const [store, setStore] = useState<Store | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isFavorite, setIsFavorite] = useState(true) // Mocking favorite state
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
     if (id) {
       loadData(id)
     }
+  }, [id])
+
+  useEffect(() => {
+    const favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]')
+    setIsFavorite(favPackIds.includes(id))
   }, [id])
 
   const loadData = async (packId: string) => {
@@ -162,7 +167,18 @@ export default function DetailProduct() {
                 <span>{store.address}</span>
               </div>
             </div>
-            <button className={styles.heartBtn} onClick={() => setIsFavorite(!isFavorite)}>
+            <button className={styles.heartBtn} onClick={() => {
+              const packId = id
+              const favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]')
+              let next: string[]
+              if (isFavorite) {
+                next = favPackIds.filter((fid: string) => fid !== packId)
+              } else {
+                next = [...favPackIds, packId]
+              }
+              localStorage.setItem('favorite_pack_ids', JSON.stringify(next))
+              setIsFavorite(!isFavorite)
+            }}>
               <HeartIcon filled={isFavorite} />
             </button>
           </div>
@@ -213,7 +229,7 @@ export default function DetailProduct() {
           <button
             className={styles.reserveButton}
             onClick={() => navigate(`/reserve/${pack.id}`)}
-            disabled={pack.remaining_quantity === 0 || (pack.status && pack.status !== 'active')}
+            disabled={pack.remaining_quantity === 0 || (!!pack.status && pack.status !== 'active')}
           >
             Reserve
           </button>

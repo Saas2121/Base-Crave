@@ -196,6 +196,24 @@
   cursor: not-allowed;
 }
 
+.secondaryButton {
+  width: 100%;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #2a2a2a;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.secondaryButton:hover {
+  background: #2a2a2a;
+}
+
 /* Selection Screen Styles */
 .header {
   padding: 40px 24px 20px;

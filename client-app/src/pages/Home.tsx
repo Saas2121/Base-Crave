@@ -322,7 +322,7 @@ export default function Home() {
                     {topSpots.map((spot) => {
                       const logo = getSpotLogo(spot.name)
                       return (
-                        <div key={spot.id} className={styles.spotCard} onClick={() => navigate('/search/list')}>
+                        <div key={spot.id} className={styles.spotCard} onClick={() => navigate(`/search/map?store=${spot.id}`)}>
                           {logo || spot.users?.profile_image ? (
                             <img src={logo || spot.users?.profile_image} alt={spot.name} className={styles.spotAvatar} />
                           ) : (

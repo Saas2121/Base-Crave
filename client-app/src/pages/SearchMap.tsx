@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { storesAPI, Store } from '../api/client'
 import styles from './SearchMap.module.css'
 import BottomNav from '../components/BottomNav'
@@ -67,6 +67,7 @@ function formatTimeRange(startStr: string, endStr: string) {
 
 export default function SearchMap() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [stores, setStores] = useState<Store[]>([])
   const [loading, setLoading] = useState(true)
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
@@ -74,6 +75,8 @@ export default function SearchMap() {
   const [showBottomSheet, setShowBottomSheet] = useState(false)
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+  const autoOpenStoreId = searchParams.get('store')
 
   useEffect(() => {
     loadStoresAndLocation()
@@ -84,6 +87,18 @@ export default function SearchMap() {
       initMap()
     }
   }, [stores, userLocation])
+
+  useEffect(() => {
+    if (autoOpenStoreId && stores.length > 0 && mapInstanceRef.current) {
+      const store = stores.find(s => s.id === autoOpenStoreId)
+      if (store) {
+        setSelectedStore(store)
+        setShowBottomSheet(true)
+        const map = mapInstanceRef.current
+        map.setView([store.latitude, store.longitude], 16)
+      }
+    }
+  }, [autoOpenStoreId, stores, mapInstanceRef.current])
 
   const loadStoresAndLocation = async () => {
     try {
@@ -208,6 +223,14 @@ export default function SearchMap() {
   const closeBottomSheet = () => {
     setShowBottomSheet(false)
     setSelectedStore(null)
+  }
+
+  const selectStore = (store: Store) => {
+    setSelectedStore(store)
+    setShowBottomSheet(true)
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setView([store.latitude, store.longitude], 16)
+    }
   }
 
   return (

@@ -203,6 +203,21 @@
   color: #9ca3af;
 }
 
+.status_reserved {
+  font-size: 13px;
+  color: #f59e0b;
+}
+
+.status_in_process {
+  font-size: 13px;
+  color: #3b82f6;
+}
+
+.status_ready {
+  font-size: 13px;
+  color: #22c55e;
+}
+
 .loadingText {
   color: #6b7280;
   text-align: center;

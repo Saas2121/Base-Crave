@@ -72,17 +72,17 @@ export default function Profile() {
     navigate('/start')
   }
 
-  // Calculate stats based on real data or mock
-  const resCount = reservations.length || 24
-  const favsCount = 4 // Mocked for now
-  const savedAmount = '$186k' // Mocked
+  // Calculate stats based on real data
+  const resCount = activeReservations.length || reservations.length || 0
+  const favsCount = 0
+  const savedAmount = '$0'
 
-  // Mock reservations if empty to match screenshot
-  const displayReservations = reservations.length > 0 ? reservations : [
-    { id: '1', packs: { stores: { name: 'Frisby' } }, pickup_start: '2026-04-02T12:00:00Z', quantity: 1, status: 'completed', price: 12000 },
-    { id: '2', packs: { stores: { name: 'Sr Wok' } }, pickup_start: '2026-03-26T12:00:00Z', quantity: 1, status: 'completed', price: 19900 },
-    { id: '3', packs: { stores: { name: 'Crepes & Waffles' } }, pickup_start: '2026-03-05T12:00:00Z', quantity: 1, status: 'completed', price: 15300 },
-  ] as any[]
+  // Filter only active reservations
+  const activeReservations = reservations.filter((res: Reservation) => 
+    ['reserved', 'in_process', 'ready'].includes(res.status)
+  )
+
+  const displayReservations = activeReservations.length > 0 ? activeReservations : []
 
   return (
     <div className={styles.appContainer}>
@@ -163,7 +163,13 @@ export default function Profile() {
                   </div>
                   <div className={styles.resRight}>
                     <span className={styles.resPrice}>{formatPrice(res.packs?.price || res.price || 15000)}</span>
-                    <span className={styles.resStatus}>{res.status === 'picked_up' ? 'Completed' : (res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' '))}</span>
+                    <span className={styles[`status_${res.status}`]}>
+                      {res.status === 'reserved' ? 'Pending' : 
+                       res.status === 'in_process' ? 'In Progress' : 
+                       res.status === 'ready' ? 'Ready' : 
+                       res.status === 'picked_up' ? 'Completed' : 
+                       res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' ')}
+                    </span>
                   </div>
                   <ChevronRightIcon />
                 </div>

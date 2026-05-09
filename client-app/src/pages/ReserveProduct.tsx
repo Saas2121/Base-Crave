@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { packsAPI, reservationsAPI, storesAPI } from '../api/client'
-import { Pack, Store } from '../types'
+import { Pack, Store, Reservation } from '../types'
 import styles from './ReserveProduct.module.css'
 
 const CheckIcon = () => (
@@ -24,6 +24,20 @@ const ChevronLeftIcon = () => (
   </svg>
 )
 
+const LoadingIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f95519" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.spinIcon}>
+    <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+    <path d="M12 2a10 10 0 0 1 10 10" />
+  </svg>
+)
+
+const XIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+
 function formatTimeRange(startStr: string, endStr: string) {
   if (!startStr || !endStr) return ''
   try {
@@ -36,7 +50,7 @@ function formatTimeRange(startStr: string, endStr: string) {
       return `${h}:00 ${ampm}`
     }
     return `${formatTime(start)} - ${formatTime(end)}`
-  } catch (e) {
+  } catch {
     return ''
   }
 }
@@ -53,11 +67,19 @@ export default function ReserveProduct() {
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)
   const [reserving, setReserving] = useState(false)
-  const [successData, setSuccessData] = useState<any>(null)
+  const [pendingData, setPendingData] = useState<Reservation | null>(null)
+  const [confirmedData, setConfirmedData] = useState<Reservation | null>(null)
+  const [cancelledData, setCancelledData] = useState<Reservation | null>(null)
+  const pollRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (id) {
       loadData(id)
+    }
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current)
+      }
     }
   }, [id])
 
@@ -76,6 +98,25 @@ export default function ReserveProduct() {
     }
   }
 
+  const startPolling = (reservationId: string) => {
+    pollRef.current = setInterval(async () => {
+      try {
+        const { data } = await reservationsAPI.getById(reservationId)
+        if (data.status === 'in_process') {
+          clearInterval(pollRef.current!)
+          setConfirmedData(data)
+          setPendingData(null)
+        } else if (data.status === 'cancelled') {
+          clearInterval(pollRef.current!)
+          setCancelledData(data)
+          setPendingData(null)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }, 3000)
+  }
+
   const handleReserve = async () => {
     if (!pack) return
     
@@ -83,12 +124,17 @@ export default function ReserveProduct() {
     try {
       const reservationQty = pack.pack_type === 'surprise' ? 1 : quantity
       const { data } = await reservationsAPI.create({ pack_id: pack.id, quantity: reservationQty })
-      setSuccessData(data)
+      setPendingData(data)
+      startPolling(data.id)
     } catch (error) {
       console.error(error)
     } finally {
       setReserving(false)
     }
+  }
+
+  const handleGoToHome = () => {
+    navigate('/')
   }
 
   if (loading) {
@@ -111,7 +157,7 @@ export default function ReserveProduct() {
     )
   }
 
-  if (successData) {
+  if (confirmedData) {
     return (
       <div className={styles.appContainer}>
         <div className={styles.container}>
@@ -137,7 +183,7 @@ export default function ReserveProduct() {
               
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Reservation ID</span>
-                <span className={styles.detailValue}>#{successData.id.split('-')[0].toUpperCase() || 'CR2026-0501-1234'}</span>
+                <span className={styles.detailValue}>#{confirmedData.id.split('-')[0].toUpperCase() || 'CR2026-0501-1234'}</span>
               </div>
               
               <div className={styles.detailRow}>
@@ -154,7 +200,7 @@ export default function ReserveProduct() {
 
               <div className={styles.detailRow}>
                 <span className={styles.detailLabelMain}>Pack price</span>
-                <span className={styles.detailValueMain}>{formatPrice(pack.price * successData.quantity)}</span>
+                <span className={styles.detailValueMain}>{formatPrice(pack.price * confirmedData.quantity)}</span>
               </div>
             </div>
 
@@ -172,10 +218,105 @@ export default function ReserveProduct() {
           <div className={styles.bottomBar}>
             <button
               className={styles.primaryButton}
-              onClick={() => navigate(`/qr/${successData.id}`)}
+              onClick={() => navigate(`/qr/${confirmedData.id}`)}
             >
               View QR code
             </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (cancelledData) {
+    return (
+      <div className={styles.appContainer}>
+        <div className={styles.container}>
+          <div className={styles.successContent}>
+            <div className={styles.successHeader}>
+              <div className={styles.checkIconWrapper}>
+                <XIcon />
+              </div>
+              <h1 className={styles.successTitle}>Reservation<br/>Cancelled</h1>
+              <p className={styles.successSubtitle}>The restaurant has cancelled your order</p>
+            </div>
+
+            <div className={styles.infoBox} style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+              <p className={styles.infoText}>
+                Your reservation has been cancelled by the restaurant. Please try again or choose another pack.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.bottomBar}>
+            <button
+              className={styles.primaryButton}
+              onClick={handleGoToHome}
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (pendingData) {
+    return (
+      <div className={styles.appContainer}>
+        <div className={styles.container}>
+          <div className={styles.successContent}>
+            <div className={styles.successHeader}>
+              <div className={styles.pendingIconWrapper}>
+                <LoadingIcon />
+              </div>
+              <h1 className={styles.successTitle}>Waiting for<br/>Confirmation</h1>
+              <p className={styles.successSubtitle}>The restaurant is reviewing your order</p>
+            </div>
+
+            <div className={styles.detailsCard}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>Reservation Details</h2>
+                <div className={styles.pendingBadge}>Pending</div>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Restaurant</span>
+                <span className={styles.detailValue}>{store.name}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Reservation ID</span>
+                <span className={styles.detailValue}>#{pendingData.id.split('-')[0].toUpperCase() || 'CR2026-0501-1234'}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Pick up time</span>
+                <span className={styles.detailValue}>{formatTimeRange(pack.pickup_start, pack.pickup_end)}</span>
+              </div>
+              
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>Pack</span>
+                <span className={styles.detailValue}>{pack.pack_type === 'surprise' ? 'Surprise Pack' : pack.title}</span>
+              </div>
+
+              <div className={styles.divider}></div>
+
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabelMain}>Pack price</span>
+                <span className={styles.detailValueMain}>{formatPrice(pack.price * pendingData.quantity)}</span>
+              </div>
+            </div>
+
+            <div className={styles.infoBox}>
+              <div className={styles.infoHeader}>
+                <InfoIcon />
+                <span>Please wait</span>
+              </div>
+              <p className={styles.infoText}>
+                We're waiting for the restaurant to confirm your order. You'll be notified automatically.
+              </p>
+            </div>
           </div>
         </div>
       </div>

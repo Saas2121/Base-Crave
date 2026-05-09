@@ -5,6 +5,30 @@ import { UserRole } from '../types';
 
 const router = Router();
 
+function isPackAvailable(pack: any): boolean {
+  const now = new Date();
+  
+  if (pack.remaining_quantity <= 0 || pack.status === 'sold_out' || pack.status === 'expired') {
+    return false;
+  }
+
+  const pickupStart = new Date(pack.pickup_start);
+  const pickupEnd = new Date(pack.pickup_end);
+
+  if (now < pickupStart || now > pickupEnd) {
+    return false;
+  }
+
+  return true;
+}
+
+function filterAvailablePacks(store: any): any {
+  if (store.packs && Array.isArray(store.packs)) {
+    store.packs = store.packs.filter(isPackAvailable);
+  }
+  return store;
+}
+
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { open_only } = req.query;
@@ -24,7 +48,11 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.json(stores);
+    const filteredStores = stores.map(filterAvailablePacks).filter(store => 
+      store.packs && store.packs.length > 0
+    );
+
+    res.json(filteredStores);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -44,6 +72,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Store not found' });
     }
 
+    filterAvailablePacks(store);
     res.json(store);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -166,7 +195,8 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.json(packs);
+    const availablePacks = packs.filter(isPackAvailable);
+    res.json(availablePacks);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

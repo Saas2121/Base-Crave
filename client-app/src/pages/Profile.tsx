@@ -159,10 +159,10 @@ export default function Profile() {
                 <div key={res.id || index} className={styles.resCard} onClick={() => navigate(`/reservation/${res.id}`)}>
                   <div className={styles.resLeft}>
                     <h4>{res.packs?.stores?.name || 'Store'}</h4>
-                    <p>{formatDate(res.pickup_start)}</p>
+                    <p>{formatDate(res.packs?.pickup_start)}</p>
                   </div>
                   <div className={styles.resRight}>
-                    <span className={styles.resPrice}>{formatPrice(res.packs?.price || res.price || 15000)}</span>
+                    <span className={styles.resPrice}>{formatPrice(res.packs?.price || 15000)}</span>
                     <span className={styles[`status_${res.status}`]}>
                       {res.status === 'reserved' ? 'Pending' : 
                        res.status === 'in_process' ? 'In Progress' : 

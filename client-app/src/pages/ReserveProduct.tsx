@@ -105,16 +105,6 @@ export default function ReserveProduct() {
     }
   }
 
-  const handleRefresh = async () => {
-    if (!reservationData) return
-    try {
-      const { data } = await reservationsAPI.getById(reservationData.id)
-      setReservationData(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const handleGoToProfile = () => {
     navigate('/profile')
   }

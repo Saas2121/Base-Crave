@@ -218,19 +218,9 @@ export default function SearchMap() {
     mapInstanceRef.current = map
   }
 
-  const markersRef = useRef<any[]>([])
-
   const closeBottomSheet = () => {
     setShowBottomSheet(false)
     setSelectedStore(null)
-  }
-
-  const selectStore = (store: Store) => {
-    setSelectedStore(store)
-    setShowBottomSheet(true)
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView([store.latitude, store.longitude], 16)
-    }
   }
 
   return (

@@ -27,6 +27,12 @@ const BoxIcon = () => (
   </svg>
 )
 
+const ChevronRightIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+)
+
 function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
@@ -159,6 +165,7 @@ export default function Profile() {
                     <span className={styles.resPrice}>{formatPrice(res.packs?.price || res.price || 15000)}</span>
                     <span className={styles.resStatus}>{res.status === 'picked_up' ? 'Completed' : (res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' '))}</span>
                   </div>
+                  <ChevronRightIcon />
                 </div>
               ))
             )}

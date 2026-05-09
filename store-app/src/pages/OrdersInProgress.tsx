@@ -122,6 +122,7 @@ export default function OrdersInProgress() {
         </div>
       )}
 
+      <div style={{ height: '60px' }} />
       <BottomNav active="orders" />
     </div>
   )

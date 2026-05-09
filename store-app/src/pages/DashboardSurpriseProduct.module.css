@@ -8,6 +8,8 @@
   font-size: 15.07px;
   color: #99a1af;
   font-family: 'General Sans';
+  padding-bottom: 40px;
+  box-sizing: border-box;
 }
 .dashboardChild {
   position: absolute;

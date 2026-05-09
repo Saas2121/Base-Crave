@@ -1,42 +1,29 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { packsAPI } from '../api/client'
+import { usePackStore } from '../store/packStore'
 import styles from './Packs.module.css'
 import BottomNav from '../components/BottomNav'
 
 export default function Packs() {
   const navigate = useNavigate()
-  const [packs, setPacks] = useState<any[]>([])
+  const { packs, loading, deleting, error, fetchPacks, deletePack, clearError } = usePackStore()
   const [view, setView] = useState<'active' | 'sold'>('active')
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadPacks()
-  }, [])
+    fetchPacks()
+  }, [fetchPacks])
 
-  const loadPacks = async () => {
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this pack?')) return
     try {
-      const data = await packsAPI.getByStore()
-      setPacks(data)
+      await deletePack(id)
     } catch {
-      // silently fail
-    } finally {
-      setLoading(false)
+      // error is stored in store
     }
   }
 
-  const handleDelete = useCallback(async (id: string) => {
-    if (!confirm('Are you sure you want to delete this pack?')) return
-    try {
-      await packsAPI.delete(id)
-      setPacks(packs.filter(p => p.id !== id))
-    } catch {
-      // silently fail
-    }
-  }, [packs])
-
   const activePacks = packs.filter(p => p.status === 'active')
-  const soldPacks = packs.filter(p => p.status === 'sold_out' || (p.total_quantity - p.remaining_quantity) > 0)
+  const soldPacks = packs.filter(p => p.status !== 'active')
   const displayedPacks = view === 'active' ? activePacks : soldPacks
 
   const formatTime = (iso: string) => {
@@ -81,16 +68,22 @@ export default function Packs() {
             <span>Active</span>
           </div>
           <div className={`${styles.filterBtn} ${view === 'sold' ? styles.filterBtnActive : ''}`} onClick={() => setView('sold')}>
-            <span>Sold Out</span>
+            <span>Inactive</span>
           </div>
         </div>
       </div>
 
+      {error && (
+        <div style={{ padding: '8px 16px', background: '#ff4444', color: '#fff', borderRadius: '8px', margin: '8px 16px', cursor: 'pointer', textAlign: 'center' }} onClick={clearError}>
+          {error}
+        </div>
+      )}
+
       {loading ? (
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>Loading packs...</div>
       ) : displayedPacks.length === 0 ? (
         <div className={styles.empty}>
-          <p>No {view === 'active' ? 'active' : 'sold out'} packs</p>
+          <p>No {view === 'active' ? 'active' : 'inactive'} packs</p>
           {view === 'active' && (
             <button onClick={() => navigate('/dashboard/fixed')} className={styles.createBtn}>Create your first pack</button>
           )}
@@ -112,7 +105,11 @@ export default function Packs() {
                     <button className={styles.actionBtn} onClick={() => navigate(`/packs/${pack.id}/edit`)}>
                       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                     </button>
-                    <button className={styles.actionBtn} onClick={() => handleDelete(pack.id)}>
+                    <button
+                      className={styles.actionBtn}
+                      onClick={() => handleDelete(pack.id)}
+                      disabled={deleting}
+                    >
                       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                     </button>
                   </div>
@@ -144,6 +141,7 @@ export default function Packs() {
         </div>
       )}
 
+      <div style={{ height: '30px' }} />
       <BottomNav active="packs" />
     </div>
   )

@@ -1,6 +1,6 @@
 .greetingUser {
   width: 100%;
-  height: 1069px;
+  min-height: 100vh;
   position: relative;
   background-color: #fff;
   display: flex;
@@ -15,15 +15,16 @@
 }
 .app {
   align-self: stretch;
-  height: 1069px;
+  min-height: 100vh;
   position: relative;
   background-color: #101010;
-  overflow: hidden;
+  overflow-y: auto;
   flex-shrink: 0;
+  padding-bottom: 40px;
 }
 .container {
   position: absolute;
-  top: 265px;
+  top: 180px;
   left: 57px;
   box-shadow: 0px 4.646801948547363px 46.47px rgba(0, 0, 0, 0.25);
   border-radius: 31.36px;
@@ -308,6 +309,7 @@
   left: 1.51px;
   width: 322.2px;
   height: 128.9px;
+  border-radius: 31.36px 31.36px 0 0;
   overflow: hidden;
   background-size: cover;
   background-repeat: no-repeat;
@@ -450,7 +452,7 @@
 }
 .detailPack {
   position: absolute;
-  top: 488.04px;
+  top: 410px;
   left: 35.5px;
   font-size: 40px;
   line-height: 33.29px;
@@ -460,7 +462,7 @@
 }
 .button5 {
   position: absolute;
-  top: 415.04px;
+  top: 340px;
   left: 35.5px;
   width: 87px;
   height: 26.8px;

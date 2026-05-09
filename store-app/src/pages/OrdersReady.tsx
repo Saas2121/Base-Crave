@@ -125,6 +125,7 @@ export default function OrdersReady() {
         </div>
       )}
 
+      <div style={{ height: '60px' }} />
       <BottomNav active="orders" />
     </div>
   )

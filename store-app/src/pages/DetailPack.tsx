@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { usePackStore } from '../store/packStore'
 import { packsAPI } from '../api/client'
 import { Pack } from '../types'
 import styles from './GreetingUser.module.css'
@@ -7,14 +8,15 @@ import styles from './GreetingUser.module.css'
 const DetailPack = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { updatePack } = usePackStore()
   const [pack, setPack] = useState<Pack | null>(null)
   const [quantity, setQuantity] = useState(0)
   const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
-    if (id) {
-      loadPack()
-    }
+    if (id) loadPack()
   }, [id])
 
   const loadPack = async () => {
@@ -23,13 +25,13 @@ const DetailPack = () => {
       setPack(data)
       setQuantity(data.remaining_quantity)
     } catch {
-      // silently fail
+      setLoadError('Failed to load pack')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleBack = useCallback(() => {
-    navigate('/packs')
-  }, [navigate])
+  const handleBack = () => navigate('/packs')
 
   const handleDecrease = () => {
     if (quantity > 0) setQuantity(quantity - 1)
@@ -43,11 +45,11 @@ const DetailPack = () => {
     if (!pack) return
     setSaving(true)
     try {
-      const data = await packsAPI.update(pack.id, { remaining_quantity: quantity })
-      setPack(data)
-      alert('Pack actualizado correctamente')
+      const updated = await packsAPI.update(pack.id, { remaining_quantity: quantity })
+      setPack(updated)
+      await updatePack(pack.id, updated)
     } catch {
-      alert('Error al actualizar el pack')
+      alert('Error updating pack')
     } finally {
       setSaving(false)
     }
@@ -55,17 +57,17 @@ const DetailPack = () => {
 
   const handleDelete = async () => {
     if (!pack) return
-    if (window.confirm('¿Eliminar paquete?')) {
-      try {
-        await packsAPI.delete(pack.id)
-        navigate('/packs')
-      } catch {
-        alert('Error al eliminar el pack')
-      }
+    if (!window.confirm('Delete this pack?')) return
+    try {
+      await updatePack(pack.id, { status: 'expired' })
+      navigate('/packs')
+    } catch {
+      alert('Error deleting pack')
     }
   }
 
-  if (!pack) return <div className={styles.greetingUser}>Loading...</div>
+  if (loading) return <div className={styles.greetingUser}><div className={styles.app}><div style={{ padding: '100px 39px', color: '#fff' }}>Loading...</div></div></div>
+  if (loadError || !pack) return <div className={styles.greetingUser}><div className={styles.app}><div style={{ padding: '100px 39px', color: '#fff' }}>{loadError || 'Not found'}</div></div></div>
 
   const availabilityPercentage = (pack.remaining_quantity / pack.total_quantity) * 100
 
@@ -101,7 +103,7 @@ const DetailPack = () => {
             <div className={styles.container6}>
               <div className={styles.paragraph4} />
               <div className={styles.paragraph4}>
-                <div className={styles.ltimaActualizacinHoy}>Última actualización: Hoy, 10:30 AM</div>
+                <div className={styles.ltimaActualizacinHoy}>Last updated: Today, {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
               </div>
             </div>
             <div className={styles.groupParent}>

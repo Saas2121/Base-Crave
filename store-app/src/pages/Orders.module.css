@@ -1,6 +1,6 @@
 .dashboard {
   width: 100%;
-  min-height: 1800px;
+  min-height: 100vh;
   position: relative;
   background-color: #101010;
   overflow-y: auto;
@@ -8,6 +8,8 @@
   font-size: 13px;
   color: #99a1af;
   font-family: 'General Sans';
+  padding-bottom: 40px;
+  box-sizing: border-box;
 }
 
 .header {

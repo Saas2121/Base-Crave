@@ -65,6 +65,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const { data } = await authAPI.me()
+      if (data.role !== UserRole.STORE_ADMIN) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        set({ user: null, token: null, isAuthenticated: false, isLoading: false })
+        return
+      }
       set({ user: data, isAuthenticated: true, isLoading: false })
     } catch (error) {
       localStorage.removeItem('token')

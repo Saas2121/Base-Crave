@@ -106,7 +106,6 @@ router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: 
 router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
 
     const { data: pack, error: findError } = await supabase
       .from('packs')
@@ -116,6 +115,52 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
 
     if (findError || !pack || pack.stores.owner_id !== req.user!.id) {
       return res.status(404).json({ error: 'Pack not found' });
+    }
+
+    const allowedFields = ['title', 'description', 'price', 'original_price', 'total_quantity', 'remaining_quantity', 'pickup_start', 'pickup_end', 'status'];
+    const updates: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    if (updates.price !== undefined) {
+      const p = Number(updates.price);
+      if (!Number.isFinite(p) || p <= 0) {
+        return res.status(400).json({ error: 'Invalid price' });
+      }
+      updates.price = p;
+    }
+    if (updates.original_price !== undefined) {
+      if (updates.original_price === null || updates.original_price === '') {
+        updates.original_price = null;
+      } else {
+        const op = Number(updates.original_price);
+        if (!Number.isFinite(op) || op <= 0) {
+          return res.status(400).json({ error: 'Invalid original price' });
+        }
+        updates.original_price = op;
+      }
+    }
+    if (updates.total_quantity !== undefined) {
+      const tq = Number(updates.total_quantity);
+      if (!Number.isFinite(tq) || tq < 1) {
+        return res.status(400).json({ error: 'Invalid total quantity' });
+      }
+      updates.total_quantity = tq;
+    }
+    if (updates.remaining_quantity !== undefined) {
+      const rq = Number(updates.remaining_quantity);
+      if (!Number.isFinite(rq) || rq < 0) {
+        return res.status(400).json({ error: 'Invalid remaining quantity' });
+      }
+      updates.remaining_quantity = rq;
+    }
+    if (updates.status !== undefined) {
+      if (!Object.values(PackStatus).includes(updates.status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+      }
     }
 
     const { data: updatedPack, error } = await supabase

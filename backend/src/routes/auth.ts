@@ -101,7 +101,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/me', (req: AuthRequest, res: Response) => {
+router.get('/me', authenticate, (req: AuthRequest, res: Response) => {
   (async () => {
     try {
       if (!req.user) {

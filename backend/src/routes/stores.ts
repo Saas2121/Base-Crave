@@ -6,12 +6,11 @@ import { UserRole } from '../types';
 const router = Router();
 
 function isPackAvailable(pack: any): boolean {
-  const now = new Date();
-  
   if (pack.remaining_quantity <= 0 || pack.status === 'sold_out' || pack.status === 'expired') {
     return false;
   }
 
+  const now = new Date();
   const pickupStart = new Date(pack.pickup_start);
   const pickupEnd = new Date(pack.pickup_end);
 
@@ -20,13 +19,6 @@ function isPackAvailable(pack: any): boolean {
   }
 
   return true;
-}
-
-function filterAvailablePacks(store: any): any {
-  if (store.packs && Array.isArray(store.packs)) {
-    store.packs = store.packs.filter(isPackAvailable);
-  }
-  return store;
 }
 
 router.get('/', async (req: Request, res: Response) => {
@@ -48,9 +40,12 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const filteredStores = stores.map(filterAvailablePacks).filter(store => 
-      store.packs && store.packs.length > 0
-    );
+    const filteredStores = stores.map(store => {
+      if (store.packs && Array.isArray(store.packs)) {
+        store.packs = store.packs.filter(isPackAvailable);
+      }
+      return store;
+    });
 
     res.json(filteredStores);
   } catch (error: any) {
@@ -72,7 +67,9 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Store not found' });
     }
 
-    filterAvailablePacks(store);
+    if (store.packs && Array.isArray(store.packs)) {
+      store.packs = store.packs.filter(isPackAvailable);
+    }
     res.json(store);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

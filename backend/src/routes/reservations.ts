@@ -86,6 +86,33 @@ router.get('/my', authenticate, requireRole(['consumer']), async (req: AuthReque
   }
 });
 
+router.get('/:id', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const { data: reservation, error } = await supabase
+      .from('reservations')
+      .select('*, packs(*, stores(*))')
+      .eq('id', id)
+      .single();
+
+    if (error || !reservation) {
+      return res.status(404).json({ error: 'Reservation not found' });
+    }
+
+    const isConsumer = reservation.user_id === req.user!.id;
+    const isStoreAdmin = req.user!.role === 'store_admin';
+
+    if (isConsumer || isStoreAdmin) {
+      return res.json(reservation);
+    }
+
+    res.status(403).json({ error: 'Unauthorized' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/store', authenticate, requireRole(['store_admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { data: store, error: storeError } = await supabase

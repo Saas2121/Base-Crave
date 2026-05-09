@@ -130,8 +130,10 @@ export default function DetailProduct() {
     )
   }
 
-  const imageUrl = pack.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
   const isSurprise = pack.pack_type === 'surprise'
+  const imageUrl = pack.image_url || (isSurprise 
+    ? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop')
   const packTitle = isSurprise ? 'Surprise Pack' : pack.title
   const packDescription = pack.description || 'Get a delicious surprise meal at an incredible price. Save food and save money!'
 
@@ -154,7 +156,9 @@ export default function DetailProduct() {
               alt={packTitle}
               className={styles.mainImage}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+                (e.target as HTMLImageElement).src = isSurprise
+                  ? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+                  : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
               }}
             />
           </div>

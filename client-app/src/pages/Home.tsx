@@ -166,9 +166,17 @@ export default function Home() {
     })
   }
 
+  const getImageUrl = (pack: any) => {
+    if (pack.image_url) return pack.image_url
+    if (pack.pack_type === 'surprise') {
+      return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    }
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+  }
+
   const renderStoreCard = (pack: any) => {
     const store = pack.store
-    const imageUrl = pack.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+    const imageUrl = getImageUrl(pack)
     const isFav = favoritePackIds.includes(pack.id)
 
     return (

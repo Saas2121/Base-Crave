@@ -209,7 +209,15 @@ export default function Favorites() {
             <div className={styles.storesList}>
               {filteredFavorites.map((fav) => {
                 const store = fav.store
-                const imageUrl = fav.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+                const getImageUrl = (fav: any) => {
+    if (fav.image_url) return fav.image_url
+    if (fav.pack_type === 'surprise') {
+      return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    }
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+  }
+
+  const imageUrl = getImageUrl(fav)
                 const isSoldOut = fav.remaining_quantity === 0 || fav.status === 'sold_out' || fav.status === 'expired'
                 
                 return (

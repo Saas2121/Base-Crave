@@ -286,7 +286,9 @@ export default function SearchMap() {
                   onClick={() => navigate(`/product/${pack.id}`)}
                 >
                   <img
-                    src={pack.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600'}
+                    src={pack.image_url || (pack.pack_type === 'surprise' 
+                      ? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600'
+                      : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600')}
                     alt={pack.title}
                     className={styles.packImage}
                   />

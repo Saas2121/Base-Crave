@@ -4,7 +4,7 @@ import { usePackStore } from '../store/packStore'
 import { packsAPI } from '../api/client'
 import { Pack } from '../types'
 import BottomNav from '../components/BottomNav'
-import styles from './PackDetailEdit.module.css'
+import styles from './GreetingUser.module.css'
 
 export default function PackDetailEdit() {
   const navigate = useNavigate()
@@ -87,6 +87,7 @@ export default function PackDetailEdit() {
         price: Number(price),
         total_quantity: Number(newTotal),
         remaining_quantity: newRemaining,
+        status: newRemaining > 0 ? 'active' : 'sold_out',
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
       })

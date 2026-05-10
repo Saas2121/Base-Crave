@@ -25,7 +25,7 @@ export const usePackStore = create<PackState>((set) => ({
     set({ loading: true, error: null })
     try {
       const data = await packsAPI.getByStore()
-      set({ packs: data, loading: false })
+      set({ packs: data.filter((p: Pack) => p.status !== 'expired'), loading: false })
     } catch (err: any) {
       const message = err?.response?.data?.error || err?.message || 'Failed to load packs'
       set({ error: message, loading: false })

@@ -4,17 +4,17 @@ import { reservationsAPI } from '../api/client'
 import { Reservation } from '../types'
 import styles from './ViewQRCode.module.css'
 
-const CloseIcon = () => (
+const MapPinIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
   </svg>
 )
 
-const MapIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-    <circle cx="12" cy="10" r="3" />
+const ClockWarningIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 
@@ -25,14 +25,33 @@ function formatTimeRange(startStr?: string, endStr?: string) {
     const end = new Date(endStr)
     const formatTime = (d: Date) => {
       let h = d.getHours()
+      const m = d.getMinutes()
       const ampm = h >= 12 ? 'PM' : 'AM'
       h = h % 12 || 12
-      return `${h}:00 ${ampm}`
+      return `${h}:${m.toString().padStart(2, '0')} ${ampm}`
     }
     return `${formatTime(start)} - ${formatTime(end)}`
   } catch (e) {
     return ''
   }
+}
+
+function formatTimeSingle(timeStr?: string) {
+  if (!timeStr) return ''
+  try {
+    const d = new Date(timeStr)
+    let h = d.getHours()
+    const m = d.getMinutes()
+    const ampm = h >= 12 ? 'PM' : 'AM'
+    h = h % 12 || 12
+    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`
+  } catch (e) {
+    return ''
+  }
+}
+
+function formatPrice(price: number) {
+  return `$${price.toLocaleString('es-CO')}`
 }
 
 export default function ViewQRCode() {
@@ -61,6 +80,12 @@ export default function ViewQRCode() {
     }
   }
 
+  const handleGetDirections = () => {
+    if (reservation?.packs?.stores?.latitude && reservation?.packs?.stores?.longitude) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${reservation.packs.stores.latitude},${reservation.packs.stores.longitude}`, '_blank')
+    }
+  }
+
   if (loading) {
     return (
       <div className={styles.appContainer}>
@@ -82,61 +107,86 @@ export default function ViewQRCode() {
   }
 
   const storeName = reservation.packs?.stores?.name || 'Store'
-  const packTitle = reservation.packs?.pack_type === 'surprise' ? 'Surprise pack' : reservation.packs?.title
+  const storeAddress = reservation.packs?.stores?.address || 'Address not available'
+  const packTitle = reservation.packs?.pack_type === 'surprise' ? 'Surprise Pack' : reservation.packs?.title
+  const packPrice = reservation.packs?.price || 0
   const pickupStart = reservation.packs?.pickup_start
   const pickupEnd = reservation.packs?.pickup_end
   const pickupCode = reservation.pickup_code || '---'
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${pickupCode}`
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${pickupCode}&color=000000&bgcolor=ffffff`
 
-  const formattedCode = pickupCode
+  const formattedCode = `CR-${pickupCode.slice(0, 4)}`
 
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <div className={styles.headerLeft}></div>
-          <h1 className={styles.headerTitle}>Pick-up code</h1>
-          <button onClick={() => navigate('/')} className={styles.closeButton}>
-            <CloseIcon />
-          </button>
+          <h1 className={styles.headerTitle}>Your Pick-Up Code</h1>
+          <p className={styles.headerSubtitle}>Show this code at the restaurant</p>
         </header>
 
         <div className={styles.content}>
-          <div className={styles.qrCard}>
-            <p className={styles.instructionText}>Show this code to the restaurant</p>
-            
-            <div className={styles.qrWrapper}>
-              <img src={qrUrl} alt="QR Code" className={styles.qrImage} />
-            </div>
-            
+          <div className={styles.qrWrapper}>
+            <img src={qrUrl} alt="QR Code" className={styles.qrImage} />
+          </div>
+          
+          <div className={styles.codeContainer}>
+            <p className={styles.codeLabel}>Reservation Code</p>
             <div className={styles.codeText}>{formattedCode}</div>
+          </div>
+
+          <div className={styles.detailsCard}>
+            <div className={styles.statusRow}>
+              <div className={styles.statusDot}></div>
+              <span className={styles.statusText}>Ready for Pick Up</span>
+            </div>
             
-            <p className={styles.statusText}>Status: <span className={styles.statusValue}>{reservation.status.replace('_', ' ').charAt(0).toUpperCase() + reservation.status.slice(1).replace('_', ' ')}</span></p>
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Restaurant</span>
+              <span className={styles.detailValue}>{storeName}</span>
+            </div>
+            
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Location</span>
+              <span className={styles.detailValue}>{storeAddress}</span>
+            </div>
+            
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Pick up time</span>
+              <span className={styles.detailValue}>{formatTimeRange(pickupStart, pickupEnd)}</span>
+            </div>
+            
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Pack</span>
+              <span className={styles.detailValue}>{packTitle}</span>
+            </div>
+            
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Pay in store</span>
+              <span className={styles.detailValueOrange}>{formatPrice(packPrice * reservation.quantity)}</span>
+            </div>
           </div>
 
-          <div className={styles.infoCard}>
-            <div className={styles.infoRowMain}>
-              <span className={styles.storeName}>{storeName}</span>
-              <button className={styles.mapButton}>
-                <MapIcon />
-              </button>
+          <button className={styles.directionsButton} onClick={handleGetDirections}>
+            <MapPinIcon />
+            <span>Get Directions</span>
+          </button>
+          
+          <div className={styles.warningBox}>
+            <div className={styles.warningIconWrapper}>
+              <ClockWarningIcon />
             </div>
-            <div className={styles.infoRowSub}>
-              <span className={styles.packType}>{packTitle}</span>
-              <span className={styles.pickupTime}>Pick up today, {formatTimeRange(pickupStart, pickupEnd)}</span>
+            <div className={styles.warningTextContainer}>
+              <p className={styles.warningTitle}>Code expires at {formatTimeSingle(pickupEnd)}</p>
+              <p className={styles.warningSubtitle}>Make sure to pick up before the window closes</p>
             </div>
           </div>
-        </div>
-
-        <div className={styles.bottomBar}>
+          
           <button 
-            className={styles.cancelButton}
-            onClick={() => {
-              // API call to cancel could be added here
-              navigate('/')
-            }}
+            className={styles.doneButton}
+            onClick={() => navigate('/profile')}
           >
-            Cancel reservation
+            Done
           </button>
         </div>
       </div>

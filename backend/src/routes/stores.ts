@@ -3,6 +3,7 @@ import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole } from '../types';
 import { upload } from '../middleware/upload';
+import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 
@@ -189,7 +190,9 @@ router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), uplo
       return res.status(404).json({ error: 'Store not found' });
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
+    const localUrl = `/uploads/${req.file.filename}`;
+    const supabaseUrl = await uploadToSupabaseStorage(req.file.path, req.file.filename, req.file.mimetype);
+    const imageUrl = supabaseUrl || localUrl;
 
     const { data: updatedStore, error } = await supabase
       .from('stores')

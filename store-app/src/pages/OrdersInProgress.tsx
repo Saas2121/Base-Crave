@@ -53,7 +53,7 @@ export default function OrdersInProgress() {
   }
 
   const renderOrderCard = (res: Reservation) => {
-    const packTitle = res.packs?.title || 'Pack'
+    const packTitle = res.packs?.title || res.packs?.pack_type === 'surprise' ? 'Surprise Pack' : 'Pack'
     const customerName = res.users?.name || 'Customer'
     const price = res.packs?.price || 0
     const pickupTime = formatTime(res.packs?.pickup_start || '')
@@ -61,20 +61,17 @@ export default function OrdersInProgress() {
     return (
       <div key={res.id} className={styles.card}>
         <div className={styles.cardContent}>
+          <div className={styles.orderIdTop}>Order ORD-{res.id.slice(0, 4).toUpperCase()}</div>
           <div className={styles.cardHeader}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div className={styles.packageName}>{packTitle}</div>
-              <span className={styles.quantityBadge}>x{res.quantity}</span>
-            </div>
-            <div className={styles.price}>{formatPrice(price)}</div>
+            <div className={styles.packageName}>{packTitle}</div>
+            <div className={styles.price}>{formatPrice(price * res.quantity)}</div>
           </div>
-          <div className={styles.orderId}>Order {res.id.slice(0, 8)}</div>
           <div className={styles.customerInfo}>
-            <div className={styles.infoRow}>
+            <div className={styles.infoCol}>
               <span className={styles.infoLabel}>Customer</span>
               <span className={styles.infoValue}>{customerName}</span>
             </div>
-            <div className={styles.infoRow}>
+            <div className={styles.infoCol}>
               <span className={styles.infoLabel}>Pickup Time</span>
               <span className={styles.infoValue}>{pickupTime}</span>
             </div>
@@ -82,10 +79,6 @@ export default function OrdersInProgress() {
         </div>
         <div className={styles.cardActions}>
           <button className={styles.readyBtn} onClick={() => handleMarkReady(res.id)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
             Mark as Ready
           </button>
         </div>

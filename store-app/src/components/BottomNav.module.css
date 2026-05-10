@@ -9,6 +9,7 @@
   font-size: 12.48px;
   color: #99a1af;
   font-family: Inter;
+  pointer-events: none;
 }
 .navStoreChild {
   position: absolute;
@@ -28,6 +29,7 @@
   box-sizing: border-box;
   width: 440px;
   height: 89px;
+  pointer-events: auto;
 }
 .container {
   position: absolute;

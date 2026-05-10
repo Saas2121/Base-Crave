@@ -97,7 +97,7 @@ export default function ReserveProduct() {
     try {
       const reservationQty = pack.pack_type === 'surprise' ? 1 : quantity
       const { data } = await reservationsAPI.create({ pack_id: pack.id, quantity: reservationQty })
-      setReservationData(data)
+      navigate(`/reservation/${data.id}`, { replace: true })
     } catch (error) {
       console.error(error)
     } finally {

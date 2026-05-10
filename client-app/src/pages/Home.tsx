@@ -147,6 +147,7 @@ export default function Home() {
     .flatMap((store: Store) =>
       (store.packs || []).map((pack: Pack) => ({ ...pack, store }))
     )
+    .filter((pack) => pack.remaining_quantity > 0 && pack.status !== 'sold_out' && pack.status !== 'expired')
 
   const filteredPacks = selectedCategory
     ? packs.filter((pack) => getCategoryForStore(pack.store?.name || '') === selectedCategory)

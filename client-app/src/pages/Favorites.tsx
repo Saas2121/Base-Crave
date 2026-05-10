@@ -162,7 +162,7 @@ export default function Favorites() {
               <div className={styles.watermark}><SmileWatermark /></div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNum}>${stats.avgPrice.toLocaleString('es-CO')}</div>
+              <div className={styles.statNum}>{stats.avgPrice >= 1000 ? `$${(stats.avgPrice / 1000).toFixed(0)}K` : `$${stats.avgPrice.toLocaleString('es-CO')}`}</div>
               <div className={styles.statLabel}>Avg price</div>
               <div className={styles.watermark}>
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" opacity="0.05">

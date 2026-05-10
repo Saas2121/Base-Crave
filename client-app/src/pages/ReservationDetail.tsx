@@ -147,7 +147,7 @@ export default function ReservationDetail() {
     )
   }
 
-  const store = reservation.stores
+  const store = reservation.packs?.stores
   const pack = reservation.packs
   const statusColor = getStatusColor(reservation.status)
 

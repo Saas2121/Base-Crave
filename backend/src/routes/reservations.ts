@@ -50,17 +50,15 @@ router.post('/', authenticate, requireRole(['consumer']), async (req: AuthReques
       return res.status(500).json({ error: error.message });
     }
 
+    const newQuantity = pack.remaining_quantity - quantity;
+    
     await supabase
       .from('packs')
-      .update({ remaining_quantity: pack.remaining_quantity - quantity })
+      .update({ 
+        remaining_quantity: newQuantity,
+        status: newQuantity <= 0 ? 'sold_out' : 'active'
+      })
       .eq('id', pack_id);
-
-    if (pack.remaining_quantity - quantity === 0) {
-      await supabase
-        .from('packs')
-        .update({ status: 'sold_out' })
-        .eq('id', pack_id);
-    }
 
     res.status(201).json(reservation);
   } catch (error: any) {

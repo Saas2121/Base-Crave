@@ -83,6 +83,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
+  flex: 1;
 }
 
 .profileInfo h2 {
@@ -90,6 +92,9 @@
   font-weight: 700;
   color: #ffffff;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .infoRow {
@@ -98,6 +103,12 @@
   gap: 8px;
   color: #9ca3af;
   font-size: 13px;
+}
+
+.infoRow span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .divider {
@@ -137,6 +148,17 @@
   gap: 8px;
   margin-top: 8px;
   margin-bottom: -8px;
+}
+
+.iconCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(249, 85, 25, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(249, 85, 25, 0.05);
 }
 
 .sectionHeader h3 {
@@ -220,6 +242,11 @@
 .status_ready {
   font-size: 13px;
   color: #22c55e;
+}
+
+.status_picked_up {
+  font-size: 13px;
+  color: #9ca3af;
 }
 
 .loadingText {

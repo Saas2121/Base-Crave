@@ -171,7 +171,7 @@ export default function DashboardSurpriseProduct() {
         </div>
         <div className={styles.container8}>
           <div className={styles.container9}>
-            <div className={styles.div}>${revenue}</div>
+            <div className={styles.div}>${revenue.toLocaleString('es-CO')}</div>
           </div>
           <div className={styles.container10}>
             <div className={styles.activePacks}>Revenue</div>

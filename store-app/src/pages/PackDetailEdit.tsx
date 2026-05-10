@@ -4,7 +4,7 @@ import { usePackStore } from '../store/packStore'
 import { packsAPI } from '../api/client'
 import { Pack } from '../types'
 import BottomNav from '../components/BottomNav'
-import styles from './GreetingUser.module.css'
+import styles from './PackDetailEdit.module.css'
 
 export default function PackDetailEdit() {
   const navigate = useNavigate()
@@ -116,7 +116,7 @@ export default function PackDetailEdit() {
   }
 
   const handleDecrease = () => {
-    if (newTotal > 0) { setNewTotal(newTotal - 1); setLastUpdate(Date.now()) }
+    if (newTotal > sold) { setNewTotal(newTotal - 1); setLastUpdate(Date.now()) }
   }
 
   const handleIncrease = () => {
@@ -259,7 +259,7 @@ export default function PackDetailEdit() {
             />
           </div>
           <div className={styles.iconGroup}>
-            <img className={styles.icon3} alt="" src="/images/clock.svg" />
+            <img alt="" src="/images/clock.svg" style={{ width: 15.1, height: 15.1 }} />
             <div className={styles.text4}>
               <div className={styles.pm}>
                 {formatTimeDisplay(pickupStart)} - {formatTimeDisplay(pickupEnd)}

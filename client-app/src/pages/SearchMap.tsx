@@ -297,9 +297,8 @@ export default function SearchMap() {
                     <div className={styles.packMeta}>
                       <div className={styles.packPrice}>
                         <span className={styles.currentPrice}>{formatPrice(pack.price)}</span>
-                        {pack.original_price && (
-                          <span className={styles.originalPrice}>{formatPrice(pack.original_price)}</span>
-                        )}
+
+
                       </div>
                       <div className={styles.packDetails}>
                         <span><BoxIcon /> {pack.remaining_quantity}</span>

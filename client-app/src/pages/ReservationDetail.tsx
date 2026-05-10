@@ -178,9 +178,13 @@ export default function ReservationDetail() {
       <div className={styles.card}>
         <div className={styles.storeRow}>
           <div className={styles.storeImageContainer}>
-            <div className={styles.storeImagePlaceholder}>
-              {store?.name?.substring(0, 2).toUpperCase() || 'FR'}
-            </div>
+            {store?.image_url ? (
+              <img src={store.image_url} alt={store.name} className={styles.storeImage} />
+            ) : (
+              <div className={styles.storeImagePlaceholder}>
+                {store?.name?.substring(0, 2).toUpperCase() || 'FR'}
+              </div>
+            )}
           </div>
           <div className={styles.storeInfo}>
             <h2>{store?.name || 'Store Name'}</h2>
@@ -190,15 +194,11 @@ export default function ReservationDetail() {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className={styles.card}>
         <div className={styles.detailRow}>
           <div className={styles.detailLabel}>Pack</div>
           <div className={styles.detailValue}>{pack?.title || pack?.pack_type === 'surprise' ? 'Surprise Pack' : 'Pack Name'}</div>
         </div>
-
-        <div className={styles.divider} />
 
         <div className={styles.rowGroup}>
           <div className={styles.rowHalf}>
@@ -216,8 +216,6 @@ export default function ReservationDetail() {
             <div className={styles.detailValue}>{formatTimeRange(pack?.pickup_start || '', pack?.pickup_end || '')}</div>
           </div>
         </div>
-
-        <div className={styles.divider} />
 
         <div className={styles.priceRow}>
           <div className={styles.priceLabel}>Price</div>

@@ -169,8 +169,10 @@
 }
 
 .storeCard {
-  background: #161616;
-  border-radius: 20px;
+  background: #1a1a1a;
+  border-radius: 28.09px;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0px 4.16px 41.61px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   cursor: pointer;
   position: relative;
@@ -182,21 +184,16 @@
   height: 140px;
   width: 100%;
   position: relative;
+  overflow: hidden;
+  box-shadow: 0px 4.16px 43.9px rgba(255, 165, 109, 0.22);
 }
 
 .storeImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.imageOverlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: linear-gradient(0deg, rgba(22,22,22,1) 0%, rgba(22,22,22,0) 100%);
+  top: -30px;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
 }
 
 .tag {
@@ -210,22 +207,37 @@
   padding: 4px 10px;
   border-radius: 100px;
   z-index: 2;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.packTypeTag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  z-index: 2;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .avatarWrapper {
   position: absolute;
-  bottom: -20px;
-  left: 16px;
-  width: 44px;
-  height: 44px;
+  bottom: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 2px solid #161616;
+  border: 2px solid rgba(255, 255, 255, 0.5);
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  z-index: 4;
+  z-index: 5;
 }
 
 .storeAvatar {
@@ -247,8 +259,8 @@
 }
 
 .cardContent {
-  padding: 28px 16px 16px;
-  background: #161616;
+  padding: 16px 20px 20px;
+  background: #1a1a1a;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -261,8 +273,9 @@
 }
 
 .cardHeader h3 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17.68px;
+  font-weight: 600;
+  line-height: 25.44px;
   color: #ffffff;
   margin: 0;
 }
@@ -290,41 +303,38 @@
 
 .currentPrice {
   color: var(--primary);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15.08px;
+  font-weight: 600;
+  line-height: 22.61px;
 }
 
-.originalPrice {
-  color: #4b5563;
-  font-size: 12px;
-  text-decoration: line-through;
-}
 
 .metaRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #6b7280;
-  font-size: 11px;
+  gap: 20px;
+  color: #99a1af;
+  font-size: 13px;
   font-weight: 500;
+  line-height: 1;
 }
 
 .metaItem {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .divider {
   width: 1px;
-  height: 10px;
+  height: 14px;
   background: #374151;
 }
 
 .metaItemRight {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin-left: auto;
 }
 
@@ -353,6 +363,20 @@
   justify-content: center;
   cursor: pointer;
   border: 1px solid #2a2a2a;
+  position: relative;
+}
+
+.spotCardClosed {
+  opacity: 0.5;
+  cursor: default;
+  filter: grayscale(0.8);
+}
+
+.closedOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
 }
 
 .spotAvatar {

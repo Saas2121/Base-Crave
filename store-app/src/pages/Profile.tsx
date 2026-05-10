@@ -39,8 +39,10 @@ export default function Profile() {
   const [saved, setSaved] = useState(0)
   const [showMap, setShowMap] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploadingStoreImage, setUploadingStoreImage] = useState(false)
   const [dataReady, setDataReady] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const storeImageInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const cached = loadCache()
@@ -91,6 +93,28 @@ export default function Profile() {
       }
     } catch { /* noop */ }
     setShowMap(false)
+  }
+
+  const handleStoreImageClick = () => {
+    storeImageInputRef.current?.click()
+  }
+
+  const handleStoreImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploadingStoreImage(true)
+      try {
+        const { data } = await storesAPI.uploadImage(file)
+        if (data.store) {
+          setStore(data.store)
+          saveCache({ store: data.store, totalPacks, saved })
+        }
+      } catch (error) {
+        alert('Failed to upload store image.')
+      } finally {
+        setUploadingStoreImage(false)
+      }
+    }
   }
 
   const handleLogout = useCallback(() => {
@@ -189,6 +213,22 @@ export default function Profile() {
             )}
           </div>
         </div>
+        {dataReady && (
+          <div className={styles.storeImageSection} onClick={!uploadingStoreImage ? handleStoreImageClick : undefined}>
+            {uploadingStoreImage ? (
+              <div className={styles.storeImagePlaceholder}>Uploading...</div>
+            ) : store?.image_url ? (
+              <img className={styles.storeImage} src={store.image_url} alt={store?.name} />
+            ) : (
+              <div className={styles.storeImagePlaceholder}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" fill="#666" opacity="0.7"/>
+                </svg>
+                <span style={{ color: '#666', fontSize: '11px', fontFamily: 'General Sans' }}>Store Image</span>
+              </div>
+            )}
+          </div>
+        )}
         <Vector1 />
         {dataReady && store && (
           <>
@@ -231,13 +271,10 @@ export default function Profile() {
         </div>
       )}
       {dataReady && categories.length > 0 && (
-        <div className={styles.container12}>
-          <div className={styles.container13}>
-            <div className={styles.container14} />
-          </div>
+        <div className={styles.categoriesContainer}>
           {categories.map((cat, i) => (
-            <div key={i} className={styles.tagPill} style={{ left: `${16 + i * 85}px` }}>
-              <div className={styles.tagText}>{cat}</div>
+            <div key={i} className={styles.categoryTag}>
+              <span className={styles.categoryTagText}>{cat}</span>
             </div>
           ))}
         </div>
@@ -253,6 +290,7 @@ export default function Profile() {
         </div>
       </div>
       <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
+      <input type="file" accept="image/*" ref={storeImageInputRef} onChange={handleStoreImageChange} style={{ display: 'none' }} />
       {showMap && (
         <MapPicker
           initialLat={store?.latitude || 3.4516}

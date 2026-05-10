@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole } from '../types';
+import { upload } from '../middleware/upload';
 
 const router = Router();
 
@@ -32,7 +33,7 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const filteredStores = stores.map(store => {
+    const filteredStores = (stores || []).map(store => {
       if (store.packs && Array.isArray(store.packs)) {
         store.packs = store.packs.filter(isPackAvailable);
       }
@@ -186,6 +187,41 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
 
     const availablePacks = packs.filter(pack => pack.remaining_quantity > 0);
     res.json(availablePacks);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), upload.single('image'), async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const { data: store, error: findError } = await supabase
+      .from('stores')
+      .select('id')
+      .eq('owner_id', req.user!.id)
+      .single();
+
+    if (findError || !store) {
+      return res.status(404).json({ error: 'Store not found' });
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    const { data: updatedStore, error } = await supabase
+      .from('stores')
+      .update({ image_url: imageUrl })
+      .eq('id', store.id)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json({ store: updatedStore, imageUrl });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

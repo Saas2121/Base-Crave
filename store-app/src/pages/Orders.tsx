@@ -71,7 +71,10 @@ export default function Orders() {
       <div key={res.id} className={styles.card}>
         <div className={styles.cardContent}>
           <div className={styles.cardHeader}>
-            <div className={styles.packageName}>{packTitle}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className={styles.packageName}>{packTitle}</div>
+              <span className={styles.quantityBadge}>x{res.quantity}</span>
+            </div>
             <div className={styles.price}>{formatPrice(price)}</div>
           </div>
           <div className={styles.orderId}>Order {res.id.slice(0, 8)}</div>

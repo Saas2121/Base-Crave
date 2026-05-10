@@ -162,6 +162,19 @@
   font-family: 'General Sans';
 }
 
+.quantityBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff5722;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
 .cardActions {
   display: flex;
   gap: 12px;
@@ -235,4 +248,137 @@
 .empty p {
   font-size: 16px;
   margin: 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 320px;
+  background-color: #1a1a1a;
+  border-radius: 20px;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  gap: 12px;
+}
+
+.modalHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #99a1af;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modalContent {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modalSubtitle {
+  font-size: 14px;
+  color: #99a1af;
+  text-align: center;
+  margin: 0;
+}
+
+.codeInput {
+  width: 100%;
+  height: 56px;
+  background-color: #101010;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.codeInput:focus {
+  border-color: #ff5722;
+}
+
+.codeError {
+  font-size: 13px;
+  color: #e94549;
+  margin: 0;
+}
+
+.verifyBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #ff5722;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verifyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(34, 197, 94, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successSubtitle {
+  font-size: 14px;
+  color: #99a1af;
+  text-align: center;
+  margin: 0;
+}
+
+.doneBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #ff5722;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
 }

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { reservationsAPI, Reservation } from '../api/client'
+import { reservationsAPI, Reservation, authAPI } from '../api/client'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -49,9 +49,11 @@ function formatDate(dateStr?: string) {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, setUser, logout } = useAuthStore()
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadReservations()
@@ -67,20 +69,44 @@ export default function Profile() {
     }
   }
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploading(true)
+      try {
+        const { data } = await authAPI.uploadProfileImage(file)
+        if (data.user) {
+          setUser(data.user)
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error)
+      } finally {
+        setUploading(false)
+      }
+    }
+  }
+
   const handleLogout = () => {
     logout()
     navigate('/start')
   }
 
-  // Filter only active reservations
   const activeReservations = reservations.filter((res: Reservation) => 
     ['reserved', 'in_process', 'ready'].includes(res.status)
   )
 
-  // Calculate stats based on real data
   const resCount = activeReservations.length
-  const favsCount = 0
-  const savedAmount = '$0'
+  let favPackIds: string[] = []
+  try { favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]') } catch {}
+  const favsCount = favPackIds.length
+  const totalSaved = reservations
+    .filter(r => r.status === 'picked_up')
+    .reduce((acc, r) => acc + (r.packs?.price || 0) * r.quantity, 0)
+  const savedAmount = totalSaved >= 1000 ? `$${(totalSaved / 1000).toFixed(0)}k` : `$${totalSaved.toLocaleString('es-CO')}`
 
   const displayReservations = activeReservations.length > 0 ? activeReservations : []
 
@@ -96,8 +122,10 @@ export default function Profile() {
           {/* Profile Card */}
           <div className={styles.profileCard}>
             <div className={styles.profileTop}>
-              <div className={styles.avatarWrapper}>
-                {user?.profile_image ? (
+              <div className={styles.avatarWrapper} onClick={!uploading ? handleAvatarClick : undefined} style={{ cursor: uploading ? 'default' : 'pointer' }}>
+                {uploading ? (
+                  <div className={styles.avatarFallback} style={{ background: '#333', fontSize: '10px' }}>...</div>
+                ) : user?.profile_image ? (
                   <img
                     src={user.profile_image}
                     alt={user?.name || 'Profile'}
@@ -176,6 +204,8 @@ export default function Profile() {
               ))
             )}
           </div>
+
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
 
           <button onClick={handleLogout} className={styles.logoutButton}>
             Log Out

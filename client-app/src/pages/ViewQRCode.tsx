@@ -88,11 +88,7 @@ export default function ViewQRCode() {
   const pickupCode = reservation.pickup_code || '---'
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${pickupCode}`
 
-  // Format code to insert a dash if it's long enough, e.g. "A4B - 920"
-  let formattedCode = pickupCode
-  if (pickupCode.length === 6) {
-    formattedCode = `${pickupCode.slice(0, 3)} - ${pickupCode.slice(3)}`
-  }
+  const formattedCode = pickupCode
 
   return (
     <div className={styles.appContainer}>

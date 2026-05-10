@@ -53,10 +53,12 @@
 }
 
 .imageWrapper {
+  position: relative;
   width: 100%;
   height: 220px;
-  border-radius: 16px;
+  border-radius: 28.09px;
   overflow: hidden;
+  box-shadow: 0px 4.16px 43.9px rgba(255, 165, 109, 0.22);
 }
 
 .mainImage {
@@ -102,8 +104,10 @@
 }
 
 .detailsCard {
-  background: #161616;
-  border-radius: 20px;
+  background: #1a1a1a;
+  border-radius: 28.09px;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0px 4.16px 41.61px rgba(0, 0, 0, 0.25);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -157,11 +161,6 @@
   font-size: 14px;
 }
 
-.pricingValueOriginal {
-  color: #4b5563;
-  font-size: 14px;
-  font-weight: 500;
-}
 
 .pricingLabelMain {
   color: #ffffff;
@@ -228,6 +227,37 @@
 
 .reserveButton:hover:not(:disabled) {
   background: var(--primary-strong);
+}
+
+.soldOutOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  border-radius: 28.09px;
+}
+
+.soldOutTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.soldOutSub {
+  font-size: 13px;
+  color: #d1d5db;
+}
+
+.soldOutBadge {
+  background: #6b7280;
 }
 
 .reserveButton:disabled {

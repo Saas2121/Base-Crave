@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { storesAPI, Store, Pack } from '../api/client'
+import { getUserLocation } from '../lib/location'
+import { calculateDistance, formatDistance } from '../lib/distance'
 import styles from './Home.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -103,6 +105,7 @@ export default function Home() {
   const { user } = useAuthStore()
   const [stores, setStores] = useState<Store[]>([])
   const [favoritePackIds, setFavoritePackIds] = useState<string[]>([])
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
@@ -113,6 +116,7 @@ export default function Home() {
   const [carouselIndex, setCarouselIndex] = useState(0)
 
   useEffect(() => {
+    getUserLocation().then(setUserLocation)
     loadStores()
   }, [])
 
@@ -190,12 +194,12 @@ export default function Home() {
               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
             }}
           />
-          <div className={styles.imageOverlay}></div>
+          <div className={styles.packTypeTag}>{pack.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
           <div className={styles.tag}>{getTagForStore(store?.name || pack.title)}</div>
           <div className={styles.avatarWrapper}>
-            {store?.users?.profile_image || getSpotLogo(store?.name || '') ? (
+            {store?.image_url || store?.users?.profile_image || getSpotLogo(store?.name || '') ? (
               <img
-                src={store?.users?.profile_image || getSpotLogo(store?.name || '')}
+                src={store?.image_url || store?.users?.profile_image || getSpotLogo(store?.name || '')}
                 alt={store?.name}
                 className={styles.storeAvatar}
               />
@@ -217,15 +221,12 @@ export default function Home() {
           
           <div className={styles.pricing}>
             <span className={styles.currentPrice}>{formatPrice(pack.price)}</span>
-            {pack.original_price && (
-              <span className={styles.originalPrice}>{formatPrice(pack.original_price)}</span>
-            )}
           </div>
           
           <div className={styles.metaRow}>
             <div className={styles.metaItem}>
               <LocationIcon />
-              <span>0.5 km</span>
+              <span>{userLocation && store?.latitude ? formatDistance(calculateDistance(userLocation.lat, userLocation.lng, store.latitude, store.longitude)) : '0.5 km'}</span>
             </div>
             <div className={styles.divider}></div>
             <div className={styles.metaItem}>
@@ -329,13 +330,16 @@ export default function Home() {
                   <div className={styles.spotsGrid}>
                     {topSpots.map((spot) => {
                       const logo = getSpotLogo(spot.name)
+                      const imgSrc = spot.image_url || spot.users?.profile_image || logo
+                      const closed = !spot.is_open
                       return (
-                        <div key={spot.id} className={styles.spotCard} onClick={() => navigate(`/search/map?store=${spot.id}`)}>
-                          {logo || spot.users?.profile_image ? (
-                            <img src={logo || spot.users?.profile_image} alt={spot.name} className={styles.spotAvatar} />
+                        <div key={spot.id} className={`${styles.spotCard} ${closed ? styles.spotCardClosed : ''}`} onClick={() => !closed && navigate(`/search/map?store=${spot.id}`)}>
+                          {imgSrc ? (
+                            <img src={imgSrc} alt={spot.name} className={styles.spotAvatar} />
                           ) : (
                             <span className={styles.spotFallback}>{spot.name.charAt(0).toUpperCase()}</span>
                           )}
+                          {closed && <div className={styles.closedOverlay} />}
                         </div>
                       )
                     })}

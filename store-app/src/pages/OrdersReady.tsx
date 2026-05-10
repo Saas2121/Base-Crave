@@ -1,15 +1,33 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { reservationsAPI } from '../api/client'
 import { Reservation } from '../types'
 import BottomNav from '../components/BottomNav'
 import styles from './Orders.module.css'
 
+const CheckIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+)
+
+const XIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+
 export default function OrdersReady() {
   const navigate = useNavigate()
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
-  
+  const [showCodeInput, setShowCodeInput] = useState(false)
+  const [currentOrder, setCurrentOrder] = useState<Reservation | null>(null)
+  const [codeInput, setCodeInput] = useState('')
+  const [codeError, setCodeError] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   useEffect(() => {
     loadReservations()
@@ -30,14 +48,43 @@ export default function OrdersReady() {
 
   const ready = reservations.filter(r => r.status === 'ready')
 
-  const handleVerify = useCallback(async (id: string, pickup_code: string) => {
+  const openCodeInput = (order: Reservation) => {
+    setCurrentOrder(order)
+    setCodeInput('')
+    setCodeError('')
+    setShowCodeInput(true)
+  }
+
+  const closeCodeInput = () => {
+    setShowCodeInput(false)
+    setCurrentOrder(null)
+    setCodeInput('')
+    setCodeError('')
+  }
+
+  const handleVerifyCode = async () => {
+    if (!currentOrder || !codeInput.trim()) return
+
+    setVerifying(true)
+    setCodeError('')
+
     try {
-      await reservationsAPI.verify(id, pickup_code)
+      await reservationsAPI.verify(currentOrder.id, codeInput.trim().toUpperCase())
+      setShowCodeInput(false)
+      setShowSuccess(true)
       loadReservations()
-    } catch {
-      // silently fail
+    } catch (err: any) {
+      setCodeError('Código incorrecto. Intenta de nuevo.')
+    } finally {
+      setVerifying(false)
     }
-  }, [])
+  }
+
+  const closeSuccess = () => {
+    setShowSuccess(false)
+    setCurrentOrder(null)
+    setCodeInput('')
+  }
 
   const formatTime = (iso: string) => {
     if (!iso) return '12-5 PM'
@@ -54,7 +101,7 @@ export default function OrdersReady() {
   }
 
   const renderOrderCard = (res: Reservation) => {
-    const packTitle = res.packs?.title || 'Pack'
+    const packTitle = res.packs?.title || (res.packs?.pack_type === 'surprise' ? 'Surprise Pack' : 'Pack')
     const customerName = res.users?.name || 'Customer'
     const price = res.packs?.price || 0
     const pickupTime = formatTime(res.packs?.pickup_start || '')
@@ -63,7 +110,10 @@ export default function OrdersReady() {
       <div key={res.id} className={styles.card}>
         <div className={styles.cardContent}>
           <div className={styles.cardHeader}>
-            <div className={styles.packageName}>{packTitle}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className={styles.packageName}>{packTitle}</div>
+              <span className={styles.quantityBadge}>x{res.quantity}</span>
+            </div>
             <div className={styles.price}>{formatPrice(price)}</div>
           </div>
           <div className={styles.orderId}>Order {res.id.slice(0, 8)}</div>
@@ -79,14 +129,14 @@ export default function OrdersReady() {
           </div>
         </div>
         <div className={styles.cardActions}>
-          <button className={styles.scanBtn} onClick={() => handleVerify(res.id, res.pickup_code)}>
+          <button className={styles.scanBtn} onClick={() => openCodeInput(res)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="7" height="7" />
               <rect x="14" y="3" width="7" height="7" />
               <rect x="14" y="14" width="7" height="7" />
               <rect x="3" y="14" width="7" height="7" />
             </svg>
-            Scan QR Code
+            Enter Code
           </button>
         </div>
       </div>
@@ -122,6 +172,60 @@ export default function OrdersReady() {
       ) : (
         <div className={styles.cardsContainer}>
           {ready.map(res => renderOrderCard(res))}
+        </div>
+      )}
+
+      {showCodeInput && currentOrder && (
+        <div className={styles.modalOverlay} onClick={closeCodeInput}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Enter Pickup Code</h3>
+              <button className={styles.closeBtn} onClick={closeCodeInput}>
+                <XIcon />
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <p className={styles.modalSubtitle}>
+                Ask the customer for their pickup code
+              </p>
+              <input
+                type="text"
+                className={styles.codeInput}
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                placeholder="XXXXXX"
+                maxLength={6}
+                autoFocus
+              />
+              {codeError && <p className={styles.codeError}>{codeError}</p>}
+              <button
+                className={styles.verifyBtn}
+                onClick={handleVerifyCode}
+                disabled={verifying || codeInput.length < 4}
+              >
+                {verifying ? 'Verifying...' : 'Verify Code'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSuccess && currentOrder && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <div className={styles.successIcon}>
+                <CheckIcon />
+              </div>
+              <h3>Order Completed!</h3>
+              <p className={styles.successSubtitle}>
+                The order has been successfully delivered
+              </p>
+              <button className={styles.doneBtn} onClick={closeSuccess}>
+                Done
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

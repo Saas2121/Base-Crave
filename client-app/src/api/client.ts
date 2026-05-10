@@ -44,6 +44,13 @@ export const authAPI = {
   login: (data: LoginData) => api.post<AuthResponse>('/auth/login', data),
   register: (data: RegisterData) => api.post<AuthResponse>('/auth/register', data),
   me: () => api.get('/auth/me'),
+  uploadProfileImage: (file: File) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    return api.post('/auth/upload-profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
 }
 
 export interface User {
@@ -64,6 +71,7 @@ export interface Store {
   longitude: number
   is_open: boolean
   owner_id: string
+  image_url?: string
   created_at: string
   packs?: Pack[]
   users?: User

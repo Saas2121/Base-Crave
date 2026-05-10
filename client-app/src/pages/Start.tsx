@@ -47,6 +47,17 @@ export default function Start() {
         <div className={styles.bottomBar1} />
         <div className={styles.bottomBar2} />
         <div className={styles.bottomBar3} />
+
+        <div className={styles.brandWrap}>
+          <img src="/images/Logo-home.png" alt="" className={styles.brandLogo} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+          <span className={styles.brandName}>Crave</span>
+        </div>
+
+        <div className={styles.loaderWrap}>
+          <div className={styles.loaderDot} style={{ animationDelay: '0s' }} />
+          <div className={styles.loaderDot} style={{ animationDelay: '0.2s' }} />
+          <div className={styles.loaderDot} style={{ animationDelay: '0.4s' }} />
+        </div>
       </div>
     </div>
   )

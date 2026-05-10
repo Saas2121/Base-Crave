@@ -83,6 +83,15 @@ export default function ReserveProduct() {
         const { data: storeData } = await storesAPI.getById(foundPack.store_id)
         setStore(storeData)
       }
+      
+      const { data: myRes } = await reservationsAPI.getMy()
+      const existing = myRes.find((r: Reservation) => r.pack_id === packId && ['reserved', 'in_process', 'ready'].includes(r.status))
+      if (existing) {
+        setReservationData(existing)
+        if (existing.status === 'in_process' || existing.status === 'ready') {
+          navigate(`/reservation/${existing.id}`, { replace: true })
+        }
+      }
     } catch (error) {
       console.error(error)
     } finally {
@@ -97,11 +106,25 @@ export default function ReserveProduct() {
     try {
       const reservationQty = pack.pack_type === 'surprise' ? 1 : quantity
       const { data } = await reservationsAPI.create({ pack_id: pack.id, quantity: reservationQty })
-      navigate(`/reservation/${data.id}`, { replace: true })
+      setReservationData(data)
     } catch (error) {
       console.error(error)
     } finally {
       setReserving(false)
+    }
+  }
+
+  const handleRefreshStatus = async () => {
+    if (!reservationData) return
+    try {
+      const { data } = await reservationsAPI.getById(reservationData.id)
+      setReservationData(data)
+      const isConfirmed = data.status === 'in_process' || data.status === 'ready' || data.status === 'picked_up'
+      if (isConfirmed) {
+        navigate(`/reservation/${data.id}`, { replace: true })
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -297,7 +320,7 @@ export default function ReserveProduct() {
           <div className={styles.bottomBar}>
             <button
               className={styles.secondaryButton}
-              onClick={() => window.location.reload()}
+              onClick={handleRefreshStatus}
             >
               Refresh Page
             </button>

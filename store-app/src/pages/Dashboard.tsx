@@ -171,7 +171,7 @@ export default function Dashboard() {
         </div>
         <div className={styles.container8}>
           <div className={styles.container9}>
-            <div className={styles.div}>${revenue.toLocaleString('es-CO')}</div>
+            <div className={styles.div}>{revenue >= 1000 ? `$${(revenue / 1000).toFixed(0)}K` : `$${revenue.toLocaleString('es-CO')}`}</div>
           </div>
           <div className={styles.container10}>
             <div className={styles.activePacks}>Revenue</div>

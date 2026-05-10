@@ -349,35 +349,37 @@
 
 .categoriesContainer {
   position: absolute;
-  top: 705px;
+  top: 700px;
   left: 37px;
-  width: 359px;
+  width: 363px;
+  background-color: #1a1a1a;
+  border-radius: 16px;
+  border: 1px solid #2a2a2a;
+  padding: 16px;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
 .categoryTag {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background: #ffffff;
   border-radius: 100px;
-  padding: 8px 16px;
+  padding: 6px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
 }
 
 .categoryTag:hover {
-  background: #3a3a3a;
-  border-color: #e94549;
+  opacity: 0.9;
 }
 
 .categoryTagText {
   font-family: 'General Sans';
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
+  color: #111827;
   white-space: nowrap;
 }
 

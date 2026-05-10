@@ -213,22 +213,7 @@ export default function Profile() {
             )}
           </div>
         </div>
-        {dataReady && (
-          <div className={styles.storeImageSection} onClick={!uploadingStoreImage ? handleStoreImageClick : undefined}>
-            {uploadingStoreImage ? (
-              <div className={styles.storeImagePlaceholder}>Uploading...</div>
-            ) : store?.image_url ? (
-              <img className={styles.storeImage} src={store.image_url} alt={store?.name} />
-            ) : (
-              <div className={styles.storeImagePlaceholder}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" fill="#666" opacity="0.7"/>
-                </svg>
-                <span style={{ color: '#666', fontSize: '11px', fontFamily: 'General Sans' }}>Store Image</span>
-              </div>
-            )}
-          </div>
-        )}
+
         <Vector1 />
         {dataReady && store && (
           <>

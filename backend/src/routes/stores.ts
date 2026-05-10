@@ -6,14 +6,6 @@ import { upload } from '../middleware/upload';
 
 const router = Router();
 
-function isPackAvailable(pack: any): boolean {
-  if (pack.remaining_quantity <= 0 || pack.status === 'sold_out' || pack.status === 'expired') {
-    return false;
-  }
-
-  return true;
-}
-
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { open_only } = req.query;
@@ -33,14 +25,7 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const filteredStores = (stores || []).map(store => {
-      if (store.packs && Array.isArray(store.packs)) {
-        store.packs = store.packs.filter(isPackAvailable);
-      }
-      return store;
-    });
-
-    res.json(filteredStores);
+    res.json(stores);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -60,9 +45,6 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Store not found' });
     }
 
-    if (store.packs && Array.isArray(store.packs)) {
-      store.packs = store.packs.filter(isPackAvailable);
-    }
     res.json(store);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -185,8 +167,7 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const availablePacks = packs.filter(pack => pack.remaining_quantity > 0);
-    res.json(availablePacks);
+    res.json(packs);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

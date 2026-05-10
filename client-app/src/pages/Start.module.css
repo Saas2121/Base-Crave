@@ -8,8 +8,9 @@
 }
 
 .viewport {
-  width: 413px;
-  height: 956px;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
   position: relative;
   background: #101010;
   overflow: hidden;
@@ -17,108 +18,96 @@
 }
 
 .gradientBg {
-  width: 442px;
-  height: 632px;
+  width: 100%;
+  height: 60%;
   position: absolute;
-  left: -1px;
-  top: -27px;
-  background: linear-gradient(217deg, #292929 0%, #101010 100%);
+  left: 0;
+  top: 0;
+  background: linear-gradient(217deg, #1f1f1f 0%, #101010 100%);
+  opacity: 0.5;
 }
 
-.assetGroup {
+.heroContainer {
   position: absolute;
-  left: 13px;
-  top: 462px;
-  width: 413px;
-  height: 108px;
-  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 340px;
+  height: 240px;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.ellipseWrap1 {
+.bagLogo {
   position: absolute;
-  left: 374.24px;
-  top: 363.33px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
+  left: 10px;
+  top: 90px;
+  width: 90px;
+  height: 98px;
 }
 
-.emoji1 {
-  position: absolute;
-  left: 381.69px;
-  top: 366.67px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
-  color: #EBE8E1;
-  font-size: 17.58px;
-  font-weight: 700;
-}
-
-.ellipseWrap2 {
-  position: absolute;
-  left: 46px;
-  top: 570px;
-}
-
-.emoji2 {
-  position: absolute;
-  left: 56.41px;
-  top: 580.41px;
-  color: #EBE8E1;
-  font-size: 31.71px;
-  font-weight: 700;
-}
-
-.ellipseWrap3 {
+.craveText {
   position: absolute;
   left: 110px;
-  top: 597px;
+  top: 95px;
+  font-size: 64px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -2px;
+  text-shadow: 0px 0px 40px rgba(255, 255, 255, 0.4);
 }
 
-.emoji3 {
+.bubble {
   position: absolute;
-  left: 118.27px;
-  top: 605.27px;
-  color: #EBE8E1;
-  font-size: 25.20px;
-  font-weight: 400;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatBubble 3s ease-in-out infinite alternate;
 }
 
-.ellipseWrap4 {
-  position: absolute;
-  left: 361.78px;
-  top: 429.04px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
+.bubbleLg {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
 }
 
-.emoji4 {
-  position: absolute;
-  left: 370.46px;
-  top: 432.94px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
-  color: #EBE8E1;
-  font-size: 20.51px;
-  font-weight: 400;
+.bubbleSm {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
 }
 
-.ellipseWrap5 {
-  position: absolute;
-  left: 288px;
-  top: 367.23px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
+.bubbleCoffee {
+  right: 50px;
+  top: 20px;
+  animation-delay: 0s;
 }
 
-.emoji5 {
-  position: absolute;
-  left: 301.42px;
-  top: 373.26px;
-  transform: rotate(-21deg);
-  transform-origin: top left;
-  color: #EBE8E1;
-  font-size: 31.71px;
-  font-weight: 400;
+.bubbleDrumstick {
+  right: 0px;
+  top: 25px;
+  animation-delay: 0.5s;
+}
+
+.bubbleSalad {
+  right: 5px;
+  top: 75px;
+  animation-delay: 1s;
+}
+
+.bubbleBurger {
+  left: 15px;
+  bottom: 0px;
+  animation-delay: 1.5s;
+}
+
+.bubbleCake {
+  left: 75px;
+  bottom: 10px;
+  animation-delay: 0.8s;
 }
 
 .bottomBar1 {
@@ -154,31 +143,6 @@
   border-radius: 9999px;
 }
 
-.brandWrap {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  animation: fadeInUp 0.8s ease-out;
-}
-
-.brandLogo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-}
-
-.brandName {
-  font-size: 36px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -1px;
-}
-
 .loaderWrap {
   position: absolute;
   left: 50%;
@@ -199,11 +163,20 @@
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) translateY(20px);
+    transform: translate(-50%, -40%);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) translateY(0);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes floatBubble {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-8px);
   }
 }
 

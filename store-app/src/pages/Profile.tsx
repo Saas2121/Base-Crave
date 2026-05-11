@@ -95,10 +95,6 @@ export default function Profile() {
     setShowMap(false)
   }
 
-  const _handleStoreImageClick = () => {
-    storeImageInputRef.current?.click()
-  }
-
   const handleStoreImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {

@@ -26,6 +26,7 @@ export interface Store {
   longitude: number
   is_open: boolean
   owner_id: string
+  image_url?: string
   created_at: string
 }
 

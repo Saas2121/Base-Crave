@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { packsAPI, storesAPI } from '../api/client'
 import { Pack, Store } from '../types'
+import { getUserLocation } from '../lib/location'
+import { calculateDistance, formatDistance } from '../lib/distance'
 import styles from './DetailProduct.module.css'
 
 const ChevronLeftIcon = () => (
@@ -83,13 +85,20 @@ export default function DetailProduct() {
   const navigate = useNavigate()
   const [pack, setPack] = useState<Pack | null>(null)
   const [store, setStore] = useState<Store | null>(null)
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isFavorite, setIsFavorite] = useState(true) // Mocking favorite state
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
+    getUserLocation().then(setUserLocation)
     if (id) {
       loadData(id)
     }
+  }, [id])
+
+  useEffect(() => {
+    const favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]')
+    setIsFavorite(favPackIds.includes(id))
   }, [id])
 
   const loadData = async (packId: string) => {
@@ -125,8 +134,12 @@ export default function DetailProduct() {
     )
   }
 
-  const imageUrl = pack.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+  const isSoldOut = pack.remaining_quantity === 0 || (!!pack.status && pack.status !== 'active')
+
   const isSurprise = pack.pack_type === 'surprise'
+  const imageUrl = pack.image_url || (isSurprise 
+    ? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop')
   const packTitle = isSurprise ? 'Surprise Pack' : pack.title
   const packDescription = pack.description || 'Get a delicious surprise meal at an incredible price. Save food and save money!'
 
@@ -149,9 +162,17 @@ export default function DetailProduct() {
               alt={packTitle}
               className={styles.mainImage}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+                (e.target as HTMLImageElement).src = isSurprise
+                  ? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+                  : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
               }}
             />
+            {isSoldOut && (
+              <div className={styles.soldOutOverlay}>
+                <span className={styles.soldOutTitle}>No packs available</span>
+                <span className={styles.soldOutSub}>Check back tomorrow</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.storeHeader}>
@@ -162,7 +183,18 @@ export default function DetailProduct() {
                 <span>{store.address}</span>
               </div>
             </div>
-            <button className={styles.heartBtn} onClick={() => setIsFavorite(!isFavorite)}>
+            <button className={styles.heartBtn} onClick={() => {
+              const packId = id
+              const favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]')
+              let next: string[]
+              if (isFavorite) {
+                next = favPackIds.filter((fid: string) => fid !== packId)
+              } else {
+                next = [...favPackIds, packId]
+              }
+              localStorage.setItem('favorite_pack_ids', JSON.stringify(next))
+              setIsFavorite(!isFavorite)
+            }}>
               <HeartIcon filled={isFavorite} />
             </button>
           </div>
@@ -170,16 +202,12 @@ export default function DetailProduct() {
           <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
               <h2 className={styles.packTitle}>{packTitle}</h2>
-              <div className={styles.availableBadge}>{pack.remaining_quantity} available</div>
+              <div className={`${styles.availableBadge} ${isSoldOut ? styles.soldOutBadge : ''}`}>{isSoldOut ? 'Sold out' : `${pack.remaining_quantity} available`}</div>
             </div>
             
             <p className={styles.description}>{packDescription}</p>
             
             <div className={styles.pricingTable}>
-              <div className={styles.pricingRow}>
-                <span className={styles.pricingLabel}>Original price</span>
-                <span className={styles.pricingValueOriginal}>{pack.original_price ? formatPrice(pack.original_price) : '-'}</span>
-              </div>
               <div className={styles.pricingRow}>
                 <span className={styles.pricingLabelMain}>Pack price</span>
                 <span className={styles.pricingValueMain}>{formatPrice(pack.price)}</span>
@@ -199,7 +227,7 @@ export default function DetailProduct() {
               </div>
               <div className={styles.metaItem}>
                 <LocationIcon />
-                <span>2.5 km</span>
+                <span>{userLocation && store?.latitude ? formatDistance(calculateDistance(userLocation.lat, userLocation.lng, store.latitude, store.longitude)) : '2.5 km'}</span>
               </div>
               <div className={styles.metaItem}>
                 <BoxIcon />
@@ -213,7 +241,7 @@ export default function DetailProduct() {
           <button
             className={styles.reserveButton}
             onClick={() => navigate(`/reserve/${pack.id}`)}
-            disabled={pack.remaining_quantity === 0 || (pack.status && pack.status !== 'active')}
+            disabled={pack.remaining_quantity === 0 || (!!pack.status && pack.status !== 'active')}
           >
             Reserve
           </button>

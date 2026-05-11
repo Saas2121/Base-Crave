@@ -39,8 +39,10 @@ export default function Profile() {
   const [saved, setSaved] = useState(0)
   const [showMap, setShowMap] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploadingStoreImage, setUploadingStoreImage] = useState(false)
   const [dataReady, setDataReady] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const storeImageInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const cached = loadCache()
@@ -91,6 +93,28 @@ export default function Profile() {
       }
     } catch { /* noop */ }
     setShowMap(false)
+  }
+
+  const handleStoreImageClick = () => {
+    storeImageInputRef.current?.click()
+  }
+
+  const handleStoreImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploadingStoreImage(true)
+      try {
+        const { data } = await storesAPI.uploadImage(file)
+        if (data.store) {
+          setStore(data.store)
+          saveCache({ store: data.store, totalPacks, saved })
+        }
+      } catch (error) {
+        alert('Failed to upload store image.')
+      } finally {
+        setUploadingStoreImage(false)
+      }
+    }
   }
 
   const handleLogout = useCallback(() => {
@@ -189,6 +213,7 @@ export default function Profile() {
             )}
           </div>
         </div>
+
         <Vector1 />
         {dataReady && store && (
           <>
@@ -231,13 +256,10 @@ export default function Profile() {
         </div>
       )}
       {dataReady && categories.length > 0 && (
-        <div className={styles.container12}>
-          <div className={styles.container13}>
-            <div className={styles.container14} />
-          </div>
+        <div className={styles.categoriesContainer}>
           {categories.map((cat, i) => (
-            <div key={i} className={styles.tagPill} style={{ left: `${16 + i * 85}px` }}>
-              <div className={styles.tagText}>{cat}</div>
+            <div key={i} className={styles.categoryTag}>
+              <span className={styles.categoryTagText}>{cat}</span>
             </div>
           ))}
         </div>
@@ -253,6 +275,7 @@ export default function Profile() {
         </div>
       </div>
       <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
+      <input type="file" accept="image/*" ref={storeImageInputRef} onChange={handleStoreImageChange} style={{ display: 'none' }} />
       {showMap && (
         <MapPicker
           initialLat={store?.latitude || 3.4516}

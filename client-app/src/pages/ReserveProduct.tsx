@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { packsAPI, reservationsAPI, storesAPI } from '../api/client'
-import { Pack, Store } from '../types'
+import { Pack, Store, Reservation } from '../types'
 import styles from './ReserveProduct.module.css'
 
 const CheckIcon = () => (
@@ -24,6 +24,20 @@ const ChevronLeftIcon = () => (
   </svg>
 )
 
+const XIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+
+const ClockIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+)
+
 function formatTimeRange(startStr: string, endStr: string) {
   if (!startStr || !endStr) return ''
   try {
@@ -36,7 +50,7 @@ function formatTimeRange(startStr: string, endStr: string) {
       return `${h}:00 ${ampm}`
     }
     return `${formatTime(start)} - ${formatTime(end)}`
-  } catch (e) {
+  } catch {
     return ''
   }
 }
@@ -53,7 +67,7 @@ export default function ReserveProduct() {
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)
   const [reserving, setReserving] = useState(false)
-  const [successData, setSuccessData] = useState<any>(null)
+  const [reservationData, setReservationData] = useState<Reservation | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -69,6 +83,15 @@ export default function ReserveProduct() {
         const { data: storeData } = await storesAPI.getById(foundPack.store_id)
         setStore(storeData)
       }
+      
+      const { data: myRes } = await reservationsAPI.getMy()
+      const existing = myRes.find((r: Reservation) => r.pack_id === packId && ['reserved', 'in_process', 'ready'].includes(r.status))
+      if (existing) {
+        setReservationData(existing)
+        if (existing.status === 'in_process' || existing.status === 'ready') {
+          navigate(`/reservation/${existing.id}`, { replace: true })
+        }
+      }
     } catch (error) {
       console.error(error)
     } finally {
@@ -81,14 +104,32 @@ export default function ReserveProduct() {
     
     setReserving(true)
     try {
-      const reservationQty = pack.pack_type === 'surprise' ? 1 : quantity
+      const reservationQty = quantity
       const { data } = await reservationsAPI.create({ pack_id: pack.id, quantity: reservationQty })
-      setSuccessData(data)
+      setReservationData(data)
     } catch (error) {
       console.error(error)
     } finally {
       setReserving(false)
     }
+  }
+
+  const handleRefreshStatus = async () => {
+    if (!reservationData) return
+    try {
+      const { data } = await reservationsAPI.getById(reservationData.id)
+      setReservationData(data)
+      const isConfirmed = data.status === 'in_process' || data.status === 'ready' || data.status === 'picked_up'
+      if (isConfirmed) {
+        navigate(`/reservation/${data.id}`, { replace: true })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleGoToProfile = () => {
+    navigate('/profile')
   }
 
   if (loading) {
@@ -111,23 +152,130 @@ export default function ReserveProduct() {
     )
   }
 
-  if (successData) {
+  if (reservationData) {
+    const isConfirmed = reservationData.status === 'in_process' || reservationData.status === 'ready' || reservationData.status === 'picked_up'
+    const isCancelled = reservationData.status === 'cancelled'
+
+    if (isConfirmed) {
+      return (
+        <div className={styles.appContainer}>
+          <div className={styles.container}>
+            <div className={styles.successContent}>
+              <div className={styles.successHeader}>
+                <div className={styles.checkIconWrapper}>
+                  <CheckIcon />
+                </div>
+                <h1 className={styles.successTitle}>Reservation<br/>Confirmed!</h1>
+                <p className={styles.successSubtitle}>Your pack has been successfully reserved</p>
+              </div>
+
+              <div className={styles.detailsCard}>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.cardTitle}>Reservation Details</h2>
+                  <div className={styles.confirmedBadge}>Confirmed</div>
+                </div>
+                
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Restaurant</span>
+                  <span className={styles.detailValue}>{store.name}</span>
+                </div>
+                
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Reservation ID</span>
+                  <span className={styles.detailValue}>#{reservationData.id.split('-')[0].toUpperCase()}</span>
+                </div>
+                
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Pick up time</span>
+                  <span className={styles.detailValue}>{formatTimeRange(pack.pickup_start, pack.pickup_end)}</span>
+                </div>
+                
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Pack</span>
+                  <span className={styles.detailValue}>{pack.pack_type === 'surprise' ? 'Surprise Pack' : pack.title}</span>
+                </div>
+
+                <div className={styles.divider}></div>
+
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabelMain}>Pack price</span>
+                  <span className={styles.detailValueMain}>{formatPrice(pack.price * reservationData.quantity)}</span>
+                </div>
+              </div>
+
+              <div className={styles.infoBox}>
+                <div className={styles.infoHeader}>
+                  <InfoIcon />
+                  <span>Next steps</span>
+                </div>
+                <p className={styles.infoText}>
+                  Show your QR code at the restaurant during pick up time. You will pay directly there.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.bottomBar}>
+              <button
+                className={styles.primaryButton}
+                onClick={() => navigate(`/qr/${reservationData.id}`)}
+              >
+                View QR code
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    if (isCancelled) {
+      return (
+        <div className={styles.appContainer}>
+          <div className={styles.container}>
+            <div className={styles.successContent}>
+              <div className={styles.successHeader}>
+                <div className={styles.checkIconWrapper}>
+                  <XIcon />
+                </div>
+                <h1 className={styles.successTitle}>Reservation<br/>Cancelled</h1>
+                <p className={styles.successSubtitle}>The restaurant has cancelled your order</p>
+              </div>
+
+              <div className={styles.infoBox} style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+                <p className={styles.infoText}>
+                  Your reservation has been cancelled by the restaurant.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.bottomBar}>
+              <button
+                className={styles.primaryButton}
+                onClick={handleGoToProfile}
+              >
+                Back to Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className={styles.appContainer}>
         <div className={styles.container}>
           <div className={styles.successContent}>
             <div className={styles.successHeader}>
-              <div className={styles.checkIconWrapper}>
-                <CheckIcon />
+              <div className={styles.pendingIconWrapper}>
+                <ClockIcon />
               </div>
-              <h1 className={styles.successTitle}>Reservation<br/>Confirmed!</h1>
-              <p className={styles.successSubtitle}>Your pack has been successfully reserved</p>
+              <h1 className={styles.successTitle}>Waiting for<br/>Confirmation</h1>
+              <p className={styles.successSubtitle}>The restaurant is reviewing your order</p>
             </div>
 
             <div className={styles.detailsCard}>
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardTitle}>Reservation Details</h2>
-                <div className={styles.confirmedBadge}>Confirmed</div>
+                <div className={styles.pendingBadge}>Pending</div>
               </div>
               
               <div className={styles.detailRow}>
@@ -137,7 +285,7 @@ export default function ReserveProduct() {
               
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Reservation ID</span>
-                <span className={styles.detailValue}>#{successData.id.split('-')[0].toUpperCase() || 'CR2026-0501-1234'}</span>
+                <span className={styles.detailValue}>#{reservationData.id.split('-')[0].toUpperCase()}</span>
               </div>
               
               <div className={styles.detailRow}>
@@ -154,27 +302,27 @@ export default function ReserveProduct() {
 
               <div className={styles.detailRow}>
                 <span className={styles.detailLabelMain}>Pack price</span>
-                <span className={styles.detailValueMain}>{formatPrice(pack.price * successData.quantity)}</span>
+                <span className={styles.detailValueMain}>{formatPrice(pack.price * reservationData.quantity)}</span>
               </div>
             </div>
 
             <div className={styles.infoBox}>
               <div className={styles.infoHeader}>
                 <InfoIcon />
-                <span>Next steps</span>
+                <span>Please wait</span>
               </div>
               <p className={styles.infoText}>
-                Show your QR code at the restaurant during pick up time. You will pay directly there.
+                We're waiting for the restaurant to confirm your order. Refresh this page to check status.
               </p>
             </div>
           </div>
 
           <div className={styles.bottomBar}>
             <button
-              className={styles.primaryButton}
-              onClick={() => navigate(`/qr/${successData.id}`)}
+              className={styles.secondaryButton}
+              onClick={handleRefreshStatus}
             >
-              View QR code
+              Refresh Page
             </button>
           </div>
         </div>
@@ -209,8 +357,7 @@ export default function ReserveProduct() {
             )}
           </div>
 
-          {pack.pack_type !== 'surprise' && (
-            <div className={styles.quantityCard}>
+          <div className={styles.quantityCard}>
               <p className={styles.quantityLabel}>Select Quantity</p>
               <div className={styles.quantityControls}>
                 <button
@@ -230,11 +377,10 @@ export default function ReserveProduct() {
                 </button>
               </div>
             </div>
-          )}
 
           <div className={styles.totalCard}>
             <span className={styles.totalLabel}>Total to pay at store</span>
-            <span className={styles.totalValue}>{formatPrice(pack.price * (pack.pack_type === 'surprise' ? 1 : quantity))}</span>
+            <span className={styles.totalValue}>{formatPrice(pack.price * quantity)}</span>
           </div>
         </div>
 

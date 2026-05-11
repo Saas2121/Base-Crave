@@ -19,6 +19,11 @@ crave/
 - Supabase account and project
 
 ### 2. Supabase Setup
+
+> Si ya tenés las tablas creadas y querés agregar el campo `image_url` a stores:
+> ```sql
+> ALTER TABLE stores ADD COLUMN IF NOT EXISTS image_url TEXT;
+> ```
 1. Create a new Supabase project if you haven't already
 2. Go to **SQL Editor** in your Supabase dashboard
 3. Run this SQL to create the database tables:

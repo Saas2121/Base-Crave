@@ -2,7 +2,7 @@ import axios from 'axios'
 import { UserRole } from '../types'
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -44,6 +44,13 @@ export const authAPI = {
   login: (data: LoginData) => api.post<AuthResponse>('/auth/login', data),
   register: (data: RegisterData) => api.post<AuthResponse>('/auth/register', data),
   me: () => api.get('/auth/me'),
+  uploadProfileImage: (file: File) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    return api.post('/auth/upload-profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
 }
 
 export interface User {
@@ -64,6 +71,7 @@ export interface Store {
   longitude: number
   is_open: boolean
   owner_id: string
+  image_url?: string
   created_at: string
   packs?: Pack[]
   users?: User
@@ -119,6 +127,7 @@ export const reservationsAPI = {
   create: (data: { pack_id: string; quantity: number }) => api.post('/reservations', data),
   getMy: () => api.get<Reservation[]>('/reservations/my'),
   getStore: () => api.get<Reservation[]>('/reservations/store'),
+  getById: (id: string) => api.get<Reservation>(`/reservations/${id}`),
   verify: (id: string, pickup_code: string) => api.post(`/reservations/${id}/verify`, { pickup_code }),
   cancel: (id: string) => api.post(`/reservations/${id}/cancel`),
 }

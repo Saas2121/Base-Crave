@@ -87,6 +87,7 @@ export default function PackDetailEdit() {
         price: Number(price),
         total_quantity: Number(newTotal),
         remaining_quantity: newRemaining,
+        status: newRemaining > 0 ? 'active' : 'sold_out',
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
       })
@@ -116,7 +117,7 @@ export default function PackDetailEdit() {
   }
 
   const handleDecrease = () => {
-    if (newTotal > 0) { setNewTotal(newTotal - 1); setLastUpdate(Date.now()) }
+    if (newTotal > sold) { setNewTotal(newTotal - 1); setLastUpdate(Date.now()) }
   }
 
   const handleIncrease = () => {
@@ -259,7 +260,7 @@ export default function PackDetailEdit() {
             />
           </div>
           <div className={styles.iconGroup}>
-            <img className={styles.icon3} alt="" src="/images/clock.svg" />
+            <img alt="" src="/images/clock.svg" style={{ width: 15.1, height: 15.1 }} />
             <div className={styles.text4}>
               <div className={styles.pm}>
                 {formatTimeDisplay(pickupStart)} - {formatTimeDisplay(pickupEnd)}

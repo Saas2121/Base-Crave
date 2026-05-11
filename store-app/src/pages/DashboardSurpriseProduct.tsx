@@ -99,6 +99,7 @@ export default function DashboardSurpriseProduct() {
       end.setDate(end.getDate() + 1)
 
       const pack = await packsAPI.create({
+        title: 'Surprise pack',
         pack_type: PackType.SURPRISE,
         price: Number(price),
         total_quantity: Number(quantity),
@@ -110,6 +111,9 @@ export default function DashboardSurpriseProduct() {
         try {
           const { data: updatedPack } = await packsAPI.uploadImage(pack.id, selectedImage)
           console.log('Pack image uploaded:', updatedPack)
+          if (updatedPack?.pack?.image_url) {
+            console.log('Image URL saved:', updatedPack.pack.image_url)
+          }
         } catch (imgErr) {
           console.error('Error uploading image:', imgErr)
         }
@@ -168,7 +172,7 @@ export default function DashboardSurpriseProduct() {
         </div>
         <div className={styles.container8}>
           <div className={styles.container9}>
-            <div className={styles.div}>${revenue}</div>
+            <div className={styles.div}>${revenue.toLocaleString('es-CO')}</div>
           </div>
           <div className={styles.container10}>
             <div className={styles.activePacks}>Revenue</div>

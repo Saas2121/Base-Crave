@@ -2,7 +2,7 @@ import axios from 'axios'
 import { UserRole, Reservation } from '../types'
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -88,6 +88,13 @@ export const storesAPI = {
   toggleOpen: () => api.put<Store>('/stores/my/toggle'),
   create: (data: Partial<Store>) => api.post<Store>('/stores', data),
   update: (id: string, data: Partial<Store>) => api.put<Store>(`/stores/${id}`, data),
+  uploadImage: (file: File) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    return api.post('/stores/my/image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
 }
 
 export const packsAPI = {

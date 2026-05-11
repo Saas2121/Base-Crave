@@ -1,8 +1,9 @@
 .appContainer {
   min-height: 100vh;
-  background: var(--bg);
+  background: #151515;
   display: flex;
   justify-content: center;
+  font-family: inherit;
 }
 
 .container {
@@ -10,181 +11,206 @@
   max-width: 440px;
   min-height: 100vh;
   position: relative;
-  background: var(--bg);
-  padding-bottom: 100px;
-}
-
-.loadingText {
-  color: #6b7280;
-  text-align: center;
-  padding: 40px;
+  background: #151515;
+  padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
-  padding: 40px 24px 20px;
+  padding: 60px 24px 20px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-}
-
-.headerLeft {
-  width: 36px; /* Balance close button */
+  text-align: center;
 }
 
 .headerTitle {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   color: #ffffff;
-  margin: 0;
+  margin: 0 0 8px 0;
 }
 
-.closeButton {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  color: #ffffff;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
+.headerSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
 }
 
 .content {
   padding: 0 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-
-.qrCard {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 32px 24px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-}
-
-.instructionText {
-  font-size: 16px;
-  font-weight: 500;
-  color: #111827;
-  margin: 0 0 32px 0;
+  gap: 20px;
+  flex: 1;
 }
 
 .qrWrapper {
-  width: 200px;
-  height: 200px;
-  margin-bottom: 32px;
-  border-radius: 12px;
-  overflow: hidden;
+  width: 250px;
+  height: 250px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  margin-top: 10px;
 }
 
 .qrImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px;
+}
+
+.codeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.codeLabel {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 4px 0;
 }
 
 .codeText {
-  font-size: 48px;
+  font-size: 28px;
   font-weight: 800;
-  color: var(--primary);
+  color: #ffffff;
   letter-spacing: 2px;
-  margin-bottom: 16px;
-  font-family: inherit;
-}
-
-.statusText {
-  font-size: 16px;
-  font-weight: 500;
-  color: #4b5563;
   margin: 0;
 }
 
-.statusValue {
-  font-weight: 700;
-  color: #111827;
-}
-
-.infoCard {
-  background: #161616;
-  border-radius: 20px;
-  padding: 24px;
+.detailsCard {
+  width: 100%;
+  background: #1c1c1c;
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
-.infoRowMain {
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #65a30d;
+}
+
+.statusText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #65a30d;
+}
+
+.detailRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.storeName {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
+.detailLabel {
+  font-size: 14px;
+  color: #9ca3af;
 }
 
-.mapButton {
-  background: none;
-  border: none;
+.detailValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #f3f4f6;
+  text-align: right;
+}
+
+.detailValueOrange {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f97316;
+  text-align: right;
+}
+
+.directionsButton {
+  width: 100%;
+  background: #262626;
+  border: 1px solid #333333;
   color: #ffffff;
-  cursor: pointer;
-  padding: 0;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.infoRowSub {
+.directionsButton:active {
+  background: #333333;
+}
+
+.warningBox {
+  width: 100%;
+  background: #2a1515;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.warningIconWrapper {
+  margin-top: 2px;
+}
+
+.warningTextContainer {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.packType {
-  font-size: 14px;
-  color: #9ca3af;
+.warningTitle {
+  font-size: 13px;
+  color: #e5e7eb;
+  margin: 0;
 }
 
-.pickupTime {
-  font-size: 14px;
+.warningSubtitle {
+  font-size: 11px;
   color: #9ca3af;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.bottomBar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+.doneButton {
   width: 100%;
-  padding: 20px 24px;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 34px;
-}
-
-.cancelButton {
-  background: none;
+  background: #f95519;
+  color: #ffffff;
   border: none;
-  color: #ef4444; /* Red color */
+  border-radius: 12px;
+  padding: 16px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  padding: 16px;
-  font-family: inherit;
+  margin-top: auto;
   transition: opacity 0.2s;
 }
 
-.cancelButton:hover {
+.doneButton:active {
   opacity: 0.8;
 }

@@ -50,17 +50,15 @@ router.post('/', authenticate, requireRole(['consumer']), async (req: AuthReques
       return res.status(500).json({ error: error.message });
     }
 
+    const newQuantity = pack.remaining_quantity - quantity;
+    
     await supabase
       .from('packs')
-      .update({ remaining_quantity: pack.remaining_quantity - quantity })
+      .update({ 
+        remaining_quantity: newQuantity,
+        status: newQuantity <= 0 ? 'sold_out' : 'active'
+      })
       .eq('id', pack_id);
-
-    if (pack.remaining_quantity - quantity === 0) {
-      await supabase
-        .from('packs')
-        .update({ status: 'sold_out' })
-        .eq('id', pack_id);
-    }
 
     res.status(201).json(reservation);
   } catch (error: any) {
@@ -120,6 +118,33 @@ router.get('/store', authenticate, requireRole(['store_admin']), async (req: Aut
     }
 
     res.json(reservations);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/:id', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const { data: reservation, error } = await supabase
+      .from('reservations')
+      .select('*, packs(*, stores(*))')
+      .eq('id', id)
+      .single();
+
+    if (error || !reservation) {
+      return res.status(404).json({ error: 'Reservation not found' });
+    }
+
+    const isConsumer = reservation.user_id === req.user!.id;
+    const isStoreAdmin = req.user!.role === 'store_admin';
+
+    if (isConsumer || isStoreAdmin) {
+      return res.json(reservation);
+    }
+
+    res.status(403).json({ error: 'Unauthorized' });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

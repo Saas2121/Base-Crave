@@ -97,66 +97,59 @@
 }
 
 .cardContent {
-  padding: 20px;
+  padding: 24px 20px 20px;
+}
+
+.orderIdTop {
+  font-size: 11px;
+  color: #6a7282;
+  margin-bottom: 6px;
+  font-family: 'General Sans';
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .packageName {
-  font-size: 17.68px;
-  line-height: 25.44px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: #fff;
   font-family: 'General Sans';
 }
 
 .price {
-  font-size: 15.08px;
-  line-height: 22.61px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   color: #f95519;
-  white-space: pre-wrap;
-}
-
-.orderId {
-  font-size: 13.19px;
-  color: #99a1af;
-  margin-bottom: 16px;
-  font-family: 'General Sans';
 }
 
 .customerInfo {
-  border-radius: 16.04px;
-  background-color: rgba(10, 10, 10, 0.5);
-  border: 1.1px solid rgba(42, 42, 42, 0.3);
+  border-radius: 12px;
+  background-color: #151515;
   box-sizing: border-box;
-  padding: 17.1px;
-  margin-bottom: 16px;
-}
-
-.infoRow {
+  padding: 16px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
 }
 
-.infoRow:last-child {
-  margin-bottom: 0;
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .infoLabel {
-  font-size: 12.03px;
+  font-size: 11px;
   color: #6a7282;
   font-family: 'General Sans';
 }
 
 .infoValue {
-  font-size: 14.03px;
+  font-size: 13px;
   color: #fff;
   font-weight: 500;
   font-family: 'General Sans';
@@ -165,21 +158,20 @@
 .cardActions {
   display: flex;
   gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid #2a2a2a;
+  padding: 0 20px 24px;
 }
 
 .acceptBtn, .declineBtn, .readyBtn, .scanBtn {
   flex: 1;
-  border-radius: 13.04px;
-  height: 33px;
+  border-radius: 12px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7.4px;
+  gap: 8px;
   cursor: pointer;
-  font-size: 14.56px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   color: #fafafa;
   font-family: 'General Sans';
   border: none;
@@ -187,7 +179,7 @@
 }
 
 .acceptBtn {
-  background-color: #ff5722;
+  background-color: #f95519;
 }
 
 .declineBtn {
@@ -195,13 +187,13 @@
 }
 
 .readyBtn {
-  background-color: #ff5722;
+  background-color: #f95519;
   flex: none;
   width: 100%;
 }
 
 .scanBtn {
-  background-color: #ff5722;
+  background-color: #f95519;
   flex: none;
   width: 100%;
 }
@@ -235,4 +227,137 @@
 .empty p {
   font-size: 16px;
   margin: 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 320px;
+  background-color: #1a1a1a;
+  border-radius: 20px;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  gap: 12px;
+}
+
+.modalHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #99a1af;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modalContent {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modalSubtitle {
+  font-size: 14px;
+  color: #99a1af;
+  text-align: center;
+  margin: 0;
+}
+
+.codeInput {
+  width: 100%;
+  height: 56px;
+  background-color: #101010;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.codeInput:focus {
+  border-color: #ff5722;
+}
+
+.codeError {
+  font-size: 13px;
+  color: #e94549;
+  margin: 0;
+}
+
+.verifyBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #ff5722;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verifyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(34, 197, 94, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successSubtitle {
+  font-size: 14px;
+  color: #99a1af;
+  text-align: center;
+  margin: 0;
+}
+
+.doneBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #ff5722;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
 }

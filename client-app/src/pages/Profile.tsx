@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { reservationsAPI } from '../api/client'
-import { Reservation } from '../types'
+import { reservationsAPI, Reservation, authAPI } from '../api/client'
 import styles from './Profile.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -21,10 +20,16 @@ const PinIcon = () => (
 )
 
 const BoxIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F95519" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
     <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
     <line x1="12" y1="22.08" x2="12" y2="12"></line>
+  </svg>
+)
+
+const ChevronRightIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6"></polyline>
   </svg>
 )
 
@@ -44,9 +49,11 @@ function formatDate(dateStr?: string) {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, setUser, logout } = useAuthStore()
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadReservations()
@@ -62,22 +69,46 @@ export default function Profile() {
     }
   }
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploading(true)
+      try {
+        const { data } = await authAPI.uploadProfileImage(file)
+        if (data.user) {
+          setUser(data.user)
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error)
+      } finally {
+        setUploading(false)
+      }
+    }
+  }
+
   const handleLogout = () => {
     logout()
     navigate('/start')
   }
 
-  // Calculate stats based on real data or mock
-  const resCount = reservations.length || 24
-  const favsCount = 4 // Mocked for now
-  const savedAmount = '$186k' // Mocked
+  const activeReservations = reservations.filter((res: Reservation) => 
+    ['reserved', 'in_process', 'ready', 'picked_up'].includes(res.status)
+  )
 
-  // Mock reservations if empty to match screenshot
-  const displayReservations = reservations.length > 0 ? reservations : [
-    { id: '1', packs: { stores: { name: 'Frisby' } }, pickup_start: '2026-04-02T12:00:00Z', quantity: 1, status: 'completed', price: 12000 },
-    { id: '2', packs: { stores: { name: 'Sr Wok' } }, pickup_start: '2026-03-26T12:00:00Z', quantity: 1, status: 'completed', price: 19900 },
-    { id: '3', packs: { stores: { name: 'Crepes & Waffles' } }, pickup_start: '2026-03-05T12:00:00Z', quantity: 1, status: 'completed', price: 15300 },
-  ] as any[]
+  const resCount = activeReservations.length
+  let favPackIds: string[] = []
+  try { favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]') } catch {}
+  const favsCount = favPackIds.length
+  const totalSaved = reservations
+    .filter(r => r.status === 'picked_up')
+    .reduce((acc, r) => acc + (r.packs?.price || 0) * r.quantity, 0)
+  const savedAmount = totalSaved >= 1000 ? `$${(totalSaved / 1000).toFixed(0)}k` : `$${totalSaved.toLocaleString('es-CO')}`
+
+  const displayReservations = activeReservations.length > 0 ? activeReservations : []
 
   return (
     <div className={styles.appContainer}>
@@ -91,8 +122,10 @@ export default function Profile() {
           {/* Profile Card */}
           <div className={styles.profileCard}>
             <div className={styles.profileTop}>
-              <div className={styles.avatarWrapper}>
-                {user?.profile_image ? (
+              <div className={styles.avatarWrapper} onClick={!uploading ? handleAvatarClick : undefined} style={{ cursor: uploading ? 'default' : 'pointer' }}>
+                {uploading ? (
+                  <div className={styles.avatarFallback} style={{ background: '#333', fontSize: '10px' }}>...</div>
+                ) : user?.profile_image ? (
                   <img
                     src={user.profile_image}
                     alt={user?.name || 'Profile'}
@@ -142,7 +175,9 @@ export default function Profile() {
 
           {/* Recent Reservations */}
           <div className={styles.sectionHeader}>
-            <BoxIcon />
+            <div className={styles.iconCircle}>
+              <BoxIcon />
+            </div>
             <h3>Recent Reservations</h3>
           </div>
 
@@ -151,19 +186,28 @@ export default function Profile() {
               <p className={styles.loadingText}>Loading...</p>
             ) : (
               displayReservations.map((res, index) => (
-                <div key={res.id || index} className={styles.resCard}>
+                <div key={res.id || index} className={styles.resCard} onClick={() => navigate(`/reservation/${res.id}`)}>
                   <div className={styles.resLeft}>
                     <h4>{res.packs?.stores?.name || 'Store'}</h4>
-                    <p>{formatDate(res.pickup_start)}</p>
+                    <p>{formatDate(res.packs?.pickup_start)}</p>
                   </div>
                   <div className={styles.resRight}>
-                    <span className={styles.resPrice}>{formatPrice(res.packs?.price || res.price || 15000)}</span>
-                    <span className={styles.resStatus}>{res.status === 'picked_up' ? 'Completed' : (res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' '))}</span>
+                    <span className={styles.resPrice}>{formatPrice(res.packs?.price || 15000)}</span>
+                    <span className={styles[`status_${res.status}`]}>
+                      {res.status === 'reserved' ? 'Pending' : 
+                       res.status === 'in_process' ? 'In Progress' : 
+                       res.status === 'ready' ? 'Ready' : 
+                       res.status === 'picked_up' ? 'Completed' : 
+                       res.status.charAt(0).toUpperCase() + res.status.slice(1).replace('_', ' ')}
+                    </span>
                   </div>
+                  <ChevronRightIcon />
                 </div>
               ))
             )}
           </div>
+
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} style={{ display: 'none' }} />
 
           <button onClick={handleLogout} className={styles.logoutButton}>
             Log Out

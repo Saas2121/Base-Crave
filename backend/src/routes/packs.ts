@@ -3,6 +3,7 @@ import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole, PackType, PackStatus } from '../types';
 import { upload } from '../middleware/upload';
+import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 
@@ -198,7 +199,9 @@ router.post('/:id/upload-image', upload.single('image'), authenticate, requireRo
       return res.status(404).json({ error: 'Pack not found' });
     }
 
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const localUrl = `/uploads/${req.file.filename}`;
+    const supabaseUrl = await uploadToSupabaseStorage(req.file.path, req.file.filename, req.file.mimetype);
+    const imageUrl = supabaseUrl || localUrl;
 
     const { data: updatedPack, error } = await supabase
       .from('packs')

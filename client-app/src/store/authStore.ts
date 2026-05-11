@@ -13,13 +13,14 @@ interface AuthState {
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>
   logout: () => void
   checkAuth: () => Promise<void>
+  setUser: (user: (User & { role: UserRole }) | null) => void
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   token: localStorage.getItem('token'),
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: !!localStorage.getItem('token'),
   error: null,
 
   login: async (email, password) => {
@@ -54,7 +55,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user: null, token: null, isAuthenticated: false })
   },
 
+  setUser: (user) => {
+    set({ user })
+  },
+
   checkAuth: async () => {
+    set({ isLoading: true })
     const token = get().token
     if (!token) {
       set({ isAuthenticated: false, isLoading: false })

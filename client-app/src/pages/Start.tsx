@@ -21,32 +21,36 @@ export default function Start() {
       <div className={styles.viewport}>
         <div className={styles.gradientBg} />
 
-        <img src="/images/group-1.svg" alt="" className={styles.assetGroup} />
+        <div className={styles.heroContainer}>
+          <img src="/images/group-1.svg" alt="logo" className={styles.bagLogo} />
+          <span className={styles.craveText}>crave</span>
 
-        <div className={styles.ellipseWrap1}>
-          <img src="/images/ellipse-3.svg" alt="" />
-          <span className={styles.emoji1}>🍗</span>
-        </div>
-        <div className={styles.ellipseWrap2}>
-          <img src="/images/ellipse-17.svg" alt="" />
-          <span className={styles.emoji2}>☕</span>
-        </div>
-        <div className={styles.ellipseWrap3}>
-          <img src="/images/ellipse-4.svg" alt="" />
-          <span className={styles.emoji3}>🍰</span>
-        </div>
-        <div className={styles.ellipseWrap4}>
-          <img src="/images/ellipse-5.svg" alt="" />
-          <span className={styles.emoji4}>🥗</span>
-        </div>
-        <div className={styles.ellipseWrap5}>
-          <img src="/images/ellipse-17.svg" alt="" />
-          <span className={styles.emoji5}>🍔</span>
+          <div className={`${styles.bubble} ${styles.bubbleLg} ${styles.bubbleCoffee}`}>
+            ☕
+          </div>
+          <div className={`${styles.bubble} ${styles.bubbleSm} ${styles.bubbleDrumstick}`}>
+            🍗
+          </div>
+          <div className={`${styles.bubble} ${styles.bubbleSm} ${styles.bubbleSalad}`}>
+            🥗
+          </div>
+          <div className={`${styles.bubble} ${styles.bubbleLg} ${styles.bubbleBurger}`}>
+            🍔
+          </div>
+          <div className={`${styles.bubble} ${styles.bubbleSm} ${styles.bubbleCake}`}>
+            🍰
+          </div>
         </div>
 
         <div className={styles.bottomBar1} />
         <div className={styles.bottomBar2} />
         <div className={styles.bottomBar3} />
+
+        <div className={styles.loaderWrap}>
+          <div className={styles.loaderDot} style={{ animationDelay: '0s' }} />
+          <div className={styles.loaderDot} style={{ animationDelay: '0.2s' }} />
+          <div className={styles.loaderDot} style={{ animationDelay: '0.4s' }} />
+        </div>
       </div>
     </div>
   )

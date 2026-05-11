@@ -5,6 +5,7 @@ import { supabase } from '../config/supabase';
 import { UserRole, AuthRequest } from '../types';
 import { authenticate } from '../middleware/auth';
 import { upload } from '../middleware/upload';
+import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -131,7 +132,9 @@ router.post('/upload-profile-image', upload.single('image'), authenticate, async
       return res.status(400).json({ error: 'No image file provided' });
     }
 
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const localUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const supabaseUrl = await uploadToSupabaseStorage(req.file.path, req.file.filename, req.file.mimetype);
+    const imageUrl = supabaseUrl || localUrl;
 
     const { data: user, error } = await supabase
       .from('users')

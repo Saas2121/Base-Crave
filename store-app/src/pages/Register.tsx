@@ -6,6 +6,14 @@ import { UserRole } from '../types'
 import styles from './Register.module.css'
 import MapPicker from '../components/MapPicker'
 
+const CUISINE_TYPES = [
+  { emoji: '🍗', label: 'Meals' },
+  { emoji: '☕', label: 'Coffee' },
+  { emoji: '🍔', label: 'Fast Food' },
+  { emoji: '🍰', label: 'Desserts' },
+  { emoji: '🥗', label: 'Healthy' },
+]
+
 export default function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuthStore()
@@ -114,17 +122,18 @@ export default function Register() {
           <div className={styles.label}>
             <div className={styles.restaurantName}>Cuisine Type</div>
           </div>
-          <div className={styles.container3}>
-            <input
-              className={styles.passwordInput}
-              type="text"
-              value={cuisineType}
-              onChange={(e) => setCuisineType(e.target.value)}
-              placeholder="e.g. Italian, Fast Food, Vegan"
-            />
-            <svg className={styles.vectorIcon} viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 5L8.5 12L15 5" stroke="#99a1af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          <div className={styles.cuisineGrid}>
+            {CUISINE_TYPES.map((type) => (
+              <button
+                key={type.label}
+                type="button"
+                className={`${styles.cuisineBtn} ${cuisineType === type.label ? styles.cuisineBtnActive : ''}`}
+                onClick={() => setCuisineType(type.label)}
+              >
+                <span className={styles.cuisineEmoji}>{type.emoji}</span>
+                <span>{type.label}</span>
+              </button>
+            ))}
           </div>
         </div>
         <div className={styles.container10}>

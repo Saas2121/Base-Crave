@@ -74,13 +74,12 @@
 .toggleGroup {
   display: flex;
   background: #1a1a1a;
-  border-radius: 12px;
+  border-radius: 100px;
   padding: 4px;
-  flex: 1;
+  gap: 4px;
 }
 
 .toggleBtn {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,15 +89,22 @@
   color: #6b7280;
   font-size: 14px;
   font-weight: 500;
-  padding: 10px 0;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 100px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.toggleBtn:hover {
+  color: #ffffff;
 }
 
 .activeToggle {
   background: var(--primary);
   color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .filterBtn {
@@ -138,8 +144,10 @@
 }
 
 .storeCard {
-  background: #161616;
-  border-radius: 20px;
+  background: #1a1a1a;
+  border-radius: 28.09px;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0px 4.16px 41.61px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   cursor: pointer;
   position: relative;
@@ -151,11 +159,15 @@
   height: 140px;
   width: 100%;
   position: relative;
+  overflow: hidden;
+  box-shadow: 0px 4.16px 43.9px rgba(255, 165, 109, 0.22);
 }
 
 .storeImage {
+  position: absolute;
+  top: -30px;
   width: 100%;
-  height: 100%;
+  height: 200px;
   object-fit: cover;
 }
 
@@ -169,22 +181,36 @@
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 100px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.packTypeTag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .avatarWrapper {
   position: absolute;
-  bottom: -20px;
-  left: 16px;
-  width: 44px;
-  height: 44px;
+  bottom: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 2px solid #161616;
+  border: 2px solid rgba(255, 255, 255, 0.5);
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  z-index: 2;
+  z-index: 5;
 }
 
 .storeAvatar {
@@ -205,9 +231,40 @@
   font-size: 14px;
 }
 
+.soldOutCard {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.soldOutOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.soldOutTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.soldOutSub {
+  font-size: 13px;
+  color: #d1d5db;
+}
+
 .cardContent {
-  padding: 28px 16px 16px;
-  background: linear-gradient(180deg, #222222 0%, #161616 100%);
+  padding: 16px 20px 20px;
+  background: #1a1a1a;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -220,8 +277,9 @@
 }
 
 .cardHeader h3 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17.68px;
+  font-weight: 600;
+  line-height: 25.44px;
   color: #ffffff;
   margin: 0;
 }
@@ -229,7 +287,7 @@
 .heartBtn {
   background: none;
   border: none;
-  color: #a33c16; /* Darker outline for unselected */
+  color: #a33c16;
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -244,40 +302,37 @@
 
 .currentPrice {
   color: var(--primary);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15.08px;
+  font-weight: 600;
+  line-height: 22.61px;
 }
 
-.originalPrice {
-  color: #4b5563;
-  font-size: 12px;
-  text-decoration: line-through;
-}
 
 .metaRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #6b7280;
-  font-size: 11px;
+  gap: 20px;
+  color: #99a1af;
+  font-size: 13px;
   font-weight: 500;
+  line-height: 1;
 }
 
 .metaItem {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .divider {
   width: 1px;
-  height: 10px;
+  height: 14px;
   background: #374151;
 }
 
 .metaItemRight {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin-left: auto;
 }

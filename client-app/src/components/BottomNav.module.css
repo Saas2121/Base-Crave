@@ -66,8 +66,9 @@
   position: absolute;
   top: -1.15px;
   left: 0px;
+  right: 0px;
+  text-align: center;
   line-height: 16.64px;
-  flex-shrink: 0;
 }
 .link2 {
   position: absolute;
@@ -94,10 +95,11 @@
 .search {
   position: absolute;
   top: -1.15px;
-  left: -0.07px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
   line-height: 16.98px;
   font-weight: 500;
-  flex-shrink: 0;
 }
 .link3 {
   position: absolute;
@@ -124,10 +126,11 @@
 .favorites {
   position: absolute;
   top: -1.15px;
-  left: 3.34px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
   line-height: 16.98px;
   font-weight: 500;
-  flex-shrink: 0;
 }
 .link4 {
   position: absolute;
@@ -154,6 +157,7 @@
   position: absolute;
   top: -1.15px;
   left: 0px;
+  right: 0px;
+  text-align: center;
   line-height: 16.64px;
-  flex-shrink: 0;
 }

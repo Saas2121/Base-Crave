@@ -13,6 +13,7 @@ import ReserveProductDetailFornProfile from './pages/ReserveProductDetailFornPro
 import Favorites from './pages/Favorites'
 import Profile from './pages/Profile'
 import ViewQRCode from './pages/ViewQRCode'
+import ReservationDetail from './pages/ReservationDetail'
 
 interface PrivateRouteProps {
   children: React.ReactNode
@@ -23,7 +24,31 @@ function PrivateRoute({ children, requiredRole }: PrivateRouteProps) {
   const { isAuthenticated, user, isLoading } = useAuthStore()
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#101010',
+        gap: '24px',
+      }}>
+        <img src="/images/Logo-home.png" alt="Crave" style={{ width: 64, height: 64, opacity: 0.9 }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#f95519',
+              animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+            }} />
+          ))}
+        </div>
+        <style>{`@keyframes pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }`}</style>
+      </div>
+    )
   }
 
   if (!isAuthenticated) {
@@ -118,6 +143,14 @@ function App() {
         element={
           <PrivateRoute>
             <ViewQRCode />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/reservation/:id"
+        element={
+          <PrivateRoute>
+            <ReservationDetail />
           </PrivateRoute>
         }
       />

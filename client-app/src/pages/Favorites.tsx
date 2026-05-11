@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { storesAPI } from '../api/client'
+import { getUserLocation } from '../lib/location'
+import { calculateDistance, formatDistance } from '../lib/distance'
 import styles from './Favorites.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -25,13 +27,6 @@ const SmileWatermark = () => (
   </svg>
 )
 
-const BoxWatermark = () => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.05">
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-    <line x1="12" y1="22.08" x2="12" y2="12" />
-  </svg>
-)
 
 const LocationIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -87,10 +82,12 @@ function getTagForStore(storeName: string) {
 export default function Favorites() {
   const navigate = useNavigate()
   const [favorites, setFavorites] = useState<any[]>([])
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('All')
 
   useEffect(() => {
+    getUserLocation().then(setUserLocation)
     loadFavorites()
   }, [])
 
@@ -122,19 +119,26 @@ export default function Favorites() {
     localStorage.setItem('favorite_pack_ids', JSON.stringify(next.map((f) => f.id)))
   }
 
-  // To match screenshot we mock data if none is available or just let it use real data.
-  // The user wants visual parity, so we'll ensure the UI matches the layout perfectly.
-  const displayFavorites = favorites.length > 0 ? favorites : [
-    { id: 'mock-1', price: 17900, original_price: 48900, remaining_quantity: 6, pickup_start: '2026-05-08T14:00:00Z', pickup_end: '2026-05-08T19:00:00Z', image_url: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=600&auto=format&fit=crop', store: { name: 'Frisby', users: { profile_image: '' } } },
-    { id: 'mock-2', price: 15300, remaining_quantity: 4, pickup_start: '2026-05-08T15:00:00Z', pickup_end: '2026-05-08T20:00:00Z', image_url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop', store: { name: 'Crepes & Waffles', users: { profile_image: '' } } },
-    { id: 'mock-3', price: 9000, original_price: 20000, remaining_quantity: 20, pickup_start: '2026-05-08T15:00:00Z', pickup_end: '2026-05-08T18:00:00Z', image_url: 'https://images.unsplash.com/photo-1495147466023-af5c19cbbfc1?q=80&w=600&auto=format&fit=crop', store: { name: 'If Bakery', users: { profile_image: '' } } },
-    { id: 'mock-4', price: 6500, original_price: 13000, remaining_quantity: 0, pickup_start: '2026-05-08T15:00:00Z', pickup_end: '2026-05-08T18:00:00Z', image_url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=600&auto=format&fit=crop', store: { name: 'Green Bowl Café', users: { profile_image: '' } } },
-  ]
+  const NEARBY_KM = 5
+
+  const filteredFavorites = favorites.filter((fav) => {
+    if (activeFilter === 'Available Now') {
+      return fav.remaining_quantity > 0 && fav.status !== 'sold_out' && fav.status !== 'expired' && fav.store?.is_open !== false
+    }
+    if (activeFilter === 'Nearby') {
+      if (!userLocation || !fav.store?.latitude) return false
+      const dist = calculateDistance(userLocation.lat, userLocation.lng, fav.store.latitude, fav.store.longitude)
+      return dist <= NEARBY_KM
+    }
+    return true
+  })
+
+  const hasRealFavorites = favorites.length > 0
 
   const stats = {
-    favorites: 4,
-    available: 3,
-    packs: 25
+    favorites: favorites.length,
+    available: favorites.filter((f) => f.remaining_quantity > 0 && f.status !== 'sold_out' && f.status !== 'expired' && f.store?.is_open !== false).length,
+    avgPrice: favorites.length > 0 ? Math.round(favorites.reduce((sum, f) => sum + (f.price || 0), 0) / favorites.length) : 0
   }
 
   return (
@@ -158,9 +162,13 @@ export default function Favorites() {
               <div className={styles.watermark}><SmileWatermark /></div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNum}>{stats.packs}</div>
-              <div className={styles.statLabel}>Packs</div>
-              <div className={styles.watermark}><BoxWatermark /></div>
+              <div className={styles.statNum}>{stats.avgPrice >= 1000 ? `$${(stats.avgPrice / 1000).toFixed(0)}K` : `$${stats.avgPrice.toLocaleString('es-CO')}`}</div>
+              <div className={styles.statLabel}>Avg price</div>
+              <div className={styles.watermark}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" opacity="0.05">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </div>
             </div>
           </div>
 
@@ -175,21 +183,56 @@ export default function Favorites() {
               </button>
             ))}
           </div>
+          {activeFilter === 'Nearby' && (
+            <p className={styles.nearbyHint}>📍 Near you — within 5 km</p>
+          )}
 
           {loading && favorites.length === 0 ? (
             <p className={styles.empty}>Loading...</p>
+          ) : !hasRealFavorites ? (
+            <div className={styles.emptyContainer}>
+              <div className={styles.emptyIcon}>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </div>
+              <h3>No favorites yet</h3>
+              <p>Start exploring and save your favorite food packs!</p>
+            </div>
+          ) : filteredFavorites.length === 0 ? (
+            <div className={styles.emptyContainer}>
+              <div className={styles.emptyIcon}>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  {activeFilter === 'Nearby' ? (
+                    <><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="1.5"></circle></>
+                  ) : (
+                    <><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></>
+                  )}
+                </svg>
+              </div>
+              <h3>{activeFilter === 'Nearby' ? 'Nothing nearby' : 'No available packs'}</h3>
+              <p>{activeFilter === 'Nearby' ? 'No favorites within 5 km of your location.' : 'All your favorites are sold out or expired.'}</p>
+            </div>
           ) : (
             <div className={styles.storesList}>
-              {displayFavorites.map((fav) => {
+              {filteredFavorites.map((fav) => {
                 const store = fav.store
-                const imageUrl = fav.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
-                const isSoldOut = fav.remaining_quantity === 0
+                const getImageUrl = (fav: any) => {
+    if (fav.image_url) return fav.image_url
+    if (fav.pack_type === 'surprise') {
+      return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    }
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+  }
+
+  const imageUrl = getImageUrl(fav)
+                const isSoldOut = fav.remaining_quantity === 0 || fav.status === 'sold_out' || fav.status === 'expired' || !store?.is_open
                 
                 return (
                   <div
                     key={fav.id}
                     className={`${styles.storeCard} ${isSoldOut ? styles.soldOutCard : ''}`}
-                    onClick={() => navigate(`/product/${fav.id}`)}
+                    onClick={() => !isSoldOut && navigate(`/product/${fav.id}`)}
                   >
                     <div className={styles.imageContainer}>
                       <img
@@ -200,12 +243,12 @@ export default function Favorites() {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
                         }}
                       />
-                      <div className={styles.imageOverlay}></div>
+                      <div className={styles.packTypeTag}>{fav.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
                       <div className={styles.tag}>{getTagForStore(store.name)}</div>
                       <div className={styles.avatarWrapper}>
-                        {store.users?.profile_image ? (
+                        {store.image_url || store.users?.profile_image ? (
                           <img
-                            src={store.users.profile_image}
+                            src={store.image_url || store.users?.profile_image}
                             alt={store.name}
                             className={styles.storeAvatar}
                           />
@@ -234,15 +277,12 @@ export default function Favorites() {
                       
                       <div className={styles.pricing}>
                         <span className={styles.currentPrice}>{formatPrice(fav.price)}</span>
-                        {fav.original_price && (
-                          <span className={styles.originalPrice}>{formatPrice(fav.original_price)}</span>
-                        )}
                       </div>
                       
                       <div className={styles.metaRow}>
                         <div className={styles.metaItem}>
                           <LocationIcon />
-                          <span>0.6 km</span>
+                          <span>{userLocation && store?.latitude ? formatDistance(calculateDistance(userLocation.lat, userLocation.lng, store.latitude, store.longitude)) : ''}</span>
                         </div>
                         <div className={styles.divider}></div>
                         <div className={styles.metaItem}>

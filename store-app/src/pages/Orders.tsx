@@ -62,7 +62,7 @@ export default function Orders() {
   }
 
   const renderOrderCard = (res: Reservation) => {
-    const packTitle = res.packs?.title || 'Pack'
+    const packTitle = res.packs?.title || res.packs?.pack_type === 'surprise' ? 'Surprise Pack' : 'Pack'
     const customerName = res.users?.name || 'Customer'
     const price = res.packs?.price || 0
     const pickupTime = formatTime(res.packs?.pickup_start || '')
@@ -70,17 +70,17 @@ export default function Orders() {
     return (
       <div key={res.id} className={styles.card}>
         <div className={styles.cardContent}>
+          <div className={styles.orderIdTop}>Order ORD-{res.id.slice(0, 4).toUpperCase()}</div>
           <div className={styles.cardHeader}>
             <div className={styles.packageName}>{packTitle}</div>
-            <div className={styles.price}>{formatPrice(price)}</div>
+            <div className={styles.price}>{formatPrice(price * res.quantity)}</div>
           </div>
-          <div className={styles.orderId}>Order {res.id.slice(0, 8)}</div>
           <div className={styles.customerInfo}>
-            <div className={styles.infoRow}>
+            <div className={styles.infoCol}>
               <span className={styles.infoLabel}>Customer</span>
               <span className={styles.infoValue}>{customerName}</span>
             </div>
-            <div className={styles.infoRow}>
+            <div className={styles.infoCol}>
               <span className={styles.infoLabel}>Pickup Time</span>
               <span className={styles.infoValue}>{pickupTime}</span>
             </div>
@@ -88,16 +88,9 @@ export default function Orders() {
         </div>
         <div className={styles.cardActions}>
           <button className={styles.acceptBtn} onClick={() => handleAccept(res.id)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
             Accept
           </button>
           <button className={styles.declineBtn} onClick={() => handleDecline(res.id)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
             Decline
           </button>
         </div>

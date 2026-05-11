@@ -11,7 +11,6 @@ export default function DashboardFixedProduct() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
-  const [originalPrice, setOriginalPrice] = useState('')
   const [quantity, setQuantity] = useState('1')
   const [pickupStart, setPickupStart] = useState('13:00')
   const [pickupEnd, setPickupEnd] = useState('20:00')
@@ -106,7 +105,8 @@ export default function DashboardFixedProduct() {
         description,
         pack_type: PackType.FIXED,
         price: Number(price),
-        original_price: originalPrice ? Number(originalPrice) : null,
+
+
         total_quantity: Number(quantity),
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
@@ -125,7 +125,6 @@ export default function DashboardFixedProduct() {
       setTitle('')
       setDescription('')
       setPrice('')
-      setOriginalPrice('')
       setQuantity('1')
       setSelectedImage(null)
       setImagePreview(null)
@@ -175,7 +174,7 @@ export default function DashboardFixedProduct() {
         </div>
         <div className={styles.container8}>
           <div className={styles.container9}>
-            <div className={styles.div}>${revenue}</div>
+            <div className={styles.div}>${revenue.toLocaleString('es-CO')}</div>
           </div>
           <div className={styles.container10}>
             <div className={styles.activePacks}>Revenue</div>

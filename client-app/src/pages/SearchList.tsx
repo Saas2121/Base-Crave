@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { storesAPI, Store } from '../api/client'
+import { getUserLocation } from '../lib/location'
+import { calculateDistance, formatDistance } from '../lib/distance'
 import styles from './SearchList.module.css'
 import BottomNav from '../components/BottomNav'
 
@@ -29,23 +31,16 @@ const MapIcon = () => (
   </svg>
 )
 
-const FilterIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="4" y1="21" x2="4" y2="14" />
-    <line x1="4" y1="10" x2="4" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12" y2="3" />
-    <line x1="20" y1="21" x2="20" y2="16" />
-    <line x1="20" y1="12" x2="20" y2="3" />
-    <line x1="1" y1="14" x2="7" y2="14" />
-    <line x1="9" y1="8" x2="15" y2="8" />
-    <line x1="17" y1="16" x2="23" y2="16" />
-  </svg>
-)
-
 const HeartIcon = ({ filled }: { filled?: boolean }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "var(--primary)" : "none"} stroke={filled ? "var(--primary)" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+)
+
+const ClockIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 
@@ -61,13 +56,6 @@ const BoxIcon = () => (
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
     <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
     <line x1="12" y1="22.08" x2="12" y2="12" />
-  </svg>
-)
-
-const ClockIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 
@@ -105,8 +93,10 @@ export default function SearchList() {
   const [stores, setStores] = useState<Store[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
 
   useEffect(() => {
+    getUserLocation().then(setUserLocation)
     loadStores()
   }, [])
 
@@ -126,6 +116,14 @@ export default function SearchList() {
       .toLowerCase()
       .includes(query.toLowerCase())
   })
+
+  const getImageUrl = (pack: any) => {
+    if (pack?.image_url) return pack.image_url
+    if (pack?.pack_type === 'surprise') {
+      return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    }
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+  }
 
   return (
     <div className={styles.appContainer}>
@@ -152,15 +150,14 @@ export default function SearchList() {
               </button>
               <button 
                 className={styles.toggleBtn} 
-                onClick={() => navigate('/search/map')}
+                onClick={() => {
+                  setTimeout(() => navigate('/search/map'), 300)
+                }}
               >
                 <MapIcon />
                 Map
               </button>
             </div>
-            <button className={styles.filterBtn}>
-              <FilterIcon />
-            </button>
           </div>
         </header>
 
@@ -174,13 +171,15 @@ export default function SearchList() {
               {filtered.map((store) => {
                 const mainPack = store.packs?.[0]
                 const hasPacks = !!mainPack
-                const imageUrl = mainPack?.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
+                const imageUrl = getImageUrl(mainPack)
                 
+                const isUnavailable = !store.is_open || !hasPacks || mainPack.remaining_quantity === 0 || mainPack.status === 'sold_out' || mainPack.status === 'expired'
+
                 return (
                   <div
                     key={store.id}
-                    className={styles.storeCard}
-                    onClick={() => hasPacks && navigate(`/product/${mainPack.id}`)}
+                    className={`${styles.storeCard} ${isUnavailable ? styles.soldOutCard : ''}`}
+                    onClick={() => !isUnavailable && navigate(`/product/${mainPack.id}`)}
                   >
                     <div className={styles.imageContainer}>
                       <img
@@ -191,11 +190,12 @@ export default function SearchList() {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'
                         }}
                       />
+                      <div className={styles.packTypeTag}>{mainPack?.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
                       <div className={styles.tag}>{getTagForStore(store.name)}</div>
                       <div className={styles.avatarWrapper}>
-                        {store.users?.profile_image ? (
+                        {store.image_url || store.users?.profile_image ? (
                           <img
-                            src={store.users.profile_image}
+                            src={store.image_url || store.users?.profile_image}
                             alt={store.name}
                             className={styles.storeAvatar}
                           />
@@ -205,6 +205,12 @@ export default function SearchList() {
                           </div>
                         )}
                       </div>
+                      {isUnavailable && (
+                        <div className={styles.soldOutOverlay}>
+                          <span className={styles.soldOutTitle}>No packs available</span>
+                          <span className={styles.soldOutSub}>Check back tomorrow</span>
+                        </div>
+                      )}
                     </div>
                     
                     <div className={styles.cardContent}>
@@ -221,16 +227,13 @@ export default function SearchList() {
                       {hasPacks && (
                         <div className={styles.pricing}>
                           <span className={styles.currentPrice}>{formatPrice(mainPack.price)}</span>
-                          {mainPack.original_price && (
-                            <span className={styles.originalPrice}>{formatPrice(mainPack.original_price)}</span>
-                          )}
                         </div>
                       )}
                       
                       <div className={styles.metaRow}>
                         <div className={styles.metaItem}>
                           <LocationIcon />
-                          <span>0.6 km</span>
+                          <span>{userLocation && store?.latitude ? formatDistance(calculateDistance(userLocation.lat, userLocation.lng, store.latitude, store.longitude)) : ''}</span>
                         </div>
                         <div className={styles.divider}></div>
                         <div className={styles.metaItem}>

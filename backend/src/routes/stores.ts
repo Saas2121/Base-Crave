@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole } from '../types';
+import { upload } from '../middleware/upload';
+import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 
@@ -167,6 +169,43 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
     }
 
     res.json(packs);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), upload.single('image'), async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const { data: store, error: findError } = await supabase
+      .from('stores')
+      .select('id')
+      .eq('owner_id', req.user!.id)
+      .single();
+
+    if (findError || !store) {
+      return res.status(404).json({ error: 'Store not found' });
+    }
+
+    const localUrl = `/uploads/${req.file.filename}`;
+    const supabaseUrl = await uploadToSupabaseStorage(req.file.path, req.file.filename, req.file.mimetype);
+    const imageUrl = supabaseUrl || localUrl;
+
+    const { data: updatedStore, error } = await supabase
+      .from('stores')
+      .update({ image_url: imageUrl })
+      .eq('id', store.id)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json({ store: updatedStore, imageUrl });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

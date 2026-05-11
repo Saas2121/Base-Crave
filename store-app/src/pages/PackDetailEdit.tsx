@@ -96,12 +96,10 @@ export default function PackDetailEdit() {
         try {
           await uploadImage(id, selectedImage)
         } catch {
-          // error stored in store
         }
       }
       navigate('/packs')
     } catch {
-      // error stored in store
     }
   }
 
@@ -112,7 +110,6 @@ export default function PackDetailEdit() {
       await deletePack(id)
       navigate('/packs')
     } catch {
-      // error stored in store
     }
   }
 

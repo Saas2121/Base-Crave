@@ -28,7 +28,7 @@ function loadCache(): ProfileCache {
 function saveCache(data: ProfileCache) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(data))
-  } catch { /* noop */ }
+  } catch { }
 }
 
 export default function Profile() {
@@ -91,7 +91,7 @@ export default function Profile() {
         setStore(data)
         saveCache({ store: data, totalPacks, saved })
       }
-    } catch { /* noop */ }
+    } catch { }
     setShowMap(false)
   }
 
@@ -123,7 +123,7 @@ export default function Profile() {
       const { data } = await storesAPI.toggleOpen()
       setStore(data)
       saveCache({ store: data, totalPacks, saved })
-    } catch { /* noop */ }
+    } catch { }
   }
 
   const handleAvatarClick = () => {
@@ -155,7 +155,11 @@ export default function Profile() {
     return `$${amount.toLocaleString('es-CO')}`
   }
 
-  const categories = store?.description?.split(' ') || []
+  const KNOWN_CATEGORIES = ['Meals', 'Coffee', 'Fast Food', 'Desserts', 'Healthy', 'Surprise']
+
+  const categories = store?.description && KNOWN_CATEGORIES.includes(store.description)
+    ? [store.description]
+    : []
 
   return (
     <div className={styles.profile}>

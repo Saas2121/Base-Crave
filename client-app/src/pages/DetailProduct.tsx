@@ -58,7 +58,7 @@ function formatTimeRange(startStr: string, endStr: string) {
       let h = d.getHours()
       const ampm = h >= 12 ? 'PM' : 'AM'
       h = h % 12 || 12
-      return `${h}:00 ${ampm}` // simplified for the mock
+      return `${h}:00 ${ampm}`
     }
     return `${formatTime(start)} - ${formatTime(end)}`
   } catch (e) {

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { storesAPI } from '../api/client'
@@ -26,6 +26,18 @@ export default function Register() {
   const [showMap, setShowMap] = useState(false)
   const [latitude, setLatitude] = useState(3.4516)
   const [longitude, setLongitude] = useState(-76.532)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleLocationSelect = (lat: number, lng: number, addr: string) => {
     setLatitude(lat)
@@ -144,20 +156,40 @@ export default function Register() {
           <div className={styles.label}>
             <div className={styles.restaurantName}>Cuisine Type</div>
           </div>
-          <div className={styles.selectWrapper}>
-            <select
-              className={styles.select}
-              value={cuisineType}
-              onChange={(e) => setCuisineType(e.target.value)}
-              required
+          <div className={styles.selectWrapper} ref={dropdownRef}>
+            <button
+              type="button"
+              className={`${styles.selectButton} ${cuisineType ? styles.selectButtonSelected : ''}`}
+              onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              {CUISINE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value} disabled={opt.value === ''}>{opt.label}</option>
-              ))}
-            </select>
-            <svg className={styles.selectArrow} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 5L6 8L9 5" stroke="#99a1af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+              <svg className={styles.selectIcon} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 2H5C4.448 2 4 2.448 4 3V5C4 5.552 4.448 6 5 6H8C8.552 6 9 5.552 9 5V3C9 2.448 8.552 2 8 2Z" stroke="#99a1af" strokeWidth="1.5"/>
+                <path d="M15 2H12C11.448 2 11 2.448 11 3V5C11 5.552 11.448 6 12 6H15C15.552 6 16 5.552 16 5V3C16 2.448 15.552 2 15 2Z" stroke="#99a1af" strokeWidth="1.5"/>
+                <path d="M8 9H5C4.448 9 4 9.448 4 10V12C4 12.552 4.448 13 5 13H8C8.552 13 9 12.552 9 12V10C9 9.448 8.552 9 8 9Z" stroke="#99a1af" strokeWidth="1.5"/>
+                <path d="M15 9H12C11.448 9 11 9.448 11 10V12C11 12.552 11.448 13 12 13H15C15.552 13 16 12.552 16 12V10C16 9.448 15.552 9 15 9Z" stroke="#99a1af" strokeWidth="1.5"/>
+              </svg>
+              <span className={styles.selectText}>{cuisineType || 'Select cuisine type'}</span>
+              <svg className={styles.selectArrow} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 5L6 8L9 5" stroke="#99a1af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {dropdownOpen && (
+              <div className={styles.dropdownList}>
+                {CUISINE_OPTIONS.filter(o => o.value !== '').map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`${styles.dropdownItem} ${cuisineType === opt.value ? styles.dropdownItemActive : ''}`}
+                    onClick={() => {
+                      setCuisineType(opt.value)
+                      setDropdownOpen(false)
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {showMap && (

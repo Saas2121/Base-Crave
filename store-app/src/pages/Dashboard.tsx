@@ -40,9 +40,7 @@ export default function Dashboard() {
       setActivePacks(active)
       setSoldToday(sold)
       setRevenue(rev)
-    } catch {
-      // silently fail
-    }
+    } catch {}
   }, [])
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { storesAPI, Store, Pack } from '../api/client'
@@ -73,21 +73,11 @@ function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
 
-function getTagForStore(storeName: string) {
-  const lower = storeName.toLowerCase()
-  if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
-  if (lower.includes('bakery') || lower.includes('postre') || lower.includes('if')) return 'Desserts'
-  if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
-  return 'Fast Food'
-}
+const CATEGORIES = ['Meals', 'Coffee', 'Fast Food', 'Desserts', 'Healthy']
 
-function getCategoryForStore(storeName: string) {
-  const lower = storeName.toLowerCase()
-  if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
-  if (lower.includes('bakery') || lower.includes('postre') || lower.includes('if')) return 'Desserts'
-  if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
-  if (lower.includes('coffee') || lower.includes('café')) return 'Coffee'
-  return 'Fast Food'
+function getCategoryFromStore(store?: { description?: string | null } | null): string {
+  if (!store?.description) return ''
+  return CATEGORIES.includes(store.description) ? store.description : ''
 }
 
 function getSpotLogo(name: string) {
@@ -114,6 +104,7 @@ export default function Home() {
     available: 3
   })
   const [carouselIndex, setCarouselIndex] = useState(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     getUserLocation().then(setUserLocation)
@@ -150,7 +141,7 @@ export default function Home() {
     .filter((pack) => pack.remaining_quantity > 0 && pack.status !== 'sold_out' && pack.status !== 'expired')
 
   const filteredPacks = selectedCategory
-    ? packs.filter((pack) => getCategoryForStore(pack.store?.name || '') === selectedCategory)
+    ? packs.filter((pack) => getCategoryFromStore(pack.store) === selectedCategory)
     : packs
 
   const topSpots = stores.length > 0 ? stores.slice(0, 5) : [] as Store[]
@@ -160,15 +151,24 @@ export default function Home() {
   const hasMoreTrending = filteredPacks.length > 3
   const hasMoreAvailable = filteredPacks.length > 3
 
+  const INITIAL_COUNT = 3
+
   const toggleSection = (section: string) => {
     setExpandedSections(prev => {
-      const current = prev[section] || 3
+      const current = prev[section] || INITIAL_COUNT
+      if (current >= filteredPacks.length) {
+        return { ...prev, [section]: INITIAL_COUNT }
+      }
       const next = current + 3
       return {
         ...prev,
         [section]: next >= filteredPacks.length ? filteredPacks.length : next
       }
     })
+  }
+
+  const isFullyExpanded = (section: string) => {
+    return expandedSections[section] >= filteredPacks.length
   }
 
   const getImageUrl = (pack: any) => {
@@ -196,7 +196,7 @@ export default function Home() {
             }}
           />
           <div className={styles.packTypeTag}>{pack.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
-          <div className={styles.tag}>{getTagForStore(store?.name || pack.title)}</div>
+          <div className={styles.tag}>{getCategoryFromStore(store)}</div>
           <div className={styles.avatarWrapper}>
             {store?.image_url || store?.users?.profile_image || getSpotLogo(store?.name || '') ? (
               <img
@@ -304,7 +304,7 @@ export default function Home() {
                   <div className={styles.cardList}>
                     {filteredPacks.slice(0, expandedSections.trending).map(pack => renderStoreCard(pack))}
                   </div>
-                  {hasMoreTrending && expandedSections.trending < filteredPacks.length && (
+                  {hasMoreTrending && (
                     <button className={styles.expandBtn} onClick={() => toggleSection('trending')}>
                       <svg 
                         width="20" 
@@ -313,7 +313,7 @@ export default function Home() {
                         fill="none" 
                         stroke="currentColor" 
                         strokeWidth="2" 
-                        style={{ transform: 'rotate(0deg)', transition: 'transform 0.3s' }}
+                        style={{ transform: isFullyExpanded('trending') ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
                       >
                         <polyline points="6 9 12 15 18 9"></polyline>
                       </svg>
@@ -355,7 +355,16 @@ export default function Home() {
                     <p>Restaurants that posted packs today</p>
                   </div>
                   <div className={styles.carousel}>
-                    <div className={styles.carouselInner}>
+                    <div className={styles.carouselInner} ref={carouselRef} onScroll={() => {
+                      if (carouselRef.current) {
+                        const scrollLeft = carouselRef.current.scrollLeft
+                        const cardWidth = carouselRef.current.offsetWidth - 16
+                        const newIdx = Math.round(scrollLeft / cardWidth)
+                        if (newIdx !== carouselIndex && newIdx < newTodayList.length) {
+                          setCarouselIndex(newIdx)
+                        }
+                      }
+                    }}>
                       {newTodayList.map((pack, idx) => (
                         <div 
                           key={pack.id} 
@@ -388,7 +397,7 @@ export default function Home() {
                   <div className={styles.cardList}>
                     {filteredPacks.slice(0, expandedSections.available).map(pack => renderStoreCard(pack))}
                   </div>
-                  {hasMoreAvailable && expandedSections.available < filteredPacks.length && (
+                  {hasMoreAvailable && (
                     <button className={styles.expandBtn} onClick={() => toggleSection('available')}>
                       <svg 
                         width="20" 
@@ -397,7 +406,7 @@ export default function Home() {
                         fill="none" 
                         stroke="currentColor" 
                         strokeWidth="2" 
-                        style={{ transform: 'rotate(0deg)', transition: 'transform 0.3s' }}
+                        style={{ transform: isFullyExpanded('available') ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
                       >
                         <polyline points="6 9 12 15 18 9"></polyline>
                       </svg>

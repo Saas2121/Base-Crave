@@ -20,8 +20,6 @@ export default function Orders() {
     try {
       const { data } = await reservationsAPI.getStore()
       setReservations(data)
-    } catch {
-      // silently fail
     } finally {
       setLoading(false)
     }
@@ -33,18 +31,14 @@ export default function Orders() {
     try {
       await reservationsAPI.updateStatus(id, 'in_process')
       loadReservations()
-    } catch {
-      // silently fail
-    }
+    } catch {}
   }, [])
 
   const handleDecline = useCallback(async (id: string) => {
     try {
       await reservationsAPI.reject(id)
       loadReservations()
-    } catch {
-      // silently fail
-    }
+    } catch {}
   }, [])
 
   const formatTime = (iso: string) => {

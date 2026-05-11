@@ -40,7 +40,6 @@ export default function OrdersReady() {
       const { data } = await reservationsAPI.getStore()
       setReservations(data)
     } catch {
-      // silently fail
     } finally {
       setLoading(false)
     }

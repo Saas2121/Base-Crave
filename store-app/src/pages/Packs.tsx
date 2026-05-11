@@ -18,7 +18,6 @@ export default function Packs() {
     try {
       await deletePack(id)
     } catch {
-      // error is stored in store
     }
   }
 
@@ -122,10 +121,7 @@ export default function Packs() {
                       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
                       <span>{pack.pickup_start ? formatTime(pack.pickup_start) : '12-5 PM'}</span>
                     </div>
-                    <div className={styles.detailItem}>
-                      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                      <span>0.6 km</span>
-                    </div>
+
                   </div>
                   <div className={styles.availabilityRow}>
                     <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 18H4V4h8v16zm1 0h8V4h-8v16z"/></svg>

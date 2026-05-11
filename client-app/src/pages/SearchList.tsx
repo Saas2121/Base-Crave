@@ -76,6 +76,13 @@ function formatTimeRange(startStr: string, endStr: string) {
   }
 }
 
+const CATEGORIES = ['Meals', 'Coffee', 'Fast Food', 'Desserts', 'Healthy']
+
+function getCategoryFromStore(store?: { description?: string | null } | null): string {
+  if (!store?.description) return ''
+  return CATEGORIES.includes(store.description) ? store.description : ''
+}
+
 function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
@@ -191,7 +198,7 @@ export default function SearchList() {
                         }}
                       />
                       <div className={styles.packTypeTag}>{mainPack?.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
-                      <div className={styles.tag}>{getTagForStore(store.name)}</div>
+                      <div className={styles.tag}>{getCategoryFromStore(store)}</div>
                       <div className={styles.avatarWrapper}>
                         {store.image_url || store.users?.profile_image ? (
                           <img
@@ -218,7 +225,6 @@ export default function SearchList() {
                         <h3>{store.name}</h3>
                         <button className={styles.heartBtn} onClick={(e) => {
                           e.stopPropagation();
-                          // Toggle favorite logic would go here
                         }}>
                           <HeartIcon filled={false} />
                         </button>

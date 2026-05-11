@@ -37,13 +37,21 @@ function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
 
+function isToday(dateStr: string) {
+  const d = new Date(dateStr)
+  const now = new Date()
+  return d.getDate() === now.getDate() &&
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear()
+}
+
 function formatDate(dateStr?: string) {
-  if (!dateStr) return 'April 2, 2026'
+  if (!dateStr) return ''
   try {
     const d = new Date(dateStr)
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   } catch {
-    return 'April 2, 2026'
+    return ''
   }
 }
 
@@ -95,11 +103,11 @@ export default function Profile() {
     navigate('/start')
   }
 
-  const activeReservations = reservations.filter((res: Reservation) => 
-    ['reserved', 'in_process', 'ready', 'picked_up'].includes(res.status)
+  const todayReservations = reservations.filter((res: Reservation) =>
+    isToday(res.created_at)
   )
 
-  const resCount = activeReservations.length
+  const resCount = todayReservations.length
   let favPackIds: string[] = []
   try { favPackIds = JSON.parse(localStorage.getItem('favorite_pack_ids') || '[]') } catch {}
   const favsCount = favPackIds.length
@@ -108,7 +116,7 @@ export default function Profile() {
     .reduce((acc, r) => acc + (r.packs?.price || 0) * r.quantity, 0)
   const savedAmount = totalSaved >= 1000 ? `$${(totalSaved / 1000).toFixed(0)}k` : `$${totalSaved.toLocaleString('es-CO')}`
 
-  const displayReservations = activeReservations.length > 0 ? activeReservations : []
+  const displayReservations = todayReservations.length > 0 ? todayReservations : []
 
   return (
     <div className={styles.appContainer}>
@@ -119,7 +127,6 @@ export default function Profile() {
 
         <div className={styles.content}>
           
-          {/* Profile Card */}
           <div className={styles.profileCard}>
             <div className={styles.profileTop}>
               <div className={styles.avatarWrapper} onClick={!uploading ? handleAvatarClick : undefined} style={{ cursor: uploading ? 'default' : 'pointer' }}>
@@ -173,7 +180,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Recent Reservations */}
           <div className={styles.sectionHeader}>
             <div className={styles.iconCircle}>
               <BoxIcon />
@@ -212,6 +218,7 @@ export default function Profile() {
           <button onClick={handleLogout} className={styles.logoutButton}>
             Log Out
           </button>
+          <div style={{ height: '40px' }} />
         </div>
         <BottomNav active="profile" />
       </div>

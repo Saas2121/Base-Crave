@@ -71,12 +71,11 @@ function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
 
-function getTagForStore(storeName: string) {
-  const lower = storeName.toLowerCase()
-  if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
-  if (lower.includes('bakery') || lower.includes('postre') || lower.includes('if')) return 'Desserts'
-  if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
-  return 'Fast Food'
+const CATEGORIES = ['Meals', 'Coffee', 'Fast Food', 'Desserts', 'Healthy']
+
+function getCategoryFromStore(store?: { description?: string | null } | null): string {
+  if (!store?.description) return ''
+  return CATEGORIES.includes(store.description) ? store.description : ''
 }
 
 export default function Favorites() {
@@ -244,7 +243,7 @@ export default function Favorites() {
                         }}
                       />
                       <div className={styles.packTypeTag}>{fav.pack_type === 'surprise' ? 'Surprise' : 'Fixed'}</div>
-                      <div className={styles.tag}>{getTagForStore(store.name)}</div>
+                      <div className={styles.tag}>{getCategoryFromStore(store)}</div>
                       <div className={styles.avatarWrapper}>
                         {store.image_url || store.users?.profile_image ? (
                           <img

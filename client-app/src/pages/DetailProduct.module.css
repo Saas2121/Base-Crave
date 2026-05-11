@@ -11,7 +11,7 @@
   min-height: 100vh;
   position: relative;
   background: var(--bg);
-  padding-bottom: 100px; /* Space for fixed bottom bar */
+  padding-bottom: 100px;
 }
 
 .header {
@@ -208,7 +208,7 @@
   background: linear-gradient(0deg, #101010 60%, rgba(16, 16, 16, 0));
   display: flex;
   justify-content: center;
-  padding-bottom: 34px; /* for safe area */
+  padding-bottom: 34px;
 }
 
 .reserveButton {

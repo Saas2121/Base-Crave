@@ -20,8 +20,6 @@ export default function OrdersInProgress() {
     try {
       const { data } = await reservationsAPI.getStore()
       setReservations(data)
-    } catch {
-      // silently fail
     } finally {
       setLoading(false)
     }
@@ -33,9 +31,7 @@ export default function OrdersInProgress() {
     try {
       await reservationsAPI.updateStatus(id, 'ready')
       loadReservations()
-    } catch {
-      // silently fail
-    }
+    } catch {}
   }, [])
 
   const formatTime = (iso: string) => {

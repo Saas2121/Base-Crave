@@ -114,9 +114,7 @@ export default function ViewQRCode() {
   const pickupEnd = reservation.packs?.pickup_end
   const pickupCode = reservation.pickup_code || '---'
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${pickupCode}&color=000000&bgcolor=ffffff`
-
-  const formattedCode = `CR-${pickupCode.slice(0, 4)}`
-
+  const formattedCode = pickupCode
   return (
     <div className={styles.appContainer}>
       <div className={styles.container}>

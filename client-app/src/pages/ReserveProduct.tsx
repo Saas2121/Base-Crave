@@ -104,7 +104,7 @@ export default function ReserveProduct() {
     
     setReserving(true)
     try {
-      const reservationQty = pack.pack_type === 'surprise' ? 1 : quantity
+      const reservationQty = quantity
       const { data } = await reservationsAPI.create({ pack_id: pack.id, quantity: reservationQty })
       setReservationData(data)
     } catch (error) {
@@ -357,8 +357,7 @@ export default function ReserveProduct() {
             )}
           </div>
 
-          {pack.pack_type !== 'surprise' && (
-            <div className={styles.quantityCard}>
+          <div className={styles.quantityCard}>
               <p className={styles.quantityLabel}>Select Quantity</p>
               <div className={styles.quantityControls}>
                 <button
@@ -378,11 +377,10 @@ export default function ReserveProduct() {
                 </button>
               </div>
             </div>
-          )}
 
           <div className={styles.totalCard}>
             <span className={styles.totalLabel}>Total to pay at store</span>
-            <span className={styles.totalValue}>{formatPrice(pack.price * (pack.pack_type === 'surprise' ? 1 : quantity))}</span>
+            <span className={styles.totalValue}>{formatPrice(pack.price * quantity)}</span>
           </div>
         </div>
 

@@ -108,7 +108,7 @@ export default function Dashboard() {
         price: Number(price),
 
 
-        total_quantity: packType === 'surprise' ? 1 : Number(quantity),
+        total_quantity: Number(quantity),
         pickup_start: start.toISOString(),
         pickup_end: end.toISOString(),
       })

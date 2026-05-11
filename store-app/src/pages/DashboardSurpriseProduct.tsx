@@ -99,6 +99,7 @@ export default function DashboardSurpriseProduct() {
       end.setDate(end.getDate() + 1)
 
       const pack = await packsAPI.create({
+        title: 'Surprise pack',
         pack_type: PackType.SURPRISE,
         price: Number(price),
         total_quantity: Number(quantity),

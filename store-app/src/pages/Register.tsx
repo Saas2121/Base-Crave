@@ -6,12 +6,13 @@ import { UserRole } from '../types'
 import styles from './Register.module.css'
 import MapPicker from '../components/MapPicker'
 
-const CUISINE_TYPES = [
-  { emoji: '🍗', label: 'Meals' },
-  { emoji: '☕', label: 'Coffee' },
-  { emoji: '🍔', label: 'Fast Food' },
-  { emoji: '🍰', label: 'Desserts' },
-  { emoji: '🥗', label: 'Healthy' },
+const CUISINE_OPTIONS = [
+  { value: '', label: 'Select cuisine type' },
+  { value: 'Meals', label: '🍗 Meals' },
+  { value: 'Coffee', label: '☕ Coffee' },
+  { value: 'Fast Food', label: '🍔 Fast Food' },
+  { value: 'Desserts', label: '🍰 Desserts' },
+  { value: 'Healthy', label: '🥗 Healthy' },
 ]
 
 export default function Register() {
@@ -118,24 +119,6 @@ export default function Register() {
             </svg>
           </div>
         </div>
-        <div className={styles.container8}>
-          <div className={styles.label}>
-            <div className={styles.restaurantName}>Cuisine Type</div>
-          </div>
-          <div className={styles.cuisineGrid}>
-            {CUISINE_TYPES.map((type) => (
-              <button
-                key={type.label}
-                type="button"
-                className={`${styles.cuisineBtn} ${cuisineType === type.label ? styles.cuisineBtnActive : ''}`}
-                onClick={() => setCuisineType(type.label)}
-              >
-                <span className={styles.cuisineEmoji}>{type.emoji}</span>
-                <span>{type.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
         <div className={styles.container10}>
           <div className={styles.label}>
             <div className={styles.restaurantName}>Location</div>
@@ -157,6 +140,26 @@ export default function Register() {
             <div className={styles.wellUseThis}>We'll use this to help nearby customers discover your restaurant</div>
           </div>
         </div>
+        <div className={styles.container8}>
+          <div className={styles.label}>
+            <div className={styles.restaurantName}>Cuisine Type</div>
+          </div>
+          <div className={styles.selectWrapper}>
+            <select
+              className={styles.select}
+              value={cuisineType}
+              onChange={(e) => setCuisineType(e.target.value)}
+              required
+            >
+              {CUISINE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value} disabled={opt.value === ''}>{opt.label}</option>
+              ))}
+            </select>
+            <svg className={styles.selectArrow} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5L6 8L9 5" stroke="#99a1af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
         {showMap && (
           <MapPicker
             initialLat={latitude}
@@ -175,7 +178,7 @@ export default function Register() {
           <span className={styles.signIn}>Sign in</span>
         </Link>
       </div>
-      <svg className={styles.registerItem} viewBox="0 0 250 274" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+      <img src="/images/group-1.svg" alt="" className={styles.registerItem} />
     </div>
   )
 }

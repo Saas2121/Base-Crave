@@ -107,7 +107,7 @@ export default function Register() {
           </div>
           <div className={styles.container3} onClick={() => setShowMap(true)}>
             <input
-              className={styles.textInput}
+              className={styles.textInput2}
               type="text"
               value={address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}
               readOnly
@@ -118,9 +118,9 @@ export default function Register() {
               <path d="M10 18C10 18 3 13 3 8C3 3 10 0 10 0C10 0 17 3 17 8C17 13 10 18 10 18ZM10 8C11.1 8 12 7.1 12 6C12 4.9 11.1 4 10 4C8.9 4 8 4.9 8 6C8 7.1 8.9 8 10 8Z" stroke="#99a1af" strokeWidth="1.5"/>
             </svg>
           </div>
-        </div>
-        <div className={styles.paragraph2}>
-          <div className={styles.wellUseThis}>We'll use this to show you nearby restaurants</div>
+          <div className={styles.paragraph2}>
+            <div className={styles.wellUseThis}>We'll use this to show you nearby restaurants</div>
+          </div>
         </div>
         {showMap && (
           <MapPicker
@@ -140,7 +140,7 @@ export default function Register() {
           <span className={styles.signIn}>Sign in</span>
         </Link>
       </div>
-      <svg className={styles.registerItem} viewBox="0 0 250 274" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+      <img src="/images/group-1.svg" alt="" className={styles.registerItem} />
     </div>
   )
 }

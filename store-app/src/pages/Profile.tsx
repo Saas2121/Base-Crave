@@ -39,7 +39,7 @@ export default function Profile() {
   const [saved, setSaved] = useState(0)
   const [showMap, setShowMap] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [uploadingStoreImage, setUploadingStoreImage] = useState(false)
+  const [_uploadingStoreImage, setUploadingStoreImage] = useState(false)
   const [dataReady, setDataReady] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const storeImageInputRef = useRef<HTMLInputElement>(null)
@@ -95,7 +95,7 @@ export default function Profile() {
     setShowMap(false)
   }
 
-  const handleStoreImageClick = () => {
+  const _handleStoreImageClick = () => {
     storeImageInputRef.current?.click()
   }
 

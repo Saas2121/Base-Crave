@@ -5,7 +5,7 @@ export async function uploadToSupabaseStorage(
   filePath: string,
   fileName: string,
   contentType: string,
-  bucket: string = 'images'
+  bucket: string = 'imagenes'
 ): Promise<string | null> {
   try {
     const fileBuffer = fs.readFileSync(filePath);

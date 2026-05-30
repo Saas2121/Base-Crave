@@ -87,13 +87,13 @@ function formatPrice(price: number) {
   return `$${price.toLocaleString('es-CO')}`
 }
 
-function getTagForStore(storeName: string) {
-  const lower = storeName.toLowerCase()
-  if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
-  if (lower.includes('bakery') || lower.includes('postre')) return 'Desserts'
-  if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
-  return 'Meals'
-}
+// function getTagForStore(storeName: string) {
+//   const lower = storeName.toLowerCase()
+//   if (lower.includes('crepes') || lower.includes('wok')) return 'Meals'
+//   if (lower.includes('bakery') || lower.includes('postre')) return 'Desserts'
+//   if (lower.includes('salad') || lower.includes('bowl')) return 'Healthy'
+//   return 'Meals'
+// }
 
 export default function SearchList() {
   const navigate = useNavigate()

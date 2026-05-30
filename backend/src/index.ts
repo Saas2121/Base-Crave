@@ -36,7 +36,7 @@ app.use(logErrors);
 app.use(wrapErrors);
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

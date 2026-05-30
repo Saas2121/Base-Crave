@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import Boom from '@hapi/boom';
 import { supabase } from '../config/supabase';
 import { UserRole, AuthRequest } from '../types';
 import { authenticate } from '../middleware/auth';
@@ -10,16 +11,16 @@ import { uploadToSupabaseStorage } from '../services/storage';
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      throw Boom.badRequest('Missing required fields');
     }
 
     if (!Object.values(UserRole).includes(role)) {
-      return res.status(400).json({ error: 'Invalid role' });
+      throw Boom.badRequest('Invalid role');
     }
 
     const { data: existingUser } = await supabase
@@ -29,7 +30,7 @@ router.post('/register', async (req: Request, res: Response) => {
       .single();
 
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
+      throw Boom.badRequest('Email already registered');
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -41,7 +42,7 @@ router.post('/register', async (req: Request, res: Response) => {
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     const token = jwt.sign(
@@ -52,16 +53,16 @@ router.post('/register', async (req: Request, res: Response) => {
 
     res.status(201).json({ user, token });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password required' });
+      throw Boom.badRequest('Email and password required');
     }
 
     const { data: user, error } = await supabase
@@ -71,13 +72,13 @@ router.post('/login', async (req: Request, res: Response) => {
       .single();
 
     if (error || !user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      throw Boom.unauthorized('Invalid credentials');
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
 
     if (!isValid) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      throw Boom.unauthorized('Invalid credentials');
     }
 
     const token = jwt.sign(
@@ -98,15 +99,15 @@ router.post('/login', async (req: Request, res: Response) => {
       token
     });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.get('/me', authenticate, (req: AuthRequest, res: Response) => {
+router.get('/me', authenticate, (req: AuthRequest, res: Response, next: NextFunction) => {
   (async () => {
     try {
       if (!req.user) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        throw Boom.unauthorized('Unauthorized');
       }
 
       const { data: user, error } = await supabase
@@ -116,20 +117,20 @@ router.get('/me', authenticate, (req: AuthRequest, res: Response) => {
         .single();
 
       if (error || !user) {
-        return res.status(404).json({ error: 'User not found' });
+        throw Boom.notFound('User not found');
       }
 
       res.json(user);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   })();
 });
 
-router.post('/upload-profile-image', upload.single('image'), authenticate, async (req: AuthRequest, res: Response) => {
+router.post('/upload-profile-image', upload.single('image'), authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No image file provided' });
+      throw Boom.badRequest('No image file provided');
     }
 
     const localUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
@@ -144,12 +145,12 @@ router.post('/upload-profile-image', upload.single('image'), authenticate, async
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json({ user, imageUrl });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 

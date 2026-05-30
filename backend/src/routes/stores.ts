@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import Boom from '@hapi/boom';
 import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole } from '../types';
@@ -7,7 +8,7 @@ import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { open_only } = req.query;
 
@@ -23,16 +24,16 @@ router.get('/', async (req: Request, res: Response) => {
     const { data: stores, error } = await query;
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(stores);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -43,21 +44,21 @@ router.get('/:id', async (req: Request, res: Response) => {
       .single();
 
     if (error || !store) {
-      return res.status(404).json({ error: 'Store not found' });
+      throw Boom.notFound('Store not found');
     }
 
     res.json(store);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { name, description, address, latitude, longitude } = req.body;
 
     if (!name || !address || latitude === undefined || latitude === null || longitude === undefined || longitude === null) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      throw Boom.badRequest('Missing required fields');
     }
 
     const { data: store, error } = await supabase
@@ -75,16 +76,16 @@ router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: 
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.status(201).json(store);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.put('/my/toggle', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.put('/my/toggle', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { data: store, error: findError } = await supabase
       .from('stores')
@@ -93,7 +94,7 @@ router.put('/my/toggle', authenticate, requireRole([UserRole.STORE_ADMIN]), asyn
       .single();
 
     if (findError || !store) {
-      return res.status(404).json({ error: 'Store not found' });
+      throw Boom.notFound('Store not found');
     }
 
     const { data: updatedStore, error } = await supabase
@@ -104,16 +105,16 @@ router.put('/my/toggle', authenticate, requireRole([UserRole.STORE_ADMIN]), asyn
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(updatedStore);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { name, description, address, latitude, longitude } = req.body;
@@ -127,16 +128,16 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(store);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.get('/my/store', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.get('/my/store', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { data: store, error } = await supabase
       .from('stores')
@@ -145,16 +146,16 @@ router.get('/my/store', authenticate, requireRole([UserRole.STORE_ADMIN]), async
       .single();
 
     if (error || !store) {
-      return res.status(404).json({ error: 'Store not found' });
+      throw Boom.notFound('Store not found');
     }
 
     res.json(store);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.get('/:id/packs', async (req: Request, res: Response) => {
+router.get('/:id/packs', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -165,19 +166,19 @@ router.get('/:id/packs', async (req: Request, res: Response) => {
       .eq('status', 'active');
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(packs);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), upload.single('image'), async (req: AuthRequest, res: Response) => {
+router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), upload.single('image'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No image file provided' });
+      throw Boom.badRequest('No image file provided');
     }
 
     const { data: store, error: findError } = await supabase
@@ -187,7 +188,7 @@ router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), uplo
       .single();
 
     if (findError || !store) {
-      return res.status(404).json({ error: 'Store not found' });
+      throw Boom.notFound('Store not found');
     }
 
     const localUrl = `/uploads/${req.file.filename}`;
@@ -202,12 +203,12 @@ router.post('/my/image', authenticate, requireRole([UserRole.STORE_ADMIN]), uplo
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json({ store: updatedStore, imageUrl });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 

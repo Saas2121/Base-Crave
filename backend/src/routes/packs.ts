@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import Boom from '@hapi/boom';
 import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole, PackType, PackStatus } from '../types';
@@ -7,7 +8,7 @@ import { uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -18,16 +19,16 @@ router.get('/:id', async (req: Request, res: Response) => {
       .single();
 
     if (error || !pack) {
-      return res.status(404).json({ error: 'Pack not found' });
+      throw Boom.notFound('Pack not found');
     }
 
     res.json(pack);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const {
       title,
@@ -47,23 +48,23 @@ router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: 
     const parsedTotalQuantity = Number(total_quantity);
 
     if (!title || !pack_type || !pickup_start || !pickup_end) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      throw Boom.badRequest('Missing required fields');
     }
 
     if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
-      return res.status(400).json({ error: 'Invalid price' });
+      throw Boom.badRequest('Invalid price');
     }
 
     if (parsedOriginalPrice !== null && (!Number.isFinite(parsedOriginalPrice) || parsedOriginalPrice <= 0)) {
-      return res.status(400).json({ error: 'Invalid original price' });
+      throw Boom.badRequest('Invalid original price');
     }
 
     if (!Number.isFinite(parsedTotalQuantity) || parsedTotalQuantity < 1) {
-      return res.status(400).json({ error: 'Invalid total quantity' });
+      throw Boom.badRequest('Invalid total quantity');
     }
 
     if (!Object.values(PackType).includes(pack_type)) {
-      return res.status(400).json({ error: 'Invalid pack type' });
+      throw Boom.badRequest('Invalid pack type');
     }
 
     const { data: store, error: storeError } = await supabase
@@ -73,7 +74,7 @@ router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: 
       .single();
 
     if (storeError || !store) {
-      return res.status(404).json({ error: 'Store not found' });
+      throw Boom.notFound('Store not found');
     }
 
     const { data: pack, error } = await supabase
@@ -95,16 +96,16 @@ router.post('/', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: 
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.status(201).json(pack);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -115,7 +116,7 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
       .single();
 
     if (findError || !pack || pack.stores.owner_id !== req.user!.id) {
-      return res.status(404).json({ error: 'Pack not found' });
+      throw Boom.notFound('Pack not found');
     }
 
     const allowedFields = ['title', 'description', 'price', 'original_price', 'total_quantity', 'remaining_quantity', 'pickup_start', 'pickup_end', 'status'];
@@ -129,7 +130,7 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
     if (updates.price !== undefined) {
       const p = Number(updates.price);
       if (!Number.isFinite(p) || p <= 0) {
-        return res.status(400).json({ error: 'Invalid price' });
+        throw Boom.badRequest('Invalid price');
       }
       updates.price = p;
     }
@@ -139,7 +140,7 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
       } else {
         const op = Number(updates.original_price);
         if (!Number.isFinite(op) || op <= 0) {
-          return res.status(400).json({ error: 'Invalid original price' });
+          throw Boom.badRequest('Invalid original price');
         }
         updates.original_price = op;
       }
@@ -147,20 +148,20 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
     if (updates.total_quantity !== undefined) {
       const tq = Number(updates.total_quantity);
       if (!Number.isFinite(tq) || tq < 1) {
-        return res.status(400).json({ error: 'Invalid total quantity' });
+        throw Boom.badRequest('Invalid total quantity');
       }
       updates.total_quantity = tq;
     }
     if (updates.remaining_quantity !== undefined) {
       const rq = Number(updates.remaining_quantity);
       if (!Number.isFinite(rq) || rq < 0) {
-        return res.status(400).json({ error: 'Invalid remaining quantity' });
+        throw Boom.badRequest('Invalid remaining quantity');
       }
       updates.remaining_quantity = rq;
     }
     if (updates.status !== undefined) {
       if (!Object.values(PackStatus).includes(updates.status)) {
-        return res.status(400).json({ error: 'Invalid status' });
+        throw Boom.badRequest('Invalid status');
       }
     }
 
@@ -172,21 +173,21 @@ router.put('/:id', authenticate, requireRole([UserRole.STORE_ADMIN]), async (req
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(updatedPack);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/:id/upload-image', upload.single('image'), authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response) => {
+router.post('/:id/upload-image', upload.single('image'), authenticate, requireRole([UserRole.STORE_ADMIN]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
     if (!req.file) {
-      return res.status(400).json({ error: 'No image file provided' });
+      throw Boom.badRequest('No image file provided');
     }
 
     const { data: pack, error: findError } = await supabase
@@ -196,7 +197,7 @@ router.post('/:id/upload-image', upload.single('image'), authenticate, requireRo
       .single();
 
     if (findError || !pack || pack.stores.owner_id !== req.user!.id) {
-      return res.status(404).json({ error: 'Pack not found' });
+      throw Boom.notFound('Pack not found');
     }
 
     const localUrl = `/uploads/${req.file.filename}`;
@@ -211,16 +212,16 @@ router.post('/:id/upload-image', upload.single('image'), authenticate, requireRo
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json({ pack: updatedPack, imageUrl });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.delete('/:id', authenticate, requireRole(['store_admin']), async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authenticate, requireRole(['store_admin']), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -231,7 +232,7 @@ router.delete('/:id', authenticate, requireRole(['store_admin']), async (req: Au
       .single();
 
     if (findError || !pack || pack.stores.owner_id !== req.user!.id) {
-      return res.status(404).json({ error: 'Pack not found' });
+      throw Boom.notFound('Pack not found');
     }
 
     const { error } = await supabase
@@ -240,12 +241,12 @@ router.delete('/:id', authenticate, requireRole(['store_admin']), async (req: Au
       .eq('id', id);
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json({ message: 'Pack deleted successfully' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 

@@ -30,6 +30,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Central error handling middleware (must be registered AFTER routes)
+import { logErrors, wrapErrors, errorHandler } from './middleware/errorHandler';
+app.use(logErrors);
+app.use(wrapErrors);
+app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

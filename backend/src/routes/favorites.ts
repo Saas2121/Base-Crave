@@ -1,11 +1,12 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import Boom from '@hapi/boom';
 import { supabase } from '../config/supabase';
 import { AuthRequest, authenticate, requireRole } from '../middleware/auth';
 import { UserRole } from '../types';
 
 const router = Router();
 
-router.get('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response) => {
+router.get('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { data: favorites, error } = await supabase
       .from('favorites')
@@ -13,21 +14,21 @@ router.get('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: Auth
       .eq('user_id', req.user!.id);
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json(favorites);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response) => {
+router.post('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { store_id } = req.body;
 
     if (!store_id) {
-      return res.status(400).json({ error: 'Store ID required' });
+      throw Boom.badRequest('Store ID required');
     }
 
     const { data: existing } = await supabase
@@ -38,7 +39,7 @@ router.post('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: Aut
       .single();
 
     if (existing) {
-      return res.status(400).json({ error: 'Store already in favorites' });
+      throw Boom.badRequest('Store already in favorites');
     }
 
     const { data: favorite, error } = await supabase
@@ -48,16 +49,16 @@ router.post('/', authenticate, requireRole([UserRole.CONSUMER]), async (req: Aut
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.status(201).json(favorite);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.delete('/:store_id', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response) => {
+router.delete('/:store_id', authenticate, requireRole([UserRole.CONSUMER]), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { store_id } = req.params;
 
@@ -68,12 +69,12 @@ router.delete('/:store_id', authenticate, requireRole([UserRole.CONSUMER]), asyn
       .eq('store_id', store_id);
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
     res.json({ message: 'Favorite removed successfully' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
